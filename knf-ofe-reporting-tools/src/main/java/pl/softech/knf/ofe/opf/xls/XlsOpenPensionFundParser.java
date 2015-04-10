@@ -15,12 +15,20 @@
  */
 package pl.softech.knf.ofe.opf.xls;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+
+import pl.softech.knf.ofe.shared.spec.Specification;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -49,9 +57,9 @@ class XlsOpenPensionFundParser {
 	void addParsingEventListener(final ParsingEventListener l) {
 		listeners.add(l);
 	}
-	
+
 	void parseSheet(final Sheet sheet) {
-		final StateContext context = new StateContext();
+		final StateContext context = new StateContext(this);
 		context.setState(new ParsingDateState(context));
 		sheet.forEach(row -> context.parse(row));
 	}
@@ -64,8 +72,12 @@ class XlsOpenPensionFundParser {
 
 		private State state;
 
-		private XlsOpenPensionFundParser parser;
-		
+		private final XlsOpenPensionFundParser parser;
+
+		StateContext(final XlsOpenPensionFundParser parser) {
+			this.parser = parser;
+		}
+
 		@Override
 		public void parse(final Row row) {
 			state.parse(row);
@@ -93,6 +105,10 @@ class XlsOpenPensionFundParser {
 
 	private static class ParsingDateState extends AbstractState {
 
+		private static final Pattern DATE_PATTERN = Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4})");
+
+		private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+
 		ParsingDateState(final StateContext context) {
 			super(context);
 		}
@@ -100,11 +116,30 @@ class XlsOpenPensionFundParser {
 		@Override
 		public void parse(final Row row) {
 
+			for (final Cell cell : row) {
+
+				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+					final Matcher m = DATE_PATTERN.matcher(cell.getStringCellValue());
+					if (m.matches()) {
+						try {
+							context.getParser().fireDate(df.parse(m.group(1)));
+							context.setState(new ParsingHeaderState(context));
+							break;
+						} catch (final Exception e) {
+							throw new XlsParsingException(e);
+						}
+					}
+				}
+
+			}
 		}
 
 	}
 
 	private static class ParsingHeaderState extends AbstractState {
+
+		private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringValue("Open Pension Fund");
+		private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("Number of members");
 
 		ParsingHeaderState(final StateContext context) {
 			super(context);
@@ -113,18 +148,48 @@ class XlsOpenPensionFundParser {
 		@Override
 		public void parse(final Row row) {
 
+			final Iterator<Cell> it = row.iterator();
+			int cellCnt = 0;
+			while (it.hasNext()) {
+				final Cell firstCell = it.next();
+				if (firstColumnSpecification.isSatisfiedBy(firstCell) && it.hasNext()) {
+					final Cell secondCell = it.next();
+					if (secondColumnSpecification.isSatisfiedBy(secondCell)) {
+						context.getParser().fireHeader(firstCell.getStringCellValue(), secondCell.getStringCellValue());
+						context.setState(new ParsingRecordsState(context, cellCnt));
+						break;
+					}
+				}
+				cellCnt++;
+			}
 		}
 
 	}
 
 	private static class ParsingRecordsState extends AbstractState {
 
-		ParsingRecordsState(final StateContext context) {
+		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType();
+		private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
+
+		private final int startCellIndex;
+
+		ParsingRecordsState(final StateContext context, final int startCellIndex) {
 			super(context);
+			this.startCellIndex = startCellIndex;
 		}
 
 		@Override
 		public void parse(final Row row) {
+
+			final Cell fundCell = row.getCell(startCellIndex);
+			final Cell memberCell = row.getCell(startCellIndex + 1);
+
+			if (firstColumnSpecification.isSatisfiedBy(fundCell) && secondColumnSpecification.isSatisfiedBy(memberCell)) {
+				context.getParser().fireRecord(fundCell.getStringCellValue(), (long) memberCell.getNumericCellValue());
+			} else {
+				context.setState(new ParsingTotalState(startCellIndex, context));
+				context.parse(row);
+			}
 
 		}
 
@@ -132,13 +197,25 @@ class XlsOpenPensionFundParser {
 
 	private static class ParsingTotalState extends AbstractState {
 
-		ParsingTotalState(final StateContext context) {
+		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType();
+		private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
+		
+		private final int startCellIndex;
+		
+		ParsingTotalState(final int startCellIndex, final StateContext context) {
 			super(context);
+			this.startCellIndex = startCellIndex;
 		}
 
 		@Override
 		public void parse(final Row row) {
+			final Cell totalStrCell = row.getCell(startCellIndex);
+			final Cell totalNumberCell = row.getCell(startCellIndex + 1);
 
+			if (firstColumnSpecification.isSatisfiedBy(totalStrCell) && secondColumnSpecification.isSatisfiedBy(totalNumberCell)) {
+				context.getParser().fireTotal((long) totalNumberCell.getNumericCellValue());
+				context.setState(new FinishedState(context));
+			}
 		}
 
 	}
@@ -151,7 +228,7 @@ class XlsOpenPensionFundParser {
 
 		@Override
 		public void parse(final Row row) {
-
+			//do nothing
 		}
 
 	}

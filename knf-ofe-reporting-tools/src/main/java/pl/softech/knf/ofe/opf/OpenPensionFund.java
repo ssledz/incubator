@@ -49,4 +49,12 @@ public class OpenPensionFund {
 		return new Date(date.getTime());
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("OpenPensionFund [name=").append(name).append(", numberOfMembers=").append(numberOfMembers).append(", date=")
+				.append(date).append("]");
+		return builder.toString();
+	}
+
 }

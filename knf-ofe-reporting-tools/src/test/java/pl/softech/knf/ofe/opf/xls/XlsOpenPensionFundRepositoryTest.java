@@ -50,6 +50,7 @@ public class XlsOpenPensionFundRepositoryTest {
 	public void testFindAll() {
 		
 		final List<OpenPensionFund> funds = repository.findAll();
+		funds.forEach(f -> syso(f.toString()));
 		
 	}
 
