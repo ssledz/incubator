@@ -15,9 +15,12 @@
  */
 package pl.softech.knf.ofe.opf.xls;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+import java.util.OptionalLong;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,10 +35,10 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	private XlsOpenPensionFundRepository repository;
 
-	private void syso(final String template, final Object...args) {
+	private void syso(final String template, final Object... args) {
 		System.out.println(String.format(template, args));
 	}
-	
+
 	@Before
 	public void setUp() throws Exception {
 		final URL resource = XlsOpenPensionFundRepositoryTest.class.getClassLoader().getResource("dane0402_tcm75-4044.xls");
@@ -44,14 +47,24 @@ public class XlsOpenPensionFundRepositoryTest {
 	}
 
 	/**
-	 * Test method for {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}.
+	 * Test method for
+	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * .
 	 */
 	@Test
 	public void testFindAll() {
-		
+
 		final List<OpenPensionFund> funds = repository.findAll();
+
+		assertEquals(1, funds.stream().filter(e -> "Bankowy OFE".equals(e.getName())).count());
+		assertEquals(OptionalLong.of(389963l), funds.stream()//
+				.filter(e -> "Bankowy OFE".equals(e.getName()))//
+				.mapToLong(OpenPensionFund::getNumberOfMembers)//
+				.reduce((l, r) -> l)//
+		);
+
 		funds.forEach(f -> syso(f.toString()));
-		
+
 	}
 
 }
