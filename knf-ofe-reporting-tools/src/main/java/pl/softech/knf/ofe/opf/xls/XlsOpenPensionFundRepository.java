@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -29,6 +31,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import pl.softech.knf.ofe.opf.OpenPensionFund;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.PoiException;
+
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -39,8 +43,9 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 	private static final String MEMBERS_SHEET_NAME = "I Members";
 	private final File xlsFile;
 
-	public XlsOpenPensionFundRepository(final File excelFile) {
-		this.xlsFile = excelFile;
+	@Inject
+	public XlsOpenPensionFundRepository(final @Assisted File xlsFile) {
+		this.xlsFile = xlsFile;
 	}
 
 	private Sheet loadSheet(final String name) {
@@ -80,6 +85,11 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 		parser.parseSheet(members);
 
 		return funds;
+	}
+
+	@Override
+	public void save(final OpenPensionFund opf) {
+		throw new UnsupportedOperationException();
 	}
 
 }

@@ -29,6 +29,7 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ public class JdbcTemplate {
 
 	private SQLExceptionTranslator exceptionTranslator = new DefaultSQLExceptionTranslator();
 
+	@Inject
 	public JdbcTemplate(final DataSource dataSource) {
 		this.dataSource = dataSource;
 	}

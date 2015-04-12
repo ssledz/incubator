@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf;
+package pl.softech.knf.ofe.opf.xls;
 
-import java.util.List;
+import java.io.File;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public interface OpenPensionFundRepository {
+public interface XlsOpenPensionFundRepositoryFactory {
 
-	List<OpenPensionFund> findAll();
-
-	void save(OpenPensionFund opf);
+	XlsOpenPensionFundRepository create(File xlsFile);
 	
 }

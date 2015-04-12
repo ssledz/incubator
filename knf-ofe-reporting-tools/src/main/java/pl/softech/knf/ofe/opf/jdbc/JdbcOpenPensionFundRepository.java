@@ -17,6 +17,7 @@ package pl.softech.knf.ofe.opf.jdbc;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import pl.softech.knf.ofe.opf.OpenPensionFund;
@@ -31,6 +32,7 @@ public class JdbcOpenPensionFundRepository implements OpenPensionFundRepository 
 
 	private final JdbcTemplate jdbcTemplate;
 
+	@Inject
 	public JdbcOpenPensionFundRepository(final DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
@@ -40,6 +42,7 @@ public class JdbcOpenPensionFundRepository implements OpenPensionFundRepository 
 		return jdbcTemplate.query("SELECT * FROM open_pension_fund", new OpenPensionFundRowMapper());
 	}
 
+	@Override
 	public void save(final OpenPensionFund opf) {
 		final int updated = jdbcTemplate.update("UPDATE open_pension_fund "
 				+ "SET opf_name = ?, opf_number_of_members = ?, opf_date = ? WHERE opf_name = ? AND opf_date = ?", opf.getName(),
