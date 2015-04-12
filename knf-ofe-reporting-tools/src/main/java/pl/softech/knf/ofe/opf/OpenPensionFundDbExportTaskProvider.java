@@ -15,31 +15,33 @@
  */
 package pl.softech.knf.ofe.opf;
 
-import java.io.File;
+import javax.inject.Inject;
 
-import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
+import pl.softech.knf.ofe.Jdbc;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
-import pl.softech.knf.ofe.shared.task.Task;
+
+import com.google.inject.Provider;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class OpenPensionFundDbImportTask implements Task {
+public class OpenPensionFundDbExportTaskProvider implements Provider<OpenPensionFundDbExportTask> {
 
 	private final OpenPensionFundRepository jdbcRepository;
 	private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
 
-	public OpenPensionFundDbImportTask(final OpenPensionFundRepository jdbcRepository,
+	@Inject
+	OpenPensionFundDbExportTaskProvider(@Jdbc final OpenPensionFundRepository jdbcRepository,
 			final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
+		super();
 		this.jdbcRepository = jdbcRepository;
 		this.xlsRepositoryFactory = xlsRepositoryFactory;
 	}
 
 	@Override
-	public void execute(final File payload) {
-		final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
-		jdbcRepository.save(xlsRepository.findAll());
+	public OpenPensionFundDbExportTask get() {
+		return new OpenPensionFundDbExportTask(jdbcRepository, xlsRepositoryFactory);
 	}
 
 }

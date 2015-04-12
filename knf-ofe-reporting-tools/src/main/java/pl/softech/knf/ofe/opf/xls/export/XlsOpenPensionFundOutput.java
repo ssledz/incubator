@@ -83,6 +83,9 @@ public class XlsOpenPensionFundOutput {
 			for (final Date date : dates) {
 				final OpenPensionFund fund = date2fund.get(date);
 				cell = row.createCell(colIt++);
+				if(fund == null) {
+					continue;
+				}
 				cell.setCellValue(fund.getNumberOfMembers());
 			}
 

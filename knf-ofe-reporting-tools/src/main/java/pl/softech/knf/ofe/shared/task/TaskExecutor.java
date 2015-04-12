@@ -16,8 +16,10 @@
 package pl.softech.knf.ofe.shared.task;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -25,23 +27,62 @@ import java.util.List;
  */
 public class TaskExecutor {
 
-	private List<File> payloads = new LinkedList<>();
+	public static final Payload EMPTY_PAYLOAD = new Payload() {
+		@Override
+		public Payload addPayload(final File payload) {
+			return this;
+		}
+	};
 	
+	private Map<Task, List<File>> payloads = new HashMap<Task, List<File>>();
+
 	private List<Task> tasks = new LinkedList<>();
-	
+
 	public void execute() {
-		for(final Task task : tasks) {
-			for(final File payload : payloads) {
+		for (final Task task : tasks) {
+			final List<File> files = payloads.get(task);
+			if (files == null) {
+				continue;
+			}
+			for (final File payload : files) {
 				task.execute(payload);
 			}
 		}
 	}
-	
-	public void addTask(final Task task) {
+
+	public Payload addTask(final Task task) {
 		tasks.add(task);
+		return new PayloadImpl(task);
 	}
-	
-	public void addPayload(final File payload) {
-		payloads.add(payload);
+
+	public void addPayload(final File payload, final Task task) {
+
+		List<File> files = payloads.get(task);
+		if (files == null) {
+			files = new LinkedList<>();
+			payloads.put(task, files);
+		}
+
+		files.add(payload);
+
+	}
+
+	public interface Payload {
+		public Payload addPayload(final File payload);
+	}
+
+	private class PayloadImpl implements Payload {
+
+		private final Task task;
+
+		private PayloadImpl(final Task task) {
+			this.task = task;
+		}
+
+		@Override
+		public Payload addPayload(final File payload) {
+			TaskExecutor.this.addPayload(payload, task);
+			return this;
+		}
 	}
 }

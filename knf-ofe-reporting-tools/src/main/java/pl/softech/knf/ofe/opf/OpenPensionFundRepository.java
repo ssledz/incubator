@@ -25,6 +25,6 @@ public interface OpenPensionFundRepository {
 
 	List<OpenPensionFund> findAll();
 
-	void save(OpenPensionFund opf);
+	void save(List<OpenPensionFund> opfs);
 	
 }

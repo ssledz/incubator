@@ -43,14 +43,16 @@ public class JdbcOpenPensionFundRepository implements OpenPensionFundRepository 
 	}
 
 	@Override
-	public void save(final OpenPensionFund opf) {
-		final int updated = jdbcTemplate.update("UPDATE open_pension_fund "
-				+ "SET opf_name = ?, opf_number_of_members = ?, opf_date = ? WHERE opf_name = ? AND opf_date = ?", opf.getName(),
-				opf.getNumberOfMembers(), opf.getDate(), opf.getName(), opf.getDate());
+	public void save(final List<OpenPensionFund> opfs) {
+		for (final OpenPensionFund opf : opfs) {
+			final int updated = jdbcTemplate.update("UPDATE open_pension_fund "
+					+ "SET opf_name = ?, opf_number_of_members = ?, opf_date = ? WHERE opf_name = ? AND opf_date = ?", opf.getName(),
+					opf.getNumberOfMembers(), opf.getDate(), opf.getName(), opf.getDate());
 
-		if (updated == 0) {
-			jdbcTemplate.update("INSERT INTO open_pension_fund (opf_name, opf_number_of_members, opf_date) VALUES (?,?,?)", opf.getName(),
-					opf.getNumberOfMembers(), opf.getDate());
+			if (updated == 0) {
+				jdbcTemplate.update("INSERT INTO open_pension_fund (opf_name, opf_number_of_members, opf_date) VALUES (?,?,?)",
+						opf.getName(), opf.getNumberOfMembers(), opf.getDate());
+			}
 		}
 	}
 }

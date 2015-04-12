@@ -25,12 +25,12 @@ import pl.softech.knf.ofe.shared.task.Task;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class OpenPensionFundDbImportTask implements Task {
+public class OpenPensionFundDbExportTask implements Task {
 
 	private final OpenPensionFundRepository jdbcRepository;
 	private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
 
-	public OpenPensionFundDbImportTask(final OpenPensionFundRepository jdbcRepository,
+	public OpenPensionFundDbExportTask(final OpenPensionFundRepository jdbcRepository,
 			final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
 		this.jdbcRepository = jdbcRepository;
 		this.xlsRepositoryFactory = xlsRepositoryFactory;
@@ -39,7 +39,7 @@ public class OpenPensionFundDbImportTask implements Task {
 	@Override
 	public void execute(final File payload) {
 		final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
-		jdbcRepository.save(xlsRepository.findAll());
+		xlsRepository.save(jdbcRepository.findAll());
 	}
 
 }

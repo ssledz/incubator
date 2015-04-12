@@ -40,6 +40,7 @@ public class OpenPensionFundModule extends AbstractModule {
 				XlsOpenPensionFundRepositoryFactory.class));
 		
 		bind(OpenPensionFundDbImportTask.class).toProvider(OpenPensionFundDbImportTaskProvider.class);
+		bind(OpenPensionFundDbExportTask.class).toProvider(OpenPensionFundDbExportTaskProvider.class);
 	}
 
 }

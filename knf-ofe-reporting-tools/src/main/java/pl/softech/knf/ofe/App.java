@@ -6,13 +6,17 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.softech.knf.ofe.opf.OpenPensionFundDbExportTaskProvider;
 import pl.softech.knf.ofe.opf.OpenPensionFundDbImportTaskProvider;
+import pl.softech.knf.ofe.shared.task.Task;
 import pl.softech.knf.ofe.shared.task.TaskExecutor;
+import pl.softech.knf.ofe.shared.task.TaskExecutor.Payload;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -26,15 +30,21 @@ public class App {
 	public static void main(final String[] args) {
 		LOGGER.info("Starting...");
 
-		final OpenPensionFundDbImportTaskProvider provider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
+		final OpenPensionFundDbImportTaskProvider opfFundImportprovider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
+		final OpenPensionFundDbExportTaskProvider opfFundExportprovider = INJECTOR.getInstance(OpenPensionFundDbExportTaskProvider.class);
 		final TaskExecutor executor = new TaskExecutor();
 
 		final Option help = new Option("help", "print this message");
 		final Option importOpfMembers = new Option("importOpfMembers", "import open pension fund members to db");
+		final Option exportOpfMembers = OptionBuilder.withArgName("fileName").hasArg()
+				.withDescription("exports open pension fund members from db to xls file").create("exportOpfMembers");
 
 		final Options options = new Options();
 		options.addOption(help);
 		options.addOption(importOpfMembers);
+		options.addOption(exportOpfMembers);
+
+		Payload importOpfMembersPayload = TaskExecutor.EMPTY_PAYLOAD;
 
 		final CommandLineParser parser = new PosixParser();
 		try {
@@ -48,19 +58,33 @@ public class App {
 			}
 
 			if (line.hasOption("importOpfMembers")) {
-				executor.addTask(provider.get());
+				importOpfMembersPayload = executor.addTask(opfFundImportprovider.get());
+			}
+
+			if (line.hasOption("exportOpfMembers")) {
+				final String fileName = line.getOptionValue("exportOpfMembers");
+				if (fileName == null) {
+					System.out.println("No fileName argument");
+					return;
+				}
+				final Task task = opfFundExportprovider.get();
+				executor.addTask(task).addPayload(new File(fileName));
 			}
 
 			for (final String file : line.getArgs()) {
-				LOGGER.debug("Adding file {} to executor", new File(file).getAbsoluteFile());
-				executor.addPayload(new File(file));
+				LOGGER.debug("Adding file {} to {} payload", new File(file).getAbsoluteFile(), "importOpfMembersPayload");
+				importOpfMembersPayload.addPayload(new File(file));
 			}
 
 		} catch (final Exception exp) {
 			LOGGER.error("Parsing failed.  Reason: " + exp.getMessage());
 		}
 
-		executor.execute();
+		try {
+			executor.execute();
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 }
