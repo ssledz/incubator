@@ -15,31 +15,35 @@
  */
 package pl.softech.knf.ofe.opf;
 
-import pl.softech.knf.ofe.Jdbc;
-import pl.softech.knf.ofe.Xls;
-import pl.softech.knf.ofe.opf.jdbc.JdbcOpenPensionFundRepository;
+import java.io.File;
+
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
+import pl.softech.knf.ofe.shared.task.Task;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class OpenPensionFundModule extends AbstractModule {
+public class OpenPensionFundDbImportTask implements Task {
+
+	private final OpenPensionFundRepository jdbcRepository;
+	private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
+
+	public OpenPensionFundDbImportTask(final OpenPensionFundRepository jdbcRepository,
+			final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
+		this.jdbcRepository = jdbcRepository;
+		this.xlsRepositoryFactory = xlsRepositoryFactory;
+	}
 
 	@Override
-	protected void configure() {
+	public void execute(final File payload) {
+		
+		final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
 
-		bind(OpenPensionFundRepository.class).annotatedWith(Jdbc.class).to(JdbcOpenPensionFundRepository.class).in(Singleton.class);
-		
-		install(new FactoryModuleBuilder().implement(OpenPensionFundRepository.class, Xls.class, XlsOpenPensionFundRepository.class).build(
-				XlsOpenPensionFundRepositoryFactory.class));
-		
-		bind(OpenPensionFundDbImportTask.class).toProvider(OpenPensionFundDbImportTaskProvider.class);
+		xlsRepository.findAll().stream().forEach(fund -> {
+			jdbcRepository.save(fund);
+		});
 	}
 
 }

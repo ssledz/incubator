@@ -5,13 +5,11 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
-import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
-import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
+import pl.softech.knf.ofe.opf.OpenPensionFundDbImportTaskProvider;
+import pl.softech.knf.ofe.shared.task.TaskExecutor;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 
 public class App {
 
@@ -22,15 +20,13 @@ public class App {
 	public static void main(final String[] args) {
 		LOGGER.info("Starting...");
 
-		final OpenPensionFundRepository jdbcRepository = INJECTOR.getInstance(Key.get(OpenPensionFundRepository.class, Jdbc.class));
-		final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory = INJECTOR.getInstance(XlsOpenPensionFundRepositoryFactory.class);
-
-		final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(new File(
-				"/home/ssledz/knf-ofe-work-dir/work/dane0402_tcm75-4044.xls"));
+		final OpenPensionFundDbImportTaskProvider provider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
+		final TaskExecutor executor = new TaskExecutor();
 		
-		xlsRepository.findAll().stream().forEach(fund -> {
-			jdbcRepository.save(fund);
-		});
-
+		executor.addPayload(new File("/home/ssledz/knf-ofe-work-dir/work/dane0402_tcm75-4044.xls"));
+		executor.addTask(provider.get());
+		
+		executor.execute();
+		
 	}
 }
