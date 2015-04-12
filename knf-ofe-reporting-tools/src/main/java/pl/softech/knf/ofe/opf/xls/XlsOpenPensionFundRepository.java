@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,8 +50,10 @@ import com.google.inject.assistedinject.Assisted;
 public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(XlsOpenPensionFundRepository.class);
-	
-	private static final String MEMBERS_SHEET_NAME = "I Members";
+
+	private static final String MEMBERS_SHEET_NAME = "Members";
+	private static final String MEMBERS_SHEET_NAME2 = "I Members";
+
 	private final File xlsFile;
 
 	@Inject
@@ -67,10 +70,23 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 		}
 	}
 
+	private static String[] args(final String... args) {
+		return args;
+	}
+	
 	@Override
 	public List<OpenPensionFund> findAll() {
 
-		final Sheet members = loadSheet(MEMBERS_SHEET_NAME);
+		Sheet members = loadSheet(MEMBERS_SHEET_NAME);
+
+		if (members == null) {
+			members = loadSheet(MEMBERS_SHEET_NAME2);
+		}
+
+		if (members == null) {
+			LOGGER.warn("There is no '{}' or '{}' sheet in file {}", args(MEMBERS_SHEET_NAME, MEMBERS_SHEET_NAME2, xlsFile.getAbsolutePath()));
+			return Collections.emptyList();
+		}
 
 		final XlsOpenPensionFundParser parser = new XlsOpenPensionFundParser();
 
@@ -117,7 +133,7 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 
 			String sheetName = MEMBERS_SHEET_NAME;
 			Sheet sheet = wb.getSheet(sheetName);
-			
+
 			int it = 1;
 			while (sheet != null) {
 				sheetName = String.format("%s%d", MEMBERS_SHEET_NAME, it++);

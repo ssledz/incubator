@@ -17,6 +17,9 @@ package pl.softech.knf.ofe.opf;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
 import pl.softech.knf.ofe.shared.task.Task;
@@ -26,6 +29,8 @@ import pl.softech.knf.ofe.shared.task.Task;
  * @since 1.0
  */
 public class OpenPensionFundDbImportTask implements Task {
+
+	private static Logger LOGGER = LoggerFactory.getLogger(OpenPensionFundDbImportTask.class);
 
 	private final OpenPensionFundRepository jdbcRepository;
 	private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
@@ -38,8 +43,15 @@ public class OpenPensionFundDbImportTask implements Task {
 
 	@Override
 	public void execute(final File payload) {
-		final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
-		jdbcRepository.save(xlsRepository.findAll());
+		LOGGER.info("Importing...");
+		try {
+			final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
+			jdbcRepository.save(xlsRepository.findAll());
+			LOGGER.info("Importing finished successfully for {}", payload.getAbsoluteFile());
+		} catch (final Exception e) {
+			LOGGER.error(String.format("Import was failed for %s", payload.getAbsoluteFile()), e);
+		}
+		
 	}
 
 }

@@ -15,6 +15,8 @@
  */
 package pl.softech.knf.ofe.opf.xls.imp;
 
+import static java.util.Objects.requireNonNull;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -59,6 +61,7 @@ public class XlsOpenPensionFundParser {
 	}
 
 	public void parseSheet(final Sheet sheet) {
+		requireNonNull(sheet, "Sheet can't be null");
 		final StateContext context = new StateContext(this);
 		context.setState(new ParsingDateState(context));
 		sheet.forEach(row -> context.parse(row));
