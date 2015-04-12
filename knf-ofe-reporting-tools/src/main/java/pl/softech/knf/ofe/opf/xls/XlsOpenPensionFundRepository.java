@@ -31,6 +31,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import pl.softech.knf.ofe.opf.OpenPensionFund;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.PoiException;
+import pl.softech.knf.ofe.opf.xls.imp.ParsingEventListenerAdapter;
+import pl.softech.knf.ofe.opf.xls.imp.XlsOpenPensionFundParser;
 
 import com.google.inject.assistedinject.Assisted;
 
@@ -44,7 +46,7 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 	private final File xlsFile;
 
 	@Inject
-	public XlsOpenPensionFundRepository(final @Assisted File xlsFile) {
+	XlsOpenPensionFundRepository(final @Assisted File xlsFile) {
 		this.xlsFile = xlsFile;
 	}
 

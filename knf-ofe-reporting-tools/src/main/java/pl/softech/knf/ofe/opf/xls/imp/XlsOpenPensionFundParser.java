@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
+package pl.softech.knf.ofe.opf.xls.imp;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,7 +34,7 @@ import pl.softech.knf.ofe.shared.spec.Specification;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-class XlsOpenPensionFundParser {
+public class XlsOpenPensionFundParser {
 
 	private final List<ParsingEventListener> listeners = new LinkedList<>();
 
@@ -54,11 +54,11 @@ class XlsOpenPensionFundParser {
 		listeners.forEach(l -> l.total(total));
 	}
 
-	void addParsingEventListener(final ParsingEventListener l) {
+	public void addParsingEventListener(final ParsingEventListener l) {
 		listeners.add(l);
 	}
 
-	void parseSheet(final Sheet sheet) {
+	public void parseSheet(final Sheet sheet) {
 		final StateContext context = new StateContext(this);
 		context.setState(new ParsingDateState(context));
 		sheet.forEach(row -> context.parse(row));

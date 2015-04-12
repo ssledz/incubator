@@ -13,21 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
+package pl.softech.knf.ofe.opf.xls.imp;
 
-import org.apache.poi.ss.usermodel.Cell;
-
-import pl.softech.knf.ofe.shared.spec.Specification;
+import java.util.Date;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class CellIsOfStringType implements Specification<Cell> {
+public class ParsingEventListenerAdapter implements ParsingEventListener {
 
 	@Override
-	public boolean isSatisfiedBy(final Cell arg) {
-		return arg.getCellType() == Cell.CELL_TYPE_STRING;
+	public void date(final Date date) {
+	}
+
+	@Override
+	public void header(final String[] columns) {
+	}
+
+	@Override
+	public void record(final String name, final long numberOfMembers) {
+	}
+
+	@Override
+	public void total(final long total) {
 	}
 
 }

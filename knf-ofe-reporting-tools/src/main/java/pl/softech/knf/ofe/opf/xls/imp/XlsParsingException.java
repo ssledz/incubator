@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
-
-import java.util.Date;
+package pl.softech.knf.ofe.opf.xls.imp;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-interface ParsingEventListener {
+public class XlsParsingException extends RuntimeException {
 
-	void date(Date date);
-	
-	void header(String[] columns);
-	
-	void record(String name, long numberOfMembers);
-	
-	void total(long total);
-	
+	private static final long serialVersionUID = 1L;
+
+	public XlsParsingException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
+
+	public XlsParsingException(final Throwable cause) {
+		super(cause);
+	}
+
 }
