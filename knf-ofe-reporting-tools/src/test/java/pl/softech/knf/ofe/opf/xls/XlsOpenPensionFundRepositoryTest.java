@@ -56,14 +56,17 @@ public class XlsOpenPensionFundRepositoryTest {
 
 		final List<OpenPensionFund> funds = repository.findAll();
 
+		funds.forEach(f -> syso(f.toString()));
+		
 		assertEquals(1, funds.stream().filter(e -> "Bankowy OFE".equals(e.getName())).count());
+		
+		assertEquals(0, funds.stream().filter(e -> "Total".equals(e.getName())).count());
+		
 		assertEquals(OptionalLong.of(389963l), funds.stream()//
 				.filter(e -> "Bankowy OFE".equals(e.getName()))//
 				.mapToLong(OpenPensionFund::getNumberOfMembers)//
 				.reduce((l, r) -> l)//
 		);
-
-		funds.forEach(f -> syso(f.toString()));
 
 	}
 

@@ -6,12 +6,21 @@
             </Pattern>
         </encoder>
     </appender>
+    
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${log.dir:-.}/app.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d{ISO8601} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <logger name="pl.softech.knf.ofe" level="debug" additivity="false">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </logger>
 
     <root level="error">
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </root>
 </configuration>

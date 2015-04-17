@@ -22,4 +22,16 @@ package pl.softech.knf.ofe.shared.spec;
 public interface Specification<T> {
 
 	boolean isSatisfiedBy(T arg);
+
+	default Specification<T> not() {
+		return (arg) -> {
+			return !isSatisfiedBy(arg);
+		};
+	}
+
+	default Specification<T> and(final Specification<T> spec) {
+		return (arg) -> {
+			return isSatisfiedBy(arg) && spec.isSatisfiedBy(arg);
+		};
+	}
 }

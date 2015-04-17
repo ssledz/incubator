@@ -171,7 +171,8 @@ public class XlsOpenPensionFundParser {
 
 	private static class ParsingRecordsState extends AbstractState {
 
-		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType();
+		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType().and(new CellHasIgnoreCaseStringValue("Total")
+				.not());
 		private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
 
 		private final int startCellIndex;
@@ -202,9 +203,9 @@ public class XlsOpenPensionFundParser {
 
 		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType();
 		private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
-		
+
 		private final int startCellIndex;
-		
+
 		ParsingTotalState(final int startCellIndex, final StateContext context) {
 			super(context);
 			this.startCellIndex = startCellIndex;
@@ -231,7 +232,7 @@ public class XlsOpenPensionFundParser {
 
 		@Override
 		public void parse(final Row row) {
-			//do nothing
+			// do nothing
 		}
 
 	}
