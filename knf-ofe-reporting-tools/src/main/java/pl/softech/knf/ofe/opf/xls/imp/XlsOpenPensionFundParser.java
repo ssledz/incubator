@@ -17,14 +17,10 @@ package pl.softech.knf.ofe.opf.xls.imp;
 
 import static java.util.Objects.requireNonNull;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -111,10 +107,6 @@ public class XlsOpenPensionFundParser {
 
 	private static class ParsingDateState extends AbstractState {
 
-		private static final Pattern DATE_PATTERN = Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4})");
-
-		private final DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-
 		ParsingDateState(final StateContext context) {
 			super(context);
 		}
@@ -125,16 +117,13 @@ public class XlsOpenPensionFundParser {
 			for (final Cell cell : row) {
 
 				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-					final Matcher m = DATE_PATTERN.matcher(cell.getStringCellValue());
-					if (m.matches()) {
-						try {
-							context.getParser().fireDate(df.parse(m.group(1)));
-							context.setState(new ParsingHeaderState(context));
-							break;
-						} catch (final Exception e) {
-							throw new XlsParsingException(e);
-						}
+
+					final Date date = DateParserUtil.parse(cell.getStringCellValue());
+					if (date != null) {
+						context.getParser().fireDate(date);
+						context.setState(new ParsingHeaderState(context));
 					}
+
 				}
 
 			}
