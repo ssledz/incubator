@@ -41,9 +41,22 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	@Before
 	public void setUp() throws Exception {
-		final URL resource = XlsOpenPensionFundRepositoryTest.class.getClassLoader().getResource("dane0402_tcm75-4044.xls");
+	}
+
+	private List<OpenPensionFund> findAll(final String fileName) {
+
+		final URL resource = XlsOpenPensionFundRepositoryTest.class.getClassLoader().getResource(fileName);
+
 		syso("Resource -> %s", resource.getFile());
+
 		repository = new XlsOpenPensionFundRepository(new File(resource.getFile()));
+
+		final List<OpenPensionFund> funds = repository.findAll();
+
+		funds.forEach(f -> syso(f.toString()));
+
+		return funds;
+
 	}
 
 	/**
@@ -52,22 +65,64 @@ public class XlsOpenPensionFundRepositoryTest {
 	 * .
 	 */
 	@Test
-	public void testFindAll() {
+	public void testFindAllForFile1() {
 
-		final List<OpenPensionFund> funds = repository.findAll();
+		final List<OpenPensionFund> funds = findAll("dane0402_tcm75-4044.xls");
 
-		funds.forEach(f -> syso(f.toString()));
-		
 		assertEquals(1, funds.stream().filter(e -> "Bankowy OFE".equals(e.getName())).count());
-		
+
 		assertEquals(0, funds.stream().filter(e -> "Total".equals(e.getName())).count());
-		
+
 		assertEquals(OptionalLong.of(389963l), funds.stream()//
 				.filter(e -> "Bankowy OFE".equals(e.getName()))//
 				.mapToLong(OpenPensionFund::getNumberOfMembers)//
 				.reduce((l, r) -> l)//
 		);
 
+	}
+	
+	/**
+	 * Test method for
+	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * .
+	 */
+	@Test
+	public void testFindAllForFile2() {
+
+		final List<OpenPensionFund> funds = findAll("dane0104_tcm75-4000.xls");
+
+		assertEquals(1, funds.stream().filter(e -> "Bankowy OFE".equals(e.getName())).count());
+
+		assertEquals(0, funds.stream().filter(e -> "Total".equals(e.getName())).count());
+
+		assertEquals(OptionalLong.of(400643l), funds.stream()//
+				.filter(e -> "Bankowy OFE".equals(e.getName()))//
+				.mapToLong(OpenPensionFund::getNumberOfMembers)//
+				.reduce((l, r) -> l)//
+		);
+		
+	}
+	
+	/**
+	 * Test method for
+	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * .
+	 */
+	@Test
+	public void testFindAllForFile3() {
+
+		final List<OpenPensionFund> funds = findAll("dane0204_tcm75-4001.xls");
+
+		assertEquals(1, funds.stream().filter(e -> "Bankowy OFE".equals(e.getName())).count());
+
+		assertEquals(0, funds.stream().filter(e -> "Total".equals(e.getName())).count());
+
+		assertEquals(OptionalLong.of(401378l), funds.stream()//
+				.filter(e -> "Bankowy OFE".equals(e.getName()))//
+				.mapToLong(OpenPensionFund::getNumberOfMembers)//
+				.reduce((l, r) -> l)//
+		);
+		
 	}
 
 }

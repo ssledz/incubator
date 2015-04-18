@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.shared.spec;
+package pl.softech.knf.ofe.opf.xls.imp;
+
+import org.apache.poi.ss.usermodel.Cell;
+
+import pl.softech.knf.ofe.shared.spec.Specification;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public interface Specification<T> {
+public class CellIsOfFormulaType implements Specification<Cell> {
 
-	boolean isSatisfiedBy(T arg);
-
-	default Specification<T> not() {
-		return (arg) -> {
-			return !isSatisfiedBy(arg);
-		};
+	@Override
+	public boolean isSatisfiedBy(final Cell arg) {
+		return arg.getCellType() == Cell.CELL_TYPE_FORMULA;
 	}
 
-	default Specification<T> and(final Specification<T> spec) {
-		return (arg) -> {
-			return isSatisfiedBy(arg) && spec.isSatisfiedBy(arg);
-		};
-	}
-	
-	default Specification<T> or(final Specification<T> spec) {
-		return (arg) -> {
-			return isSatisfiedBy(arg) || spec.isSatisfiedBy(arg);
-		};
-	}
 }

@@ -27,8 +27,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import pl.softech.knf.ofe.shared.spec.Specification;
 
@@ -171,8 +174,8 @@ public class XlsOpenPensionFundParser {
 
 	private static class ParsingRecordsState extends AbstractState {
 
-		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType().and(new CellHasIgnoreCaseStringValue("Total")
-				.not());
+		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType().and(
+				new CellHasIgnoreCaseStringValue("Total").not()).and(new CellHasIgnoreCaseStringValue("Razem").not());
 		private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
 
 		private final int startCellIndex;
@@ -202,7 +205,8 @@ public class XlsOpenPensionFundParser {
 	private static class ParsingTotalState extends AbstractState {
 
 		private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType();
-		private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
+		private final Specification<Cell> cellIsFormula = new CellIsOfFormulaType();
+		private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType().or(cellIsFormula);
 
 		private final int startCellIndex;
 
@@ -217,7 +221,14 @@ public class XlsOpenPensionFundParser {
 			final Cell totalNumberCell = row.getCell(startCellIndex + 1);
 
 			if (firstColumnSpecification.isSatisfiedBy(totalStrCell) && secondColumnSpecification.isSatisfiedBy(totalNumberCell)) {
-				context.getParser().fireTotal((long) totalNumberCell.getNumericCellValue());
+				if (cellIsFormula.isSatisfiedBy(totalNumberCell)) {
+					final Workbook wb = row.getSheet().getWorkbook();
+					final FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+					final CellValue value = evaluator.evaluate(totalNumberCell);
+					context.getParser().fireTotal((long) value.getNumberValue());
+				} else {
+					context.getParser().fireTotal((long) totalNumberCell.getNumericCellValue());
+				}
 				context.setState(new FinishedState(context));
 			}
 		}
