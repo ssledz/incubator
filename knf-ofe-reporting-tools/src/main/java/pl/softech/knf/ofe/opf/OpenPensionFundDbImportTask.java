@@ -16,6 +16,7 @@
 package pl.softech.knf.ofe.opf;
 
 import java.io.File;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +47,17 @@ public class OpenPensionFundDbImportTask implements Task {
 		LOGGER.info("Importing...");
 		try {
 			final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
-			jdbcRepository.save(xlsRepository.findAll());
-			LOGGER.info("Importing finished successfully for {}", payload.getAbsoluteFile());
+			final List<OpenPensionFund> funds = xlsRepository.findAll();
+			jdbcRepository.save(funds);
+			if (funds.isEmpty()) {
+				LOGGER.warn("No open pension funds found for {}", payload.getAbsoluteFile());
+			} else {
+				LOGGER.info("Importing finished successfully for {}", payload.getAbsoluteFile());
+			}
 		} catch (final Exception e) {
 			LOGGER.error(String.format("Import was failed for %s", payload.getAbsoluteFile()), e);
 		}
-		
+
 	}
 
 }

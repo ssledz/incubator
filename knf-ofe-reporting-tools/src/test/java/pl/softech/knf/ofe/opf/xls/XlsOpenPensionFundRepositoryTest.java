@@ -80,7 +80,7 @@ public class XlsOpenPensionFundRepositoryTest {
 		);
 
 	}
-	
+
 	/**
 	 * Test method for
 	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
@@ -100,9 +100,9 @@ public class XlsOpenPensionFundRepositoryTest {
 				.mapToLong(OpenPensionFund::getNumberOfMembers)//
 				.reduce((l, r) -> l)//
 		);
-		
+
 	}
-	
+
 	/**
 	 * Test method for
 	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
@@ -122,7 +122,29 @@ public class XlsOpenPensionFundRepositoryTest {
 				.mapToLong(OpenPensionFund::getNumberOfMembers)//
 				.reduce((l, r) -> l)//
 		);
-		
+
+	}
+
+	/**
+	 * Test method for
+	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * .
+	 */
+	@Test
+	public void testFindAllForFile4() {
+
+		final List<OpenPensionFund> funds = findAll("2010_01k_tcm75-18109.xls");
+
+		assertEquals(1, funds.stream().filter(e -> "Nordea OFE".equals(e.getName())).count());
+
+		assertEquals(0, funds.stream().filter(e -> "Total".equals(e.getName())).count());
+
+		assertEquals(OptionalLong.of(831028l), funds.stream()//
+				.filter(e -> "Nordea OFE".equals(e.getName()))//
+				.mapToLong(OpenPensionFund::getNumberOfMembers)//
+				.reduce((l, r) -> l)//
+		);
+
 	}
 
 }
