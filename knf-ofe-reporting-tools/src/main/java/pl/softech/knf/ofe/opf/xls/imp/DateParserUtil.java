@@ -31,7 +31,7 @@ class DateParserUtil {
 
 	private enum Parser implements DateParser {
 
-		DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4})"), new SimpleDateFormat("dd.MM.yyyy")), DATE2(Pattern
+		DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4}).*"), new SimpleDateFormat("dd.MM.yyyy")), DATE2(Pattern
 				.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd"));
 
 		private final Pattern pattern;

@@ -133,7 +133,8 @@ public class XlsOpenPensionFundParser {
 
 	private static class ParsingHeaderState extends AbstractState {
 
-		private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringValue("Open Pension Fund");
+		private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringValue("Open Pension Fund")
+				.or(new CellHasIgnoreCaseStringValue("Open-ended Pension Fund"));
 		private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("Number of members");
 
 		ParsingHeaderState(final StateContext context) {
@@ -150,7 +151,7 @@ public class XlsOpenPensionFundParser {
 				if (firstColumnSpecification.isSatisfiedBy(firstCell) && it.hasNext()) {
 					final Cell secondCell = it.next();
 					if (secondColumnSpecification.isSatisfiedBy(secondCell)) {
-						context.getParser().fireHeader(firstCell.getStringCellValue(), secondCell.getStringCellValue());
+						context.getParser().fireHeader(firstCell.getStringCellValue().trim(), secondCell.getStringCellValue());
 						context.setState(new ParsingRecordsState(context, cellCnt));
 						break;
 					}

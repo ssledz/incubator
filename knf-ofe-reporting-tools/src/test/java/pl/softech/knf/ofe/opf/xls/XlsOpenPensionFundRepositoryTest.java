@@ -147,4 +147,48 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	}
 
+	/**
+	 * Test method for
+	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * .
+	 */
+	@Test
+	public void testFindAllForFile5() {
+
+		final List<OpenPensionFund> funds = findAll("dane0503_tcm75-4026.xls");
+
+		assertEquals(1, funds.stream().filter(e -> "Bankowy OFE".equals(e.getName())).count());
+
+		assertEquals(0, funds.stream().filter(e -> "Total".equals(e.getName())).count());
+
+		assertEquals(OptionalLong.of(390144l), funds.stream()//
+				.filter(e -> "Bankowy OFE".equals(e.getName()))//
+				.mapToLong(OpenPensionFund::getNumberOfMembers)//
+				.reduce((l, r) -> l)//
+		);
+
+	}
+	
+	/**
+	 * Test method for
+	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * .
+	 */
+	@Test
+	public void testFindAllForFile6() {
+
+		final List<OpenPensionFund> funds = findAll("dane0607_tcm75-3937.xls");
+
+		assertEquals(1, funds.stream().filter(e -> "Bankowy OFE".equals(e.getName())).count());
+
+		assertEquals(0, funds.stream().filter(e -> "Total".equals(e.getName())).count());
+
+		assertEquals(OptionalLong.of(445334l), funds.stream()//
+				.filter(e -> "Bankowy OFE".equals(e.getName()))//
+				.mapToLong(OpenPensionFund::getNumberOfMembers)//
+				.reduce((l, r) -> l)//
+		);
+
+	}
+
 }
