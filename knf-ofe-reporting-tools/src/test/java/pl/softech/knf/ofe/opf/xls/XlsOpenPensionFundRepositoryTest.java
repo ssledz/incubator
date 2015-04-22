@@ -49,7 +49,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
 		syso("Resource -> %s", resource.getFile());
 
-		repository = new XlsOpenPensionFundRepository(new File(resource.getFile()));
+		repository = new XlsOpenPensionFundRepository(new File(resource.getFile()), new XlsOpenPensionFundNameTranslator());
 
 		final List<OpenPensionFund> funds = repository.findAll();
 

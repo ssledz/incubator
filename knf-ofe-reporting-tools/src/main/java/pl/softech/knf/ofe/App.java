@@ -30,8 +30,8 @@ public class App {
 	public static void main(final String[] args) {
 		LOGGER.info("Starting...");
 
-		final OpenPensionFundDbImportTaskProvider opfFundImportprovider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
-		final OpenPensionFundDbExportTaskProvider opfFundExportprovider = INJECTOR.getInstance(OpenPensionFundDbExportTaskProvider.class);
+		final OpenPensionFundDbImportTaskProvider opfFundImportTaskProvider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
+		final OpenPensionFundDbExportTaskProvider opfFundExportTaskProvider = INJECTOR.getInstance(OpenPensionFundDbExportTaskProvider.class);
 		final TaskExecutor executor = new TaskExecutor();
 
 		final Option help = new Option("help", "print this message");
@@ -58,7 +58,7 @@ public class App {
 			}
 
 			if (line.hasOption("importOpfMembers")) {
-				importOpfMembersPayload = executor.addTask(opfFundImportprovider.get());
+				importOpfMembersPayload = executor.addTask(opfFundImportTaskProvider.get());
 			}
 
 			if (line.hasOption("exportOpfMembers")) {
@@ -67,7 +67,7 @@ public class App {
 					System.out.println("No fileName argument");
 					return;
 				}
-				final Task task = opfFundExportprovider.get();
+				final Task task = opfFundExportTaskProvider.get();
 				executor.addTask(task).addPayload(new File(fileName));
 			}
 

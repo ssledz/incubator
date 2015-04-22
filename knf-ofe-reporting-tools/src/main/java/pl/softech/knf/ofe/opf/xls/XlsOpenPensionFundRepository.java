@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.softech.knf.ofe.opf.OpenPensionFund;
+import pl.softech.knf.ofe.opf.OpenPensionFundNameTranslator;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.PoiException;
 import pl.softech.knf.ofe.opf.xls.export.XlsOpenPensionFundOutput;
@@ -49,106 +50,108 @@ import com.google.inject.assistedinject.Assisted;
  */
 public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(XlsOpenPensionFundRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XlsOpenPensionFundRepository.class);
 
-	private static final String MEMBERS_SHEET_NAME = "Members";
-	private static final String MEMBERS_SHEET_NAME2 = "I Members";
+    private static final String MEMBERS_SHEET_NAME = "Members";
+    private static final String MEMBERS_SHEET_NAME2 = "I Members";
 
-	private final File xlsFile;
+    private final File xlsFile;
+    private final OpenPensionFundNameTranslator nameTranslator;
 
-	@Inject
-	XlsOpenPensionFundRepository(final @Assisted File xlsFile) {
-		this.xlsFile = xlsFile;
-	}
+    @Inject
+    XlsOpenPensionFundRepository(final @Assisted File xlsFile, OpenPensionFundNameTranslator nameTranslator) {
+        this.xlsFile = xlsFile;
+        this.nameTranslator = nameTranslator;
+    }
 
-	private Sheet loadSheet(final String name) {
-		try (final InputStream inp = new FileInputStream(xlsFile)) {
-			final Workbook wb = WorkbookFactory.create(inp);
-			return wb.getSheet(name);
-		} catch (final Exception e) {
-			throw new PoiException(e);
-		}
-	}
+    private Sheet loadSheet(final String name) {
+        try (final InputStream inp = new FileInputStream(xlsFile)) {
+            final Workbook wb = WorkbookFactory.create(inp);
+            return wb.getSheet(name);
+        } catch (final Exception e) {
+            throw new PoiException(e);
+        }
+    }
 
-	private static String[] args(final String... args) {
-		return args;
-	}
-	
-	@Override
-	public List<OpenPensionFund> findAll() {
+    private static String[] args(final String... args) {
+        return args;
+    }
 
-		Sheet members = loadSheet(MEMBERS_SHEET_NAME);
+    @Override
+    public List<OpenPensionFund> findAll() {
 
-		if (members == null) {
-			members = loadSheet(MEMBERS_SHEET_NAME2);
-		}
+        Sheet members = loadSheet(MEMBERS_SHEET_NAME);
 
-		if (members == null) {
-			LOGGER.warn("There is no '{}' or '{}' sheet in file {}", args(MEMBERS_SHEET_NAME, MEMBERS_SHEET_NAME2, xlsFile.getAbsolutePath()));
-			return Collections.emptyList();
-		}
+        if (members == null) {
+            members = loadSheet(MEMBERS_SHEET_NAME2);
+        }
 
-		final XlsOpenPensionFundParser parser = new XlsOpenPensionFundParser();
+        if (members == null) {
+            LOGGER.warn("There is no '{}' or '{}' sheet in file {}", args(MEMBERS_SHEET_NAME, MEMBERS_SHEET_NAME2, xlsFile.getAbsolutePath()));
+            return Collections.emptyList();
+        }
 
-		final List<OpenPensionFund> funds = new LinkedList<>();
+        final XlsOpenPensionFundParser parser = new XlsOpenPensionFundParser();
 
-		parser.addParsingEventListener(new ParsingEventListenerAdapter() {
+        final List<OpenPensionFund> funds = new LinkedList<>();
 
-			private Date date;
+        parser.addParsingEventListener(new ParsingEventListenerAdapter() {
 
-			@Override
-			public void date(final Date date) {
-				this.date = date;
-			}
+            private Date date;
 
-			@Override
-			public void record(final String name, final long numberOfMembers) {
-				funds.add(new OpenPensionFund(name, numberOfMembers, date));
-			}
+            @Override
+            public void date(final Date date) {
+                this.date = date;
+            }
 
-		});
+            @Override
+            public void record(final String name, final long numberOfMembers) {
+                funds.add(new OpenPensionFund(nameTranslator.translate(name), numberOfMembers, date));
+            }
 
-		parser.parseSheet(members);
+        });
 
-		return funds;
-	}
+        parser.parseSheet(members);
 
-	private Workbook loadOrCreate(final File file) {
-		if (xlsFile.exists()) {
-			try (final InputStream inp = new FileInputStream(xlsFile)) {
-				return WorkbookFactory.create(inp);
-			} catch (final Exception e) {
-				throw new PoiException(e);
-			}
-		}
-		return new HSSFWorkbook();
-	}
+        return funds;
+    }
 
-	@Override
-	public void save(final List<OpenPensionFund> opfs) {
+    private Workbook loadOrCreate(final File file) {
+        if (xlsFile.exists()) {
+            try (final InputStream inp = new FileInputStream(xlsFile)) {
+                return WorkbookFactory.create(inp);
+            } catch (final Exception e) {
+                throw new PoiException(e);
+            }
+        }
+        return new HSSFWorkbook();
+    }
 
-		final Workbook wb = loadOrCreate(xlsFile);
+    @Override
+    public void save(final List<OpenPensionFund> opfs) {
 
-		try (FileOutputStream out = new FileOutputStream(xlsFile)) {
+        final Workbook wb = loadOrCreate(xlsFile);
 
-			String sheetName = MEMBERS_SHEET_NAME;
-			Sheet sheet = wb.getSheet(sheetName);
+        try (FileOutputStream out = new FileOutputStream(xlsFile)) {
 
-			int it = 1;
-			while (sheet != null) {
-				sheetName = String.format("%s%d", MEMBERS_SHEET_NAME, it++);
-				sheet = wb.getSheet(sheetName);
-			}
+            String sheetName = MEMBERS_SHEET_NAME;
+            Sheet sheet = wb.getSheet(sheetName);
 
-			sheet = wb.createSheet(sheetName);
+            int it = 1;
+            while (sheet != null) {
+                sheetName = String.format("%s%d", MEMBERS_SHEET_NAME, it++);
+                sheet = wb.getSheet(sheetName);
+            }
 
-			final XlsOpenPensionFundOutput output = new XlsOpenPensionFundOutput();
-			output.write(opfs, sheet);
-			wb.write(out);
-		} catch (final Exception e) {
-			LOGGER.error("", e);
-			new DataAccessException(e);
-		}
-	}
+            sheet = wb.createSheet(sheetName);
+
+            final XlsOpenPensionFundOutput output = new XlsOpenPensionFundOutput();
+            output.write(opfs, sheet);
+            wb.write(out);
+        } catch (final Exception e) {
+            LOGGER.error("", e);
+            new DataAccessException(e);
+        }
+    }
 
 }

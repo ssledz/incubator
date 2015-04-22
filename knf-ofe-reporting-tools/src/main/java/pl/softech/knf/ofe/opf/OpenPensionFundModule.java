@@ -18,6 +18,7 @@ package pl.softech.knf.ofe.opf;
 import pl.softech.knf.ofe.Jdbc;
 import pl.softech.knf.ofe.Xls;
 import pl.softech.knf.ofe.opf.jdbc.JdbcOpenPensionFundRepository;
+import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundNameTranslator;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
 
@@ -41,6 +42,8 @@ public class OpenPensionFundModule extends AbstractModule {
 		
 		bind(OpenPensionFundDbImportTask.class).toProvider(OpenPensionFundDbImportTaskProvider.class);
 		bind(OpenPensionFundDbExportTask.class).toProvider(OpenPensionFundDbExportTaskProvider.class);
+
+		bind(OpenPensionFundNameTranslator.class).to(XlsOpenPensionFundNameTranslator.class);
 	}
 
 }
