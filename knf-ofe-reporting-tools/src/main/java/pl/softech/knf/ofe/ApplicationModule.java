@@ -17,7 +17,7 @@ package pl.softech.knf.ofe;
 
 import javax.sql.DataSource;
 
-import pl.softech.knf.ofe.opf.OpenPensionFundModule;
+import pl.softech.knf.ofe.opf.members.MembersModule;
 import pl.softech.knf.ofe.shared.jdbc.JdbcTemplate;
 
 import com.google.inject.AbstractModule;
@@ -42,7 +42,7 @@ public class ApplicationModule extends AbstractModule {
 		
 		bind(JdbcTemplate.class).in(Singleton.class);
 
-		install(new OpenPensionFundModule());
+		install(new MembersModule());
 
 	}
 

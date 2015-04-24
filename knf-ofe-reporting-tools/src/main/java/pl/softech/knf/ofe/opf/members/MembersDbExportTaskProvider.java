@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf;
+package pl.softech.knf.ofe.opf.members;
 
 import javax.inject.Inject;
 
 import pl.softech.knf.ofe.Jdbc;
-import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
+import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
+import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepositoryFactory;
 
 import com.google.inject.Provider;
 
@@ -26,22 +27,22 @@ import com.google.inject.Provider;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class OpenPensionFundDbImportTaskProvider implements Provider<OpenPensionFundDbImportTask> {
+public class MembersDbExportTaskProvider implements Provider<MembersDbExportTask> {
 
 	private final OpenPensionFundRepository jdbcRepository;
-	private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
+	private final XlsMembersRepositoryFactory xlsRepositoryFactory;
 
 	@Inject
-	OpenPensionFundDbImportTaskProvider(@Jdbc final OpenPensionFundRepository jdbcRepository,
-			final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
+	MembersDbExportTaskProvider(@Jdbc final OpenPensionFundRepository jdbcRepository,
+								final XlsMembersRepositoryFactory xlsRepositoryFactory) {
 		super();
 		this.jdbcRepository = jdbcRepository;
 		this.xlsRepositoryFactory = xlsRepositoryFactory;
 	}
 
 	@Override
-	public OpenPensionFundDbImportTask get() {
-		return new OpenPensionFundDbImportTask(jdbcRepository, xlsRepositoryFactory);
+	public MembersDbExportTask get() {
+		return new MembersDbExportTask(jdbcRepository, xlsRepositoryFactory);
 	}
 
 }

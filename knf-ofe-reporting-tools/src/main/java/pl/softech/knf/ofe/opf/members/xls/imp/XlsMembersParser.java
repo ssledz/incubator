@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls.imp;
+package pl.softech.knf.ofe.opf.members.xls.imp;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,15 +29,20 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import pl.softech.knf.ofe.opf.DateParserUtil;
 import pl.softech.knf.ofe.shared.spec.Specification;
+import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringValue;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsOfFormulaType;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsOfNumericType;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsOfStringType;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class XlsOpenPensionFundParser {
+public class XlsMembersParser {
 
-	private final List<ParsingEventListener> listeners = new LinkedList<>();
+	private final List<MembersParsingEventListener> listeners = new LinkedList<>();
 
 	private void fireDate(final Date date) {
 		listeners.forEach(l -> l.date(date));
@@ -55,7 +60,7 @@ public class XlsOpenPensionFundParser {
 		listeners.forEach(l -> l.total(total));
 	}
 
-	public void addParsingEventListener(final ParsingEventListener l) {
+	public void addParsingEventListener(final MembersParsingEventListener l) {
 		listeners.add(l);
 	}
 
@@ -74,9 +79,9 @@ public class XlsOpenPensionFundParser {
 
 		private State state;
 
-		private final XlsOpenPensionFundParser parser;
+		private final XlsMembersParser parser;
 
-		StateContext(final XlsOpenPensionFundParser parser) {
+		StateContext(final XlsMembersParser parser) {
 			this.parser = parser;
 		}
 
@@ -89,7 +94,7 @@ public class XlsOpenPensionFundParser {
 			this.state = state;
 		}
 
-		XlsOpenPensionFundParser getParser() {
+		XlsMembersParser getParser() {
 			return parser;
 		}
 

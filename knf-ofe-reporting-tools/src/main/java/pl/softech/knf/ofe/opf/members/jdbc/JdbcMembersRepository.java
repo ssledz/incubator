@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.jdbc;
+package pl.softech.knf.ofe.opf.members.jdbc;
 
 import java.util.List;
 
@@ -28,18 +28,18 @@ import pl.softech.knf.ofe.shared.jdbc.JdbcTemplate;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class JdbcOpenPensionFundRepository implements OpenPensionFundRepository {
+public class JdbcMembersRepository implements OpenPensionFundRepository {
 
 	private final JdbcTemplate jdbcTemplate;
 
 	@Inject
-	public JdbcOpenPensionFundRepository(final DataSource dataSource) {
+	public JdbcMembersRepository(final DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	@Override
 	public List<OpenPensionFund> findAll() {
-		return jdbcTemplate.query("SELECT * FROM open_pension_fund", new OpenPensionFundRowMapper());
+		return jdbcTemplate.query("SELECT * FROM open_pension_fund", new MembersRowMapper());
 	}
 
 	@Override

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
+package pl.softech.knf.ofe.opf.members.xls;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 import pl.softech.knf.ofe.opf.OpenPensionFund;
 import pl.softech.knf.ofe.opf.OpenPensionFundNameTranslator;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
-import pl.softech.knf.ofe.opf.PoiException;
-import pl.softech.knf.ofe.opf.xls.export.XlsOpenPensionFundOutput;
-import pl.softech.knf.ofe.opf.xls.imp.ParsingEventListenerAdapter;
-import pl.softech.knf.ofe.opf.xls.imp.XlsOpenPensionFundParser;
+import pl.softech.knf.ofe.shared.xls.PoiException;
+import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersOutput;
+import pl.softech.knf.ofe.opf.members.xls.imp.MembersParsingEventListenerAdapter;
+import pl.softech.knf.ofe.opf.members.xls.imp.XlsMembersParser;
 import pl.softech.knf.ofe.shared.jdbc.DataAccessException;
 
 import com.google.inject.assistedinject.Assisted;
@@ -48,9 +48,9 @@ import com.google.inject.assistedinject.Assisted;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
+public class XlsMembersRepository implements OpenPensionFundRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XlsOpenPensionFundRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XlsMembersRepository.class);
 
     private static final String MEMBERS_SHEET_NAME = "Members";
     private static final String MEMBERS_SHEET_NAME2 = "I Members";
@@ -59,7 +59,7 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
     private final OpenPensionFundNameTranslator nameTranslator;
 
     @Inject
-    XlsOpenPensionFundRepository(final @Assisted File xlsFile, OpenPensionFundNameTranslator nameTranslator) {
+    XlsMembersRepository(final @Assisted File xlsFile, OpenPensionFundNameTranslator nameTranslator) {
         this.xlsFile = xlsFile;
         this.nameTranslator = nameTranslator;
     }
@@ -91,11 +91,11 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
             return Collections.emptyList();
         }
 
-        final XlsOpenPensionFundParser parser = new XlsOpenPensionFundParser();
+        final XlsMembersParser parser = new XlsMembersParser();
 
         final List<OpenPensionFund> funds = new LinkedList<>();
 
-        parser.addParsingEventListener(new ParsingEventListenerAdapter() {
+        parser.addParsingEventListener(new MembersParsingEventListenerAdapter() {
 
             private Date date;
 
@@ -106,7 +106,11 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 
             @Override
             public void record(final String name, final long numberOfMembers) {
-                funds.add(new OpenPensionFund(nameTranslator.translate(name), numberOfMembers, date));
+                funds.add(new OpenPensionFund(new OpenPensionFund.Builder()
+                                .withName(nameTranslator.translate(name))
+                                .withDate(date)
+                                .withNumberOfMembers(numberOfMembers))
+                );
             }
 
         });
@@ -145,7 +149,7 @@ public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 
             sheet = wb.createSheet(sheetName);
 
-            final XlsOpenPensionFundOutput output = new XlsOpenPensionFundOutput();
+            final XlsMembersOutput output = new XlsMembersOutput();
             output.write(opfs, sheet);
             wb.write(out);
         } catch (final Exception e) {

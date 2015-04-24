@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf;
+package pl.softech.knf.ofe.opf.members;
 
 import java.io.File;
 import java.util.List;
@@ -21,23 +21,25 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
-import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
+import pl.softech.knf.ofe.opf.OpenPensionFund;
+import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
+import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepository;
+import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepositoryFactory;
 import pl.softech.knf.ofe.shared.task.Task;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class OpenPensionFundDbImportTask implements Task {
+public class MembersDbImportTask implements Task {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(OpenPensionFundDbImportTask.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(MembersDbImportTask.class);
 
 	private final OpenPensionFundRepository jdbcRepository;
-	private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
+	private final XlsMembersRepositoryFactory xlsRepositoryFactory;
 
-	public OpenPensionFundDbImportTask(final OpenPensionFundRepository jdbcRepository,
-			final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
+	public MembersDbImportTask(final OpenPensionFundRepository jdbcRepository,
+							   final XlsMembersRepositoryFactory xlsRepositoryFactory) {
 		this.jdbcRepository = jdbcRepository;
 		this.xlsRepositoryFactory = xlsRepositoryFactory;
 	}
@@ -46,7 +48,7 @@ public class OpenPensionFundDbImportTask implements Task {
 	public void execute(final File payload) {
 		LOGGER.info("Importing...");
 		try {
-			final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
+			final XlsMembersRepository xlsRepository = xlsRepositoryFactory.create(payload);
 			final List<OpenPensionFund> funds = xlsRepository.findAll();
 			jdbcRepository.save(funds);
 			if (funds.isEmpty()) {

@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls.imp;
+package pl.softech.knf.ofe.shared.xls.spec;
+
+import org.apache.poi.ss.usermodel.Cell;
+
+import pl.softech.knf.ofe.shared.spec.Specification;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class XlsParsingException extends RuntimeException {
+public class CellIsOfFormulaType implements Specification<Cell> {
 
-	private static final long serialVersionUID = 1L;
-
-	public XlsParsingException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
-
-	public XlsParsingException(final Throwable cause) {
-		super(cause);
+	@Override
+	public boolean isSatisfiedBy(final Cell arg) {
+		return arg.getCellType() == Cell.CELL_TYPE_FORMULA;
 	}
 
 }

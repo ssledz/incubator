@@ -12,8 +12,8 @@ import org.apache.commons.cli.PosixParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.softech.knf.ofe.opf.OpenPensionFundDbExportTaskProvider;
-import pl.softech.knf.ofe.opf.OpenPensionFundDbImportTaskProvider;
+import pl.softech.knf.ofe.opf.members.MembersDbExportTaskProvider;
+import pl.softech.knf.ofe.opf.members.MembersDbImportTaskProvider;
 import pl.softech.knf.ofe.shared.task.Task;
 import pl.softech.knf.ofe.shared.task.TaskExecutor;
 import pl.softech.knf.ofe.shared.task.TaskExecutor.Payload;
@@ -30,8 +30,8 @@ public class App {
 	public static void main(final String[] args) {
 		LOGGER.info("Starting...");
 
-		final OpenPensionFundDbImportTaskProvider opfFundImportTaskProvider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
-		final OpenPensionFundDbExportTaskProvider opfFundExportTaskProvider = INJECTOR.getInstance(OpenPensionFundDbExportTaskProvider.class);
+		final MembersDbImportTaskProvider opfFundImportTaskProvider = INJECTOR.getInstance(MembersDbImportTaskProvider.class);
+		final MembersDbExportTaskProvider opfFundExportTaskProvider = INJECTOR.getInstance(MembersDbExportTaskProvider.class);
 		final TaskExecutor executor = new TaskExecutor();
 
 		final Option help = new Option("help", "print this message");

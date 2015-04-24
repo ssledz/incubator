@@ -15,46 +15,89 @@
  */
 package pl.softech.knf.ofe.opf;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import pl.softech.knf.ofe.opf.accounts.NumberOfAccount;
+
 import static java.util.Objects.requireNonNull;
 
 import java.util.Date;
 
 /**
  * <class>OpenPensionFund is fully immutable</class>
- * 
+ *
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
 public class OpenPensionFund {
 
-	private String name;
-	private long numberOfMembers;
-	private Date date;
+    private String name;
+    private long numberOfMembers;
+    private Date date;
 
-	public OpenPensionFund(final String name, final long numberOfMembers, final Date date) {
-		this.name = requireNonNull(name);
-		this.numberOfMembers = requireNonNull(numberOfMembers);
-		this.date = new Date(requireNonNull(date).getTime());
-	}
+    private NumberOfAccount numberOfAccount;
 
-	public String getName() {
-		return name;
-	}
+    public OpenPensionFund(Builder builder) {
+        this.name = requireNonNull(builder.name);
+        this.date = new Date(requireNonNull(builder.date).getTime());
 
-	public long getNumberOfMembers() {
-		return numberOfMembers;
-	}
+        this.numberOfMembers = builder.numberOfMembers;
+        this.numberOfAccount = builder.numberOfAccount;
 
-	public Date getDate() {
-		return new Date(date.getTime());
-	}
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("OpenPensionFund [name=").append(name).append(", numberOfMembers=").append(numberOfMembers).append(", date=")
-				.append(date).append("]");
-		return builder.toString();
-	}
+    public String getName() {
+        return name;
+    }
+
+    public long getNumberOfMembers() {
+        return numberOfMembers;
+    }
+
+    public Date getDate() {
+        return new Date(date.getTime());
+    }
+
+    public NumberOfAccount getNumberOfAccount() {
+        return numberOfAccount;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("name", name)
+                .append("numberOfMembers", numberOfMembers)
+                .append("date", date)
+                .toString();
+    }
+
+    public static final class Builder {
+
+        private String name;
+        private long numberOfMembers;
+        private Date date;
+
+        private NumberOfAccount numberOfAccount;
+
+
+        public Builder withNumberOfAccount(long total, long inactive) {
+            this.numberOfAccount = new NumberOfAccount(total, inactive);
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withNumberOfMembers(long numberOfMembers) {
+            this.numberOfMembers = numberOfMembers;
+            return this;
+        }
+
+        public Builder withDate(Date date) {
+            this.date = date;
+            return this;
+        }
+    }
 
 }

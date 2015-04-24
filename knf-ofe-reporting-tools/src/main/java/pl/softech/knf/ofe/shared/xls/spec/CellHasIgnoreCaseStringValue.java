@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.jdbc;
+package pl.softech.knf.ofe.shared.xls.spec;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.apache.poi.ss.usermodel.Cell;
 
-import pl.softech.knf.ofe.opf.OpenPensionFund;
-import pl.softech.knf.ofe.shared.jdbc.RowMapper;
+import pl.softech.knf.ofe.shared.spec.Specification;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class OpenPensionFundRowMapper implements RowMapper<OpenPensionFund> {
+public class CellHasIgnoreCaseStringValue implements Specification<Cell> {
 
-	private static final String OPF_DATE_COLUMN_NAME = "opf_date";
-	private static final String OPF_NUMBER_OF_MEMBERS_COLUMN_NAME = "opf_number_of_members";
-	private static final String OPF_NAME_COLUMN_NAME = "opf_name";
+	private final String value;
+
+	public CellHasIgnoreCaseStringValue(final String value) {
+		this.value = value;
+	}
 
 	@Override
-	public OpenPensionFund mapRow(final ResultSet rs) throws SQLException {
-		return new OpenPensionFund(rs.getString(OPF_NAME_COLUMN_NAME), rs.getLong(OPF_NUMBER_OF_MEMBERS_COLUMN_NAME),
-				rs.getDate(OPF_DATE_COLUMN_NAME));
+	public boolean isSatisfiedBy(final Cell arg) {
+
+		if (arg.getCellType() != Cell.CELL_TYPE_STRING) {
+			return false;
+		}
+
+		return value.equalsIgnoreCase(arg.getStringCellValue().trim());
+
 	}
 
 }

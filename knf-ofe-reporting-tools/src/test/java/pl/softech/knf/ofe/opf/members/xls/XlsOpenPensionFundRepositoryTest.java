@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
+package pl.softech.knf.ofe.opf.members.xls;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pl.softech.knf.ofe.opf.OpenPensionFund;
+import pl.softech.knf.ofe.opf.SimpleOpenPensionFundNameTranslator;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -33,7 +34,7 @@ import pl.softech.knf.ofe.opf.OpenPensionFund;
  */
 public class XlsOpenPensionFundRepositoryTest {
 
-	private XlsOpenPensionFundRepository repository;
+	private XlsMembersRepository repository;
 
 	private void syso(final String template, final Object... args) {
 		System.out.println(String.format(template, args));
@@ -49,7 +50,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
 		syso("Resource -> %s", resource.getFile());
 
-		repository = new XlsOpenPensionFundRepository(new File(resource.getFile()), new XlsOpenPensionFundNameTranslator());
+		repository = new XlsMembersRepository(new File(resource.getFile()), new SimpleOpenPensionFundNameTranslator());
 
 		final List<OpenPensionFund> funds = repository.findAll();
 
@@ -61,7 +62,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	/**
 	 * Test method for
-	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * {@link XlsMembersRepository#findAll()}
 	 * .
 	 */
 	@Test
@@ -83,7 +84,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	/**
 	 * Test method for
-	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * {@link XlsMembersRepository#findAll()}
 	 * .
 	 */
 	@Test
@@ -105,7 +106,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	/**
 	 * Test method for
-	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * {@link XlsMembersRepository#findAll()}
 	 * .
 	 */
 	@Test
@@ -127,7 +128,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	/**
 	 * Test method for
-	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * {@link XlsMembersRepository#findAll()}
 	 * .
 	 */
 	@Test
@@ -149,7 +150,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
 	/**
 	 * Test method for
-	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * {@link XlsMembersRepository#findAll()}
 	 * .
 	 */
 	@Test
@@ -171,7 +172,7 @@ public class XlsOpenPensionFundRepositoryTest {
 	
 	/**
 	 * Test method for
-	 * {@link pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository#findAll()}
+	 * {@link XlsMembersRepository#findAll()}
 	 * .
 	 */
 	@Test

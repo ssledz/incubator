@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls.imp;
+package pl.softech.knf.ofe.opf;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,12 +22,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import pl.softech.knf.ofe.shared.DateParser;
+import pl.softech.knf.ofe.shared.xls.XlsParsingException;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-class DateParserUtil {
+public class DateParserUtil {
 
 	private enum Parser implements DateParser {
 

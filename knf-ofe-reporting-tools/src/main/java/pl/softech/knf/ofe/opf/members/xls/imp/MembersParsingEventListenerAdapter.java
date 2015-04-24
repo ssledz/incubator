@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls.imp;
+package pl.softech.knf.ofe.opf.members.xls.imp;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ import java.util.Date;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class ParsingEventListenerAdapter implements ParsingEventListener {
+public class MembersParsingEventListenerAdapter implements MembersParsingEventListener {
 
 	@Override
 	public void date(final Date date) {
