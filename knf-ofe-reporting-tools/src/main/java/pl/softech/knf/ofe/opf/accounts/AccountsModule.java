@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.members;
+package pl.softech.knf.ofe.opf.accounts;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import pl.softech.knf.ofe.Jdbc;
 import pl.softech.knf.ofe.Xls;
+import pl.softech.knf.ofe.opf.OpenPensionFundNameTranslator;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
+import pl.softech.knf.ofe.opf.SimpleOpenPensionFundNameTranslator;
+import pl.softech.knf.ofe.opf.members.MembersDbExportTask;
+import pl.softech.knf.ofe.opf.members.MembersDbExportTaskProvider;
+import pl.softech.knf.ofe.opf.members.MembersDbImportTask;
+import pl.softech.knf.ofe.opf.members.MembersDbImportTaskProvider;
 import pl.softech.knf.ofe.opf.members.jdbc.JdbcMembersRepository;
 import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepository;
 import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepositoryFactory;
@@ -29,19 +35,12 @@ import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepositoryFactory;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class MembersModule extends AbstractModule {
+public class AccountsModule extends AbstractModule {
 
-    @Override
-    protected void configure() {
+	@Override
+	protected void configure() {
 
-        bind(OpenPensionFundRepository.class).annotatedWith(Jdbc.class).to(JdbcMembersRepository.class).in(Singleton.class);
 
-        install(new FactoryModuleBuilder().implement(OpenPensionFundRepository.class, Xls.class, XlsMembersRepository.class).build(
-                XlsMembersRepositoryFactory.class));
-
-        bind(MembersDbImportTask.class).toProvider(MembersDbImportTaskProvider.class);
-        bind(MembersDbExportTask.class).toProvider(MembersDbExportTaskProvider.class);
-
-    }
+	}
 
 }

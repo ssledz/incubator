@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf;
+package pl.softech.knf.ofe.shared.xls.parser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

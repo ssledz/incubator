@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import pl.softech.knf.ofe.opf.OpenPensionFund;
 import pl.softech.knf.ofe.opf.SimpleOpenPensionFundNameTranslator;
+import static pl.softech.knf.ofe.opf.TestUtils.*;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -35,10 +36,6 @@ import pl.softech.knf.ofe.opf.SimpleOpenPensionFundNameTranslator;
 public class XlsOpenPensionFundRepositoryTest {
 
 	private XlsMembersRepository repository;
-
-	private void syso(final String template, final Object... args) {
-		System.out.println(String.format(template, args));
-	}
 
 	@Before
 	public void setUp() throws Exception {

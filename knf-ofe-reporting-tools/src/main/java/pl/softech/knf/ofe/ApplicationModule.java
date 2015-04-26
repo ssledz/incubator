@@ -17,6 +17,8 @@ package pl.softech.knf.ofe;
 
 import javax.sql.DataSource;
 
+import pl.softech.knf.ofe.opf.OpenPensionFundNameTranslator;
+import pl.softech.knf.ofe.opf.SimpleOpenPensionFundNameTranslator;
 import pl.softech.knf.ofe.opf.members.MembersModule;
 import pl.softech.knf.ofe.shared.jdbc.JdbcTemplate;
 
@@ -31,29 +33,31 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  */
 public class ApplicationModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
+    @Override
+    protected void configure() {
 
-		bindConstant()
-				.annotatedWith(JdbcConnectionUrl.class)
-				.to("jdbc:mysql://localhost:3306/knf_ofe?createDatabaseIfNotExist=true&sessionVariables=sql_mode=NO_BACKSLASH_ESCAPES&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=utf8&connectionCollation=utf8_unicode_ci");
-		bindConstant().annotatedWith(JdbcUser.class).to("test");
-		bindConstant().annotatedWith(JdbcPassword.class).to("test");
-		
-		bind(JdbcTemplate.class).in(Singleton.class);
+        bindConstant()
+                .annotatedWith(JdbcConnectionUrl.class)
+                .to("jdbc:mysql://localhost:3306/knf_ofe?createDatabaseIfNotExist=true&sessionVariables=sql_mode=NO_BACKSLASH_ESCAPES&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=utf8&connectionCollation=utf8_unicode_ci");
+        bindConstant().annotatedWith(JdbcUser.class).to("test");
+        bindConstant().annotatedWith(JdbcPassword.class).to("test");
 
-		install(new MembersModule());
+        bind(JdbcTemplate.class).in(Singleton.class);
 
-	}
+        bind(OpenPensionFundNameTranslator.class).to(SimpleOpenPensionFundNameTranslator.class);
 
-	@Provides
-	public DataSource provideDataSource(@JdbcUser final String user, @JdbcPassword final String password,
-			@JdbcConnectionUrl final String url) {
-		final ComboPooledDataSource cpds = new ComboPooledDataSource();
-		cpds.setJdbcUrl(url);
-		cpds.setUser(user);
-		cpds.setPassword(password);
-		return cpds;
-	}
+        install(new MembersModule());
+
+    }
+
+    @Provides
+    public DataSource provideDataSource(@JdbcUser final String user, @JdbcPassword final String password,
+                                        @JdbcConnectionUrl final String url) {
+        final ComboPooledDataSource cpds = new ComboPooledDataSource();
+        cpds.setJdbcUrl(url);
+        cpds.setUser(user);
+        cpds.setPassword(password);
+        return cpds;
+    }
 
 }

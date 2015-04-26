@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import pl.softech.knf.ofe.opf.DateParserUtil;
+import pl.softech.knf.ofe.shared.xls.parser.DateParserUtil;
 import pl.softech.knf.ofe.shared.spec.Specification;
 import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringValue;
 import pl.softech.knf.ofe.shared.xls.spec.CellIsOfFormulaType;
