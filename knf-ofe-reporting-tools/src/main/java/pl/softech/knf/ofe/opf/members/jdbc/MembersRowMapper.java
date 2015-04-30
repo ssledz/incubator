@@ -15,31 +15,26 @@
  */
 package pl.softech.knf.ofe.opf.members.jdbc;
 
+import pl.softech.knf.ofe.opf.OpenPensionFund;
+import pl.softech.knf.ofe.opf.jdbc.OpenPensionFundRowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static java.util.Objects.*;
-
-import pl.softech.knf.ofe.opf.OpenPensionFund;
-import pl.softech.knf.ofe.shared.jdbc.RowMapper;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class MembersRowMapper implements RowMapper<OpenPensionFund> {
+public class MembersRowMapper implements OpenPensionFundRowMapper {
 
-    private static final String OPF_DATE_COLUMN_NAME = "opf_date";
     private static final String OPF_NUMBER_OF_MEMBERS_COLUMN_NAME = "opf_number_of_members";
-    private static final String OPF_NAME_COLUMN_NAME = "opf_name";
 
     @Override
-    public OpenPensionFund mapRow(final ResultSet rs) throws SQLException {
-        return new OpenPensionFund(new OpenPensionFund.Builder()
-                .withName(rs.getString(OPF_NAME_COLUMN_NAME))
+    public void mapRow(ResultSet rs, OpenPensionFund.Builder builder) throws SQLException {
+        builder.withName(rs.getString(OPF_NAME_COLUMN_NAME))
                 .withDate(rs.getDate(OPF_DATE_COLUMN_NAME))
-                .withNumberOfMembers(requireNonNull(rs.getLong(OPF_NUMBER_OF_MEMBERS_COLUMN_NAME)))
-        );
+                .withNumberOfMembers(requireNonNull(rs.getLong(OPF_NUMBER_OF_MEMBERS_COLUMN_NAME)));
     }
-
 }

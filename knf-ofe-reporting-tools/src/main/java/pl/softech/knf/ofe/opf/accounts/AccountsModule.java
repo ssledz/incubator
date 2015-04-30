@@ -18,7 +18,11 @@ package pl.softech.knf.ofe.opf.accounts;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import pl.softech.knf.ofe.opf.DataProvider;
+import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsDatabasePopulator;
+import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsRowMapper;
 import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
+import pl.softech.knf.ofe.opf.jdbc.DatabasePopulator;
+import pl.softech.knf.ofe.opf.jdbc.OpenPensionFundRowMapper;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -30,6 +34,12 @@ public class AccountsModule extends AbstractModule {
     protected void configure() {
         Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
         dataProviderBinder.addBinding().to(AccountsProvider.class);
+
+        Multibinder<DatabasePopulator> databasePopulatorBinder = Multibinder.newSetBinder(binder(), DatabasePopulator.class);
+        databasePopulatorBinder.addBinding().to(AccountsDatabasePopulator.class);
+
+        Multibinder<OpenPensionFundRowMapper> rowMapperBinder = Multibinder.newSetBinder(binder(), OpenPensionFundRowMapper.class);
+        rowMapperBinder.addBinding().to(AccountsRowMapper.class);
     }
 
 }

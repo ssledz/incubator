@@ -16,17 +16,13 @@
 package pl.softech.knf.ofe.opf.members;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
-import pl.softech.knf.ofe.Jdbc;
-import pl.softech.knf.ofe.Xls;
 import pl.softech.knf.ofe.opf.DataProvider;
-import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
-import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
-import pl.softech.knf.ofe.opf.members.jdbc.JdbcMembersRepository;
-import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepository;
-import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepositoryFactory;
+import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsRowMapper;
+import pl.softech.knf.ofe.opf.jdbc.DatabasePopulator;
+import pl.softech.knf.ofe.opf.jdbc.OpenPensionFundRowMapper;
+import pl.softech.knf.ofe.opf.members.jdbc.MembersDatabasePopulator;
+import pl.softech.knf.ofe.opf.members.jdbc.MembersRowMapper;
 import pl.softech.knf.ofe.opf.members.xls.imp.MembersProvider;
 
 /**
@@ -37,18 +33,14 @@ public class MembersModule extends AbstractModule {
 
     @Override
     protected void configure() {
-
-        bind(OpenPensionFundRepository.class).annotatedWith(Jdbc.class).to(JdbcMembersRepository.class).in(Singleton.class);
-
-        install(new FactoryModuleBuilder().implement(OpenPensionFundRepository.class, Xls.class, XlsMembersRepository.class).build(
-                XlsMembersRepositoryFactory.class));
-
-        bind(MembersDbImportTask.class).toProvider(MembersDbImportTaskProvider.class);
-        bind(MembersDbExportTask.class).toProvider(MembersDbExportTaskProvider.class);
-
         Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
         dataProviderBinder.addBinding().to(MembersProvider.class);
 
+        Multibinder<DatabasePopulator> databasePopulatorBinder = Multibinder.newSetBinder(binder(), DatabasePopulator.class);
+        databasePopulatorBinder.addBinding().to(MembersDatabasePopulator.class);
+
+        Multibinder<OpenPensionFundRowMapper> rowMapperBinder = Multibinder.newSetBinder(binder(), OpenPensionFundRowMapper.class);
+        rowMapperBinder.addBinding().to(MembersRowMapper.class);
     }
 
 }
