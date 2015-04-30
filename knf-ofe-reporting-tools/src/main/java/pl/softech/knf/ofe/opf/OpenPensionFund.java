@@ -15,12 +15,14 @@
  */
 package pl.softech.knf.ofe.opf;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.softech.knf.ofe.opf.accounts.NumberOfAccount;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Date;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * <class>OpenPensionFund is fully immutable</class>
@@ -30,23 +32,27 @@ import java.util.Date;
  */
 public class OpenPensionFund {
 
-    private String name;
+    private Key key;
+
     private long numberOfMembers;
-    private Date date;
 
     private NumberOfAccount numberOfAccount;
 
     public OpenPensionFund(Builder builder) {
-        this.name = requireNonNull(builder.name);
-        this.date = new Date(requireNonNull(builder.date).getTime());
+
+        this.key = new Key(builder.name, builder.date);
 
         this.numberOfMembers = builder.numberOfMembers;
         this.numberOfAccount = builder.numberOfAccount;
 
     }
 
+    public Key getKey() {
+        return key;
+    }
+
     public String getName() {
-        return name;
+        return key.name;
     }
 
     public long getNumberOfMembers() {
@@ -54,7 +60,7 @@ public class OpenPensionFund {
     }
 
     public Date getDate() {
-        return new Date(date.getTime());
+        return new Date(key.date.getTime());
     }
 
     public NumberOfAccount getNumberOfAccount() {
@@ -64,10 +70,46 @@ public class OpenPensionFund {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("name", name)
+                .append("name", key.name)
+                .append("date", key.date)
                 .append("numberOfMembers", numberOfMembers)
-                .append("date", date)
+                .append(numberOfAccount)
                 .toString();
+    }
+
+    public static final class Key {
+
+        private final String name;
+        private final Date date;
+
+        public Key(String name, Date date) {
+            this.name = requireNonNull(name);
+            this.date = new Date(requireNonNull(date).getTime());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+
+            if (!(o instanceof Key)) {
+                return false;
+            }
+
+            Key key = (Key) o;
+
+            return new EqualsBuilder()
+                    .append(name, key.name)
+                    .append(date, key.date)
+                    .isEquals();
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(17, 37)
+                    .append(name)
+                    .append(date)
+                    .toHashCode();
+        }
     }
 
     public static final class Builder {
@@ -78,9 +120,14 @@ public class OpenPensionFund {
 
         private NumberOfAccount numberOfAccount;
 
-
         public Builder withNumberOfAccount(long total, long inactive) {
             this.numberOfAccount = new NumberOfAccount(total, inactive);
+            return this;
+        }
+
+        public Builder withKey(Key key) {
+            this.name = key.name;
+            this.date = key.date;
             return this;
         }
 

@@ -15,7 +15,7 @@ import java.util.Iterator;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> {
+class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> {
 
     @Override
     protected State createStartingState(final StateContext context) {

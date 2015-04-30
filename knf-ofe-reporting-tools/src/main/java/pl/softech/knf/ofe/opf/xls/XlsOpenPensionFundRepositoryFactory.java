@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.accounts;
+package pl.softech.knf.ofe.opf.xls;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.multibindings.Multibinder;
-import pl.softech.knf.ofe.opf.DataProvider;
-import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
+import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepository;
+
+import java.io.File;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class AccountsModule extends AbstractModule {
+public interface XlsOpenPensionFundRepositoryFactory {
 
-    @Override
-    protected void configure() {
-        Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
-        dataProviderBinder.addBinding().to(AccountsProvider.class);
-    }
-
+	XlsOpenPensionFundRepository create(File xlsFile);
+	
 }
