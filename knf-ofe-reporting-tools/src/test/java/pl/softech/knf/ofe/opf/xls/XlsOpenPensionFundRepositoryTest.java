@@ -10,6 +10,7 @@ import org.junit.Test;
 import pl.softech.knf.ofe.Xls;
 import pl.softech.knf.ofe.opf.*;
 import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
+import pl.softech.knf.ofe.opf.members.xls.imp.MembersProvider;
 
 import java.io.File;
 import java.util.List;
@@ -67,6 +68,7 @@ public class XlsOpenPensionFundRepositoryTest {
         @Override
         protected void configure() {
             bind(OpenPensionFundNameTranslator.class).to(SimpleOpenPensionFundNameTranslator.class);
+            bind(OpenPensionFundDateAdjuster.class).to(SimpleOpenPensionFundDateAdjuster.class);
 
             install(new FactoryModuleBuilder()
                             .implement(OpenPensionFundRepository.class, Xls.class, XlsOpenPensionFundRepository.class)
@@ -74,6 +76,7 @@ public class XlsOpenPensionFundRepositoryTest {
             );
             Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
             dataProviderBinder.addBinding().to(AccountsProvider.class);
+            dataProviderBinder.addBinding().to(MembersProvider.class);
         }
     }
 }

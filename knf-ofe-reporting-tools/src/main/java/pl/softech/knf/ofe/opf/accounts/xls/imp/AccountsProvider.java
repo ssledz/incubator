@@ -21,10 +21,12 @@ public class AccountsProvider implements DataProvider {
     private static final String ACCOUNTS_SHEET_NAME = "II Accounts";
 
     private final OpenPensionFundNameTranslator nameTranslator;
+    private final OpenPensionFundDateAdjuster dateAdjuster;
 
     @Inject
-    public AccountsProvider(OpenPensionFundNameTranslator nameTranslator) {
+    public AccountsProvider(OpenPensionFundNameTranslator nameTranslator, OpenPensionFundDateAdjuster dateAdjuster) {
         this.nameTranslator = nameTranslator;
+        this.dateAdjuster = dateAdjuster;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class AccountsProvider implements DataProvider {
 
             @Override
             public void date(Date date) {
-                this.date = date;
+                this.date = dateAdjuster.adjust(date);
             }
 
             @Override

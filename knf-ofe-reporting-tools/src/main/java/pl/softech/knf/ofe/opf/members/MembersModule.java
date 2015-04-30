@@ -18,12 +18,16 @@ package pl.softech.knf.ofe.opf.members;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.multibindings.Multibinder;
 import pl.softech.knf.ofe.Jdbc;
 import pl.softech.knf.ofe.Xls;
+import pl.softech.knf.ofe.opf.DataProvider;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
+import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
 import pl.softech.knf.ofe.opf.members.jdbc.JdbcMembersRepository;
 import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepository;
 import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepositoryFactory;
+import pl.softech.knf.ofe.opf.members.xls.imp.MembersProvider;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -41,6 +45,9 @@ public class MembersModule extends AbstractModule {
 
         bind(MembersDbImportTask.class).toProvider(MembersDbImportTaskProvider.class);
         bind(MembersDbExportTask.class).toProvider(MembersDbExportTaskProvider.class);
+
+        Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
+        dataProviderBinder.addBinding().to(MembersProvider.class);
 
     }
 

@@ -18,6 +18,7 @@ public class OpenPensionFundModule extends AbstractModule {
     protected void configure() {
 
         bind(OpenPensionFundNameTranslator.class).to(SimpleOpenPensionFundNameTranslator.class);
+        bind(OpenPensionFundDateAdjuster.class).to(SimpleOpenPensionFundDateAdjuster.class);
 
         install(new FactoryModuleBuilder().implement(OpenPensionFundRepository.class, Xls.class, XlsOpenPensionFundRepository.class).build(
                 XlsOpenPensionFundRepositoryFactory.class));
