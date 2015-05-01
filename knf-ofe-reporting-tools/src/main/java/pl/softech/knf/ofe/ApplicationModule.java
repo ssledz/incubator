@@ -46,6 +46,7 @@ public class ApplicationModule extends AbstractModule {
 
         bind(JdbcTemplate.class).in(Singleton.class);
 
+        install(new LoggerModule());
         install(new OpenPensionFundModule());
 
     }

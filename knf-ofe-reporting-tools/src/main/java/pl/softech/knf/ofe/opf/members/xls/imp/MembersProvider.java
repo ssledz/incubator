@@ -19,8 +19,6 @@ public class MembersProvider implements DataProvider {
     private static final String MEMBERS_SHEET_NAME = "Members";
     private static final String MEMBERS_SHEET_NAME2 = "I Members";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MembersProvider.class);
-
     private final OpenPensionFundNameTranslator nameTranslator;
     private final OpenPensionFundDateAdjuster dateAdjuster;
 

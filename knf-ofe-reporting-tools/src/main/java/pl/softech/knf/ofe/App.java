@@ -12,6 +12,7 @@ import org.apache.commons.cli.PosixParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.softech.knf.ofe.opf.OpenPensionFundDbImportTask;
 import pl.softech.knf.ofe.opf.OpenPensionFundDbImportTaskProvider;
 import pl.softech.knf.ofe.opf.members.MembersDbExportTaskProvider;
 import pl.softech.knf.ofe.opf.members.MembersDbImportTaskProvider;
@@ -28,10 +29,14 @@ public class App {
 
 	private static final Injector INJECTOR = Guice.createInjector(new ApplicationModule());
 
+	private static OpenPensionFundDbImportTask newDbImportTask() {
+		return INJECTOR.getInstance(OpenPensionFundDbImportTask.class);
+	}
+
 	public static void main(final String[] args) {
 		LOGGER.info("Starting...");
 
-		final OpenPensionFundDbImportTaskProvider opfFundImportTaskProvider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
+//		final OpenPensionFundDbImportTaskProvider opfFundImportTaskProvider = INJECTOR.getInstance(OpenPensionFundDbImportTaskProvider.class);
 //		final MembersDbExportTaskProvider opfFundExportTaskProvider = INJECTOR.getInstance(MembersDbExportTaskProvider.class);
 		final TaskExecutor executor = new TaskExecutor();
 
@@ -59,7 +64,10 @@ public class App {
 			}
 
 			if (line.hasOption("importOpfMembers")) {
-				importOpfMembersPayload = executor.addTask(opfFundImportTaskProvider.get());
+
+
+				importOpfMembersPayload = executor.addTask(newDbImportTask());
+//				importOpfMembersPayload = executor.addTask(opfFundImportTaskProvider.get());
 			}
 
 			if (line.hasOption("exportOpfMembers")) {

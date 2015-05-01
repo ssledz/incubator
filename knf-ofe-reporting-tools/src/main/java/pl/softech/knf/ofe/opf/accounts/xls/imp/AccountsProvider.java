@@ -6,10 +6,7 @@ import pl.softech.knf.ofe.opf.*;
 import pl.softech.knf.ofe.opf.accounts.NumberOfAccount;
 
 import javax.inject.Inject;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +15,8 @@ import java.util.stream.Collectors;
  */
 public class AccountsProvider implements DataProvider {
 
-    private static final String ACCOUNTS_SHEET_NAME = "II Accounts";
+    private static final String ACCOUNTS_SHEET_NAME = "Accounts";
+    private static final String ACCOUNTS_SHEET_NAME2 = "II Accounts";
 
     private final OpenPensionFundNameTranslator nameTranslator;
     private final OpenPensionFundDateAdjuster dateAdjuster;
@@ -57,6 +55,14 @@ public class AccountsProvider implements DataProvider {
         });
 
         Sheet sheet = wb.getSheet(ACCOUNTS_SHEET_NAME);
+
+        if (sheet == null) {
+            sheet = wb.getSheet(ACCOUNTS_SHEET_NAME2);
+        }
+
+        if (sheet == null) {
+            return new ArrayList<DataPopulator>().iterator();
+        }
 
         parser.parseSheet(sheet);
 
