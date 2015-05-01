@@ -15,9 +15,12 @@
  */
 package pl.softech.knf.ofe.opf;
 
+import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
 import pl.softech.knf.ofe.InjectLogger;
 import pl.softech.knf.ofe.Jdbc;
+import pl.softech.knf.ofe.opf.event.DatabasePopulatorErrorEvent;
+import pl.softech.knf.ofe.opf.event.LackOfDataEvent;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
 import pl.softech.knf.ofe.shared.task.Task;
@@ -38,6 +41,10 @@ public class OpenPensionFundDbImportTask implements Task {
     private final OpenPensionFundRepository jdbcRepository;
     private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
 
+    private boolean importFailed = false;
+
+    private File currentPayload;
+
     @Inject
     public OpenPensionFundDbImportTask(@Jdbc final OpenPensionFundRepository jdbcRepository,
                                        final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
@@ -45,20 +52,37 @@ public class OpenPensionFundDbImportTask implements Task {
         this.xlsRepositoryFactory = xlsRepositoryFactory;
     }
 
+    @Subscribe
+    public void listen(DatabasePopulatorErrorEvent event) {
+        event.log(logger);
+        importFailed = true;
+    }
+
+    @Subscribe
+    public void listen(LackOfDataEvent event) {
+        event.log(logger, currentPayload);
+    }
+
     @Override
     public void execute(final File payload) {
-        logger.info("Importing...");
+        logger.info("Importing {} ...", payload.getAbsoluteFile());
+        currentPayload = payload;
         try {
             final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
             final List<OpenPensionFund> funds = xlsRepository.findAll();
             jdbcRepository.save(funds);
             if (funds.isEmpty()) {
                 logger.warn("No open pension funds found for {}", payload.getAbsoluteFile());
-            } else {
+            } else if (!importFailed) {
                 logger.info("Importing finished successfully for {}", payload.getAbsoluteFile());
             }
         } catch (final Exception e) {
-            logger.error(String.format("Import was failed for %s", payload.getAbsoluteFile()), e);
+            importFailed = true;
+            logger.error("", e);
+        }
+
+        if (importFailed) {
+            logger.error("Import was failed for {}", payload.getAbsoluteFile());
         }
 
     }

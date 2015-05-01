@@ -18,7 +18,7 @@ package pl.softech.knf.ofe.opf;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import pl.softech.knf.ofe.opf.accounts.NumberOfAccount;
+import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
 
 import java.util.Date;
 
@@ -36,14 +36,14 @@ public class OpenPensionFund {
 
     private long numberOfMembers;
 
-    private NumberOfAccount numberOfAccount;
+    private NumberOfAccounts numberOfAccounts;
 
     public OpenPensionFund(Builder builder) {
 
         this.key = new Key(builder.name, builder.date);
 
         this.numberOfMembers = builder.numberOfMembers;
-        this.numberOfAccount = builder.numberOfAccount;
+        this.numberOfAccounts = builder.numberOfAccounts;
 
     }
 
@@ -63,8 +63,8 @@ public class OpenPensionFund {
         return new Date(key.date.getTime());
     }
 
-    public NumberOfAccount getNumberOfAccount() {
-        return numberOfAccount;
+    public NumberOfAccounts getNumberOfAccounts() {
+        return numberOfAccounts;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class OpenPensionFund {
                 .append("name", key.name)
                 .append("date", key.date)
                 .append("numberOfMembers", numberOfMembers)
-                .append(numberOfAccount)
+                .append(numberOfAccounts)
                 .toString();
     }
 
@@ -118,10 +118,10 @@ public class OpenPensionFund {
         private long numberOfMembers;
         private Date date;
 
-        private NumberOfAccount numberOfAccount;
+        private NumberOfAccounts numberOfAccounts;
 
         public Builder withNumberOfAccount(long total, long inactive) {
-            this.numberOfAccount = new NumberOfAccount(total, inactive);
+            this.numberOfAccounts = new NumberOfAccounts(total, inactive);
             return this;
         }
 

@@ -3,11 +3,11 @@ package pl.softech.knf.ofe.opf.accounts.xls.imp;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import pl.softech.knf.ofe.shared.spec.Specification;
-import pl.softech.knf.ofe.shared.xls.parser.AbstractState;
-import pl.softech.knf.ofe.shared.xls.parser.AbstractXlsParser;
-import pl.softech.knf.ofe.shared.xls.parser.State;
-import pl.softech.knf.ofe.shared.xls.parser.StateContext;
-import pl.softech.knf.ofe.shared.xls.spec.*;
+import pl.softech.knf.ofe.shared.xls.parser.*;
+import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringValue;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsEmpty;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsOfNumericType;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsOfStringType;
 
 import java.util.Iterator;
 
@@ -81,6 +81,10 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
                     thirdColumnSpecification.isSatisfiedBy(inactive)) {
                 fireHeader(empty.getStringCellValue(), total.getStringCellValue(), inactive.getStringCellValue());
                 context.setState(new ParsingThirdRowOfHeaderState(context, startCellIndex));
+            } else {
+                //Maybe another format of data try header with members account
+                context.setState(new ParsingSecondRowOfHeaderWithMemberAccountsState(context,startCellIndex));
+                context.parse(row);
             }
 
         }
@@ -194,7 +198,80 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
             }
 
             fireTotal(getLongValue(total), getLongValue(inactive));
+            context.setState(new EndingState());
+        }
+    }
+
+
+    private class ParsingSecondRowOfHeaderWithMemberAccountsState extends AbstractState {
+
+        private final Specification<Cell> firstColumnSpecification = new CellIsEmpty();
+        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("total");
+        private final Specification<Cell> thirdColumnSpecification = new CellHasIgnoreCaseStringValue("Member accounts");
+        private final Specification<Cell> fourthColumnSpecification = new CellHasIgnoreCaseStringValue("including \"inactive accounts\"");
+        private final Specification<Cell> fifthColumnSpecification = new CellHasIgnoreCaseStringValue("The share of inactive accounts in " +
+                "the total number of member accounts (in %)");
+
+        private final int startCellIndex;
+
+        protected ParsingSecondRowOfHeaderWithMemberAccountsState(StateContext context, int startCellIndex) {
+            super(context);
+            this.startCellIndex = startCellIndex;
+        }
+
+        @Override
+        public void parse(Row row) {
+            final Cell empty = row.getCell(startCellIndex);
+            final Cell total = row.getCell(startCellIndex + 1);
+            final Cell members = row.getCell(startCellIndex + 2);
+            final Cell inactive = row.getCell(startCellIndex + 3);
+            final Cell share = row.getCell(startCellIndex + 4);
+
+            if (firstColumnSpecification.isSatisfiedBy(empty) && secondColumnSpecification.isSatisfiedBy(total) &&
+                    thirdColumnSpecification.isSatisfiedBy(members) && fourthColumnSpecification.isSatisfiedBy(inactive) &&
+                    fifthColumnSpecification.isSatisfiedBy(share)) {
+                fireHeader(empty.getStringCellValue(), total.getStringCellValue(), members.getStringCellValue(),
+                        inactive.getStringCellValue(), share.getStringCellValue());
+                context.setState(new ParsingRecordsWithMemberAccountsState(context, startCellIndex));
+            }
 
         }
     }
+
+    private class ParsingRecordsWithMemberAccountsState extends AbstractState {
+
+        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType().and(
+                new CellHasIgnoreCaseStringValue("Total").not()).and(new CellHasIgnoreCaseStringValue("Razem").not());
+        private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
+        private final Specification<Cell> thirdColumnSpecification = new CellIsOfNumericType();
+        private final Specification<Cell> fourthColumnSpecification = new CellIsOfNumericType();
+        private final Specification<Cell> fifthColumnSpecification = new CellIsOfNumericType();
+
+        private final int startCellIndex;
+
+        protected ParsingRecordsWithMemberAccountsState(StateContext context, final int startCellIndex) {
+            super(context);
+            this.startCellIndex = startCellIndex;
+        }
+
+        @Override
+        public void parse(Row row) {
+            final Cell fund = row.getCell(startCellIndex);
+            final Cell total = row.getCell(startCellIndex + 1);
+            final Cell members = row.getCell(startCellIndex + 2);
+            final Cell inactive = row.getCell(startCellIndex + 3);
+            final Cell inactiveRatio = row.getCell(startCellIndex + 4);
+
+            if (firstColumnSpecification.isSatisfiedBy(fund) && secondColumnSpecification.isSatisfiedBy(total)
+                    && thirdColumnSpecification.isSatisfiedBy(members) && fourthColumnSpecification.isSatisfiedBy(inactive) &&
+                    fifthColumnSpecification.isSatisfiedBy(inactiveRatio)) {
+                fireRecord(fund.getStringCellValue(), (long) total.getNumericCellValue(), (long) inactive.getNumericCellValue());
+            } else {
+                context.setState(new ParsingTotalState(context, startCellIndex));
+                context.parse(row);
+            }
+
+        }
+    }
+
 }

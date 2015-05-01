@@ -3,7 +3,7 @@ package pl.softech.knf.ofe.opf.accounts.xls.imp;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import pl.softech.knf.ofe.opf.*;
-import pl.softech.knf.ofe.opf.accounts.NumberOfAccount;
+import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -81,8 +81,8 @@ public class AccountsProvider implements DataProvider {
 
         @Override
         public void populate(OpenPensionFund.Builder builder) {
-            NumberOfAccount numberOfAccount = fund.getNumberOfAccount();
-            builder.withNumberOfAccount(numberOfAccount.getTotal(), numberOfAccount.getInactive());
+            NumberOfAccounts numberOfAccounts = fund.getNumberOfAccounts();
+            builder.withNumberOfAccount(numberOfAccounts.getTotal(), numberOfAccounts.getInactive());
         }
     }
 }

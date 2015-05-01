@@ -7,12 +7,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * Created by ssledz on 25.04.15.
  */
-public class NumberOfAccount {
+public class NumberOfAccounts {
 
     private final long total;
     private final long inactive;
 
-    public NumberOfAccount(long total, long inactive) {
+    public NumberOfAccounts(long total, long inactive) {
         this.total = total;
         this.inactive = inactive;
     }
@@ -37,11 +37,11 @@ public class NumberOfAccount {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof NumberOfAccount)) {
+        if (!(o instanceof NumberOfAccounts)) {
             return false;
         }
 
-        NumberOfAccount that = (NumberOfAccount) o;
+        NumberOfAccounts that = (NumberOfAccounts) o;
 
         return new EqualsBuilder()
                 .append(total, that.total)

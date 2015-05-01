@@ -3,7 +3,7 @@ package pl.softech.knf.ofe.opf.accounts.xls.imp;
 import com.google.common.collect.ImmutableMap;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Test;
-import pl.softech.knf.ofe.opf.accounts.NumberOfAccount;
+import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -33,10 +33,10 @@ public class XlsAccountsParserTest {
                 {"", "", "total", "%"}
         };
 
-        Map<String, NumberOfAccount> name2nof = new ImmutableMap.Builder<String, NumberOfAccount>()
-                .put("AIG OFE", new NumberOfAccount(863_581L, 116_742L))
-                .put("OFE Allianz Polska", new NumberOfAccount(232_685L, 37_952L))
-                .put("Bankowy OFE", new NumberOfAccount(412_034L, 100_144L))
+        Map<String, NumberOfAccounts> name2nof = new ImmutableMap.Builder<String, NumberOfAccounts>()
+                .put("AIG OFE", new NumberOfAccounts(863_581L, 116_742L))
+                .put("OFE Allianz Polska", new NumberOfAccounts(232_685L, 37_952L))
+                .put("Bankowy OFE", new NumberOfAccounts(412_034L, 100_144L))
                 .build();
 
         Set<String> names = new HashSet<>(name2nof.keySet());
@@ -48,7 +48,7 @@ public class XlsAccountsParserTest {
             @Override
             public void record(String name, long numberOfAccounts, long numberOfInactiveAccounts) {
                 if (name2nof.containsKey(name)) {
-                    assertEquals(name2nof.get(name), new NumberOfAccount(numberOfAccounts, numberOfInactiveAccounts));
+                    assertEquals(name2nof.get(name), new NumberOfAccounts(numberOfAccounts, numberOfInactiveAccounts));
                     names.remove(name);
                 }
             }

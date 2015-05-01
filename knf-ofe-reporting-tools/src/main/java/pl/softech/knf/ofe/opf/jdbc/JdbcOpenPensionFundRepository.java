@@ -1,7 +1,9 @@
 package pl.softech.knf.ofe.opf.jdbc;
 
+import com.google.common.eventbus.EventBus;
 import pl.softech.knf.ofe.opf.OpenPensionFund;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
+import pl.softech.knf.ofe.opf.event.DatabasePopulatorErrorEvent;
 import pl.softech.knf.ofe.shared.jdbc.JdbcTemplate;
 import pl.softech.knf.ofe.shared.jdbc.RowMapper;
 
@@ -22,11 +24,15 @@ public class JdbcOpenPensionFundRepository implements OpenPensionFundRepository 
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final EventBus eventBus;
+
     @Inject
-    public JdbcOpenPensionFundRepository(Set<DatabasePopulator> populators, Set<OpenPensionFundRowMapper> rowMappers, JdbcTemplate jdbcTemplate) {
+    public JdbcOpenPensionFundRepository(Set<DatabasePopulator> populators, Set<OpenPensionFundRowMapper> rowMappers, JdbcTemplate
+            jdbcTemplate, EventBus eventBus) {
         this.populators = populators;
         this.rowMappers = rowMappers;
         this.jdbcTemplate = jdbcTemplate;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -38,7 +44,11 @@ public class JdbcOpenPensionFundRepository implements OpenPensionFundRepository 
     public void save(List<OpenPensionFund> opfs) {
         for (OpenPensionFund fund : opfs) {
             for (DatabasePopulator populator : populators) {
-                populator.populate(fund);
+                try {
+                    populator.populate(fund);
+                } catch (Exception e) {
+                    eventBus.post(new DatabasePopulatorErrorEvent(e, "Error during populating {0}. Trying keep going", fund));
+                }
             }
         }
     }
