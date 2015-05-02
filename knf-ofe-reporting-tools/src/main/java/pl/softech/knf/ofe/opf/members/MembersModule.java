@@ -17,6 +17,11 @@ package pl.softech.knf.ofe.opf.members;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
+import pl.softech.knf.ofe.opf.OpenPensionFundAbstractModule;
+import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsDatabasePopulator;
+import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsRowMapper;
+import pl.softech.knf.ofe.opf.accounts.xls.export.XlsAccountsWritter;
+import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
 import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersWritter;
 import pl.softech.knf.ofe.opf.xls.DataProvider;
 import pl.softech.knf.ofe.opf.jdbc.DatabasePopulator;
@@ -30,21 +35,14 @@ import pl.softech.knf.ofe.opf.xls.XlsWritter;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class MembersModule extends AbstractModule {
+public class MembersModule extends OpenPensionFundAbstractModule {
 
     @Override
     protected void configure() {
-        Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
-        dataProviderBinder.addBinding().to(MembersProvider.class);
-
-        Multibinder<DatabasePopulator> databasePopulatorBinder = Multibinder.newSetBinder(binder(), DatabasePopulator.class);
-        databasePopulatorBinder.addBinding().to(MembersDatabasePopulator.class);
-
-        Multibinder<OpenPensionFundRowMapper> rowMapperBinder = Multibinder.newSetBinder(binder(), OpenPensionFundRowMapper.class);
-        rowMapperBinder.addBinding().to(MembersRowMapper.class);
-
-        Multibinder<XlsWritter> xlsWriterBinder = Multibinder.newSetBinder(binder(), XlsWritter.class);
-        xlsWriterBinder.addBinding().to(XlsMembersWritter.class);
+        bindDataProviders(MembersProvider.class);
+        bindDatabasePopulators(MembersDatabasePopulator.class);
+        bindOpenPensionFundRowMappers(MembersRowMapper.class);
+        bindXlsWritters(XlsMembersWritter.class);
     }
 
 }

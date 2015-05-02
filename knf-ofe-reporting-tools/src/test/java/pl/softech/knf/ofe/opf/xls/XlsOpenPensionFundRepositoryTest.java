@@ -1,15 +1,14 @@
 package pl.softech.knf.ofe.opf.xls;
 
 import com.google.common.eventbus.EventBus;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.google.inject.multibindings.Multibinder;
 import org.junit.Before;
 import org.junit.Test;
 import pl.softech.knf.ofe.Xls;
 import pl.softech.knf.ofe.opf.*;
+import pl.softech.knf.ofe.opf.accounts.xls.export.XlsAccountsWritter;
 import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
 import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersWritter;
 import pl.softech.knf.ofe.opf.members.xls.imp.MembersProvider;
@@ -183,7 +182,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
     }
 
-    private static class TestModule extends AbstractModule {
+    private static class TestModule extends OpenPensionFundAbstractModule {
 
         @Override
         protected void configure() {
@@ -198,12 +197,9 @@ public class XlsOpenPensionFundRepositoryTest {
                             .implement(OpenPensionFundRepository.class, Xls.class, XlsOpenPensionFundRepository.class)
                             .build(XlsOpenPensionFundRepositoryFactory.class)
             );
-            Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
-            dataProviderBinder.addBinding().to(AccountsProvider.class);
-            dataProviderBinder.addBinding().to(MembersProvider.class);
 
-            Multibinder<XlsWritter> xlsWriterBinder = Multibinder.newSetBinder(binder(), XlsWritter.class);
-            xlsWriterBinder.addBinding().to(XlsMembersWritter.class);
+            bindDataProviders(MembersProvider.class, AccountsProvider.class);
+            bindXlsWritters(XlsMembersWritter.class, XlsAccountsWritter.class);
         }
     }
 }
