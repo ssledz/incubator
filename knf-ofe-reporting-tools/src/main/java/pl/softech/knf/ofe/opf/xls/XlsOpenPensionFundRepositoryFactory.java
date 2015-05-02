@@ -15,8 +15,6 @@
  */
 package pl.softech.knf.ofe.opf.xls;
 
-import pl.softech.knf.ofe.opf.members.xls.XlsMembersRepository;
-
 import java.io.File;
 
 /**
@@ -25,6 +23,6 @@ import java.io.File;
  */
 public interface XlsOpenPensionFundRepositoryFactory {
 
-	XlsOpenPensionFundRepository create(File xlsFile);
-	
+    XlsOpenPensionFundRepository create(File xlsFile);
+
 }
