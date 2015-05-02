@@ -1,6 +1,7 @@
 package pl.softech.knf.ofe.shared.xls;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -46,9 +47,17 @@ public class XlsUtils {
 
     public static Workbook loadOrCreateWorkbook(final File file) {
         if (file.exists()) {
-           return loadWorkbook(file);
+            return loadWorkbook(file);
         }
         return new HSSFWorkbook();
+    }
+
+    public static Font createHeaderFont(final Workbook wb, final short size, String fontName) {
+        final Font font = wb.createFont();
+        font.setFontHeightInPoints(size);
+        font.setFontName(fontName);
+        font.setBold(true);
+        return font;
     }
 
 }

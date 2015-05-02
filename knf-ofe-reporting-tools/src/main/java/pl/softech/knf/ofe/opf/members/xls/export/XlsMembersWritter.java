@@ -96,7 +96,7 @@ public class XlsMembersWritter implements XlsWritter {
         final Workbook wb = sheet.getWorkbook();
         final CreationHelper createHelper = wb.getCreationHelper();
         final CellStyle dateCellStyle = wb.createCellStyle();
-        dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-mm-yyyy"));
+        dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("mm-yyyy"));
 
         Row row = sheet.createRow(rowIdx);
 
