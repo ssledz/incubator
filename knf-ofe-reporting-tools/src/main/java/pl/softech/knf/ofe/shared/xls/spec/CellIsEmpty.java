@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
+package pl.softech.knf.ofe.shared.xls.spec;
 
-import java.io.File;
+import org.apache.poi.ss.usermodel.Cell;
+import pl.softech.knf.ofe.shared.spec.Specification;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public interface XlsOpenPensionFundRepositoryFactory {
+public class CellIsEmpty implements Specification<Cell> {
 
-    XlsOpenPensionFundRepository create(File xlsFile);
+	@Override
+	public boolean isSatisfiedBy(final Cell arg) {
+		return arg.getCellType() == Cell.CELL_TYPE_BLANK;
+	}
 
 }

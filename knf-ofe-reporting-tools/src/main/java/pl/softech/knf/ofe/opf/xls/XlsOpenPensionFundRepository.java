@@ -1,48 +1,24 @@
-/*
- * Copyright 2015 Sławomir Śledź <slawomir.sledz@gmail.com>.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package pl.softech.knf.ofe.opf.xls;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
+import com.google.inject.assistedinject.Assisted;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import pl.softech.knf.ofe.InjectLogger;
 import pl.softech.knf.ofe.opf.OpenPensionFund;
-import pl.softech.knf.ofe.opf.OpenPensionFundNameTranslator;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
-import pl.softech.knf.ofe.opf.PoiException;
-import pl.softech.knf.ofe.opf.xls.export.XlsOpenPensionFundOutput;
-import pl.softech.knf.ofe.opf.xls.imp.ParsingEventListenerAdapter;
-import pl.softech.knf.ofe.opf.xls.imp.XlsOpenPensionFundParser;
 import pl.softech.knf.ofe.shared.jdbc.DataAccessException;
 
-import com.google.inject.assistedinject.Assisted;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static pl.softech.knf.ofe.shared.xls.XlsUtils.loadOrCreateWorkbook;
+import static pl.softech.knf.ofe.shared.xls.XlsUtils.loadWorkbook;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -50,108 +26,62 @@ import com.google.inject.assistedinject.Assisted;
  */
 public class XlsOpenPensionFundRepository implements OpenPensionFundRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XlsOpenPensionFundRepository.class);
+    @InjectLogger
+    protected Logger logger;
 
-    private static final String MEMBERS_SHEET_NAME = "Members";
-    private static final String MEMBERS_SHEET_NAME2 = "I Members";
-
+    private final Set<DataProvider> dataProviders;
+    private final Set<XlsWritter> writers;
     private final File xlsFile;
-    private final OpenPensionFundNameTranslator nameTranslator;
 
     @Inject
-    XlsOpenPensionFundRepository(final @Assisted File xlsFile, OpenPensionFundNameTranslator nameTranslator) {
+    public XlsOpenPensionFundRepository(final @Assisted File xlsFile, Set<DataProvider> dataProviders, Set<XlsWritter> writers) {
         this.xlsFile = xlsFile;
-        this.nameTranslator = nameTranslator;
-    }
-
-    private Sheet loadSheet(final String name) {
-        try (final InputStream inp = new FileInputStream(xlsFile)) {
-            final Workbook wb = WorkbookFactory.create(inp);
-            return wb.getSheet(name);
-        } catch (final Exception e) {
-            throw new PoiException(e);
-        }
-    }
-
-    private static String[] args(final String... args) {
-        return args;
+        this.dataProviders = dataProviders;
+        this.writers = writers;
     }
 
     @Override
     public List<OpenPensionFund> findAll() {
 
-        Sheet members = loadSheet(MEMBERS_SHEET_NAME);
+        Map<OpenPensionFund.Key, OpenPensionFund.Builder> key2fund = new HashMap<>();
 
-        if (members == null) {
-            members = loadSheet(MEMBERS_SHEET_NAME2);
+        Workbook wb = loadWorkbook(xlsFile);
+
+        for (DataProvider provider : dataProviders) {
+            provider.iterator(wb).forEachRemaining(applier -> {
+                OpenPensionFund.Key key = applier.key();
+                OpenPensionFund.Builder builder = key2fund.get(key);
+                if (builder == null) {
+                    builder = new OpenPensionFund.Builder().withKey(key);
+                    key2fund.put(key, builder);
+                }
+                applier.populate(builder);
+            });
+
         }
 
-        if (members == null) {
-            LOGGER.warn("There is no '{}' or '{}' sheet in file {}", args(MEMBERS_SHEET_NAME, MEMBERS_SHEET_NAME2, xlsFile.getAbsolutePath()));
-            return Collections.emptyList();
-        }
-
-        final XlsOpenPensionFundParser parser = new XlsOpenPensionFundParser();
-
-        final List<OpenPensionFund> funds = new LinkedList<>();
-
-        parser.addParsingEventListener(new ParsingEventListenerAdapter() {
-
-            private Date date;
-
-            @Override
-            public void date(final Date date) {
-                this.date = date;
-            }
-
-            @Override
-            public void record(final String name, final long numberOfMembers) {
-                funds.add(new OpenPensionFund(nameTranslator.translate(name), numberOfMembers, date));
-            }
-
-        });
-
-        parser.parseSheet(members);
-
-        return funds;
-    }
-
-    private Workbook loadOrCreate(final File file) {
-        if (xlsFile.exists()) {
-            try (final InputStream inp = new FileInputStream(xlsFile)) {
-                return WorkbookFactory.create(inp);
-            } catch (final Exception e) {
-                throw new PoiException(e);
-            }
-        }
-        return new HSSFWorkbook();
+        return key2fund.values()
+                .stream()
+                .map(builder -> new OpenPensionFund(builder))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void save(final List<OpenPensionFund> opfs) {
+    public void save(List<OpenPensionFund> opfs) {
 
-        final Workbook wb = loadOrCreate(xlsFile);
+        Workbook wb = loadOrCreateWorkbook(xlsFile);
 
         try (FileOutputStream out = new FileOutputStream(xlsFile)) {
 
-            String sheetName = MEMBERS_SHEET_NAME;
-            Sheet sheet = wb.getSheet(sheetName);
-
-            int it = 1;
-            while (sheet != null) {
-                sheetName = String.format("%s%d", MEMBERS_SHEET_NAME, it++);
-                sheet = wb.getSheet(sheetName);
+            for (XlsWritter writer : writers) {
+                writer.write(opfs, wb);
             }
 
-            sheet = wb.createSheet(sheetName);
-
-            final XlsOpenPensionFundOutput output = new XlsOpenPensionFundOutput();
-            output.write(opfs, sheet);
             wb.write(out);
         } catch (final Exception e) {
-            LOGGER.error("", e);
+            logger.error("", e);
             new DataAccessException(e);
         }
-    }
 
+    }
 }

@@ -13,16 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
+package pl.softech.knf.ofe.opf.members.xls.imp;
 
-import java.io.File;
+import java.util.Date;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public interface XlsOpenPensionFundRepositoryFactory {
+public class MembersParsingEventListenerAdapter implements MembersParsingEventListener {
 
-    XlsOpenPensionFundRepository create(File xlsFile);
+	@Override
+	public void date(final Date date) {
+	}
+
+	@Override
+	public void header(final String[] columns) {
+	}
+
+	@Override
+	public void record(final String name, final long numberOfMembers) {
+	}
+
+	@Override
+	public void total(final long total) {
+	}
 
 }

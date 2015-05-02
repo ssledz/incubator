@@ -15,15 +15,19 @@
  */
 package pl.softech.knf.ofe.opf;
 
-import java.io.File;
-import java.util.List;
-
+import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import pl.softech.knf.ofe.InjectLogger;
+import pl.softech.knf.ofe.Jdbc;
+import pl.softech.knf.ofe.opf.event.DatabasePopulatorErrorEvent;
+import pl.softech.knf.ofe.opf.event.LackOfDataEvent;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
 import pl.softech.knf.ofe.shared.task.Task;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.util.List;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -31,33 +35,56 @@ import pl.softech.knf.ofe.shared.task.Task;
  */
 public class OpenPensionFundDbImportTask implements Task {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(OpenPensionFundDbImportTask.class);
+    @InjectLogger
+    protected Logger logger;
 
-	private final OpenPensionFundRepository jdbcRepository;
-	private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
+    private final OpenPensionFundRepository jdbcRepository;
+    private final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory;
 
-	public OpenPensionFundDbImportTask(final OpenPensionFundRepository jdbcRepository,
-			final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
-		this.jdbcRepository = jdbcRepository;
-		this.xlsRepositoryFactory = xlsRepositoryFactory;
-	}
+    private boolean importFailed = false;
 
-	@Override
-	public void execute(final File payload) {
-		LOGGER.info("Importing...");
-		try {
-			final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
-			final List<OpenPensionFund> funds = xlsRepository.findAll();
-			jdbcRepository.save(funds);
-			if (funds.isEmpty()) {
-				LOGGER.warn("No open pension funds found for {}", payload.getAbsoluteFile());
-			} else {
-				LOGGER.info("Importing finished successfully for {}", payload.getAbsoluteFile());
-			}
-		} catch (final Exception e) {
-			LOGGER.error(String.format("Import was failed for %s", payload.getAbsoluteFile()), e);
-		}
+    private File currentPayload;
 
-	}
+    @Inject
+    public OpenPensionFundDbImportTask(@Jdbc final OpenPensionFundRepository jdbcRepository,
+                                       final XlsOpenPensionFundRepositoryFactory xlsRepositoryFactory) {
+        this.jdbcRepository = jdbcRepository;
+        this.xlsRepositoryFactory = xlsRepositoryFactory;
+    }
+
+    @Subscribe
+    public void listen(DatabasePopulatorErrorEvent event) {
+        event.log(logger);
+        importFailed = true;
+    }
+
+    @Subscribe
+    public void listen(LackOfDataEvent event) {
+        event.log(logger, currentPayload);
+    }
+
+    @Override
+    public void execute(final File payload) {
+        logger.info("Importing {} ...", payload.getAbsoluteFile());
+        currentPayload = payload;
+        try {
+            final XlsOpenPensionFundRepository xlsRepository = xlsRepositoryFactory.create(payload);
+            final List<OpenPensionFund> funds = xlsRepository.findAll();
+            jdbcRepository.save(funds);
+            if (funds.isEmpty()) {
+                logger.warn("No open pension funds found for {}", payload.getAbsoluteFile());
+            } else if (!importFailed) {
+                logger.info("Importing finished successfully for {}", payload.getAbsoluteFile());
+            }
+        } catch (final Exception e) {
+            importFailed = true;
+            logger.error("", e);
+        }
+
+        if (importFailed) {
+            logger.error("Import was failed for {}", payload.getAbsoluteFile());
+        }
+
+    }
 
 }

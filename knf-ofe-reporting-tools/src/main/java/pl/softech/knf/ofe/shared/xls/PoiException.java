@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
-
-import java.io.File;
+package pl.softech.knf.ofe.shared.xls;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public interface XlsOpenPensionFundRepositoryFactory {
+public class PoiException extends RuntimeException {
 
-    XlsOpenPensionFundRepository create(File xlsFile);
+	private static final long serialVersionUID = 1L;
+
+	public PoiException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
+
+	public PoiException(final Throwable cause) {
+		super(cause);
+	}
 
 }

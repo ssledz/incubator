@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
->
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        >
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.softech.knf.ofe</groupId>
@@ -23,7 +23,7 @@
         <commons-lang3.version>3.3.1</commons-lang3.version>
         <c3p0.version>0.9.1.2</c3p0.version>
         <mysql-connector.version>5.1.33</mysql-connector.version>
-        <guice.version>3.0</guice.version>
+        <guice.version>4.0</guice.version>
         <commons-cli.version>1.2</commons-cli.version>
 
         <!-- testing -->
@@ -98,6 +98,13 @@
             <artifactId>guice-assistedinject</artifactId>
             <version>${guice.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
 
         <!-- Logging -->
         <dependency>

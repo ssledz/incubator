@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.softech.knf.ofe.opf.xls;
+package pl.softech.knf.ofe;
 
-import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public interface XlsOpenPensionFundRepositoryFactory {
-
-    XlsOpenPensionFundRepository create(File xlsFile);
+@Target({FIELD, PARAMETER, METHOD})
+@Retention(RUNTIME)
+public @interface InjectLogger {
 
 }
