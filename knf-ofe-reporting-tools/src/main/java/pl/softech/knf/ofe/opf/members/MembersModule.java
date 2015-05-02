@@ -17,13 +17,14 @@ package pl.softech.knf.ofe.opf.members;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
-import pl.softech.knf.ofe.opf.DataProvider;
-import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsRowMapper;
+import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersWritter;
+import pl.softech.knf.ofe.opf.xls.DataProvider;
 import pl.softech.knf.ofe.opf.jdbc.DatabasePopulator;
 import pl.softech.knf.ofe.opf.jdbc.OpenPensionFundRowMapper;
 import pl.softech.knf.ofe.opf.members.jdbc.MembersDatabasePopulator;
 import pl.softech.knf.ofe.opf.members.jdbc.MembersRowMapper;
 import pl.softech.knf.ofe.opf.members.xls.imp.MembersProvider;
+import pl.softech.knf.ofe.opf.xls.XlsWritter;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -41,6 +42,9 @@ public class MembersModule extends AbstractModule {
 
         Multibinder<OpenPensionFundRowMapper> rowMapperBinder = Multibinder.newSetBinder(binder(), OpenPensionFundRowMapper.class);
         rowMapperBinder.addBinding().to(MembersRowMapper.class);
+
+        Multibinder<XlsWritter> xlsWriterBinder = Multibinder.newSetBinder(binder(), XlsWritter.class);
+        xlsWriterBinder.addBinding().to(XlsMembersWritter.class);
     }
 
 }

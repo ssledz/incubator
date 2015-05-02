@@ -15,42 +15,30 @@
  */
 package pl.softech.knf.ofe.opf.members.xls.export;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import pl.softech.knf.ofe.opf.OpenPensionFund;
+import pl.softech.knf.ofe.opf.xls.XlsWritter;
+import pl.softech.knf.ofe.shared.xls.XlsUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-
-import pl.softech.knf.ofe.opf.OpenPensionFund;
-
-import static java.util.Objects.requireNonNull;
+import java.util.*;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class XlsMembersOutput {
+public class XlsMembersWritter implements XlsWritter {
 
-    public void write(final List<OpenPensionFund> funds, final Sheet sheet) {
+    private static final String MEMBERS_SHEET_NAME = "Members";
+
+    public void write(final List<OpenPensionFund> funds, final Workbook wb) {
+
+        Sheet sheet = XlsUtils.createSheet(wb, MEMBERS_SHEET_NAME);
 
         int rowIdx = 1;
         final int colIdx = 1;
@@ -196,9 +184,8 @@ public class XlsMembersOutput {
 
         try (FileOutputStream out = new FileOutputStream(new File("/home/ssledz/knf-ofe-work-dir/work", "workbook.xls"))) {
             final Workbook wb = new HSSFWorkbook();
-            final Sheet sheet = wb.createSheet("I Members");
-            final XlsMembersOutput output = new XlsMembersOutput();
-            output.write(funds, sheet);
+            final XlsMembersWritter output = new XlsMembersWritter();
+            output.write(funds, wb);
             wb.write(out);
             wb.close();
         }

@@ -45,8 +45,8 @@ public class OpenPensionFundModule extends AbstractModule {
         install(new FactoryModuleBuilder().implement(OpenPensionFundRepository.class, Xls.class, XlsOpenPensionFundRepository.class).build(
                 XlsOpenPensionFundRepositoryFactory.class));
 
-//        bind(OpenPensionFundDbImportTask.class).toProvider(OpenPensionFundDbImportTaskProvider.class);
         bind(OpenPensionFundDbImportTask.class);
+        bind(OpenPensionFundDbExportTask.class);
 
         install(new MembersModule());
         install(new AccountsModule());

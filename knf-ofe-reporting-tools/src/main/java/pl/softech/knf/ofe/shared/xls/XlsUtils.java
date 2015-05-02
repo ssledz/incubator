@@ -1,9 +1,11 @@
 package pl.softech.knf.ofe.shared.xls;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -20,6 +22,33 @@ public class XlsUtils {
         } catch (final Exception e) {
             throw new PoiException(e);
         }
+    }
+
+    public static Sheet createSheet(Workbook wb, String sheetName) {
+        Sheet sheet = wb.getSheet(sheetName);
+
+        int it = 1;
+        while (sheet != null) {
+            sheetName = String.format("%s%d", sheetName, it++);
+            sheet = wb.getSheet(sheetName);
+        }
+
+        return wb.createSheet(sheetName);
+    }
+
+    public static Workbook loadWorkbook(final File file) {
+        try (final InputStream inp = new FileInputStream(file)) {
+            return WorkbookFactory.create(inp);
+        } catch (final Exception e) {
+            throw new PoiException(e);
+        }
+    }
+
+    public static Workbook loadOrCreateWorkbook(final File file) {
+        if (file.exists()) {
+           return loadWorkbook(file);
+        }
+        return new HSSFWorkbook();
     }
 
 }

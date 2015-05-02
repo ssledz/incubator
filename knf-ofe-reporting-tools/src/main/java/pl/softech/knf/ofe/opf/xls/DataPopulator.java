@@ -1,4 +1,6 @@
-package pl.softech.knf.ofe.opf;
+package pl.softech.knf.ofe.opf.xls;
+
+import pl.softech.knf.ofe.opf.OpenPensionFund;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>

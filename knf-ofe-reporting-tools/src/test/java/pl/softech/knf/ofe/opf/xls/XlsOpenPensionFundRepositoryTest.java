@@ -11,18 +11,15 @@ import org.junit.Test;
 import pl.softech.knf.ofe.Xls;
 import pl.softech.knf.ofe.opf.*;
 import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;
+import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersWritter;
 import pl.softech.knf.ofe.opf.members.xls.imp.MembersProvider;
 
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import org.junit.Test;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -204,6 +201,9 @@ public class XlsOpenPensionFundRepositoryTest {
             Multibinder<DataProvider> dataProviderBinder = Multibinder.newSetBinder(binder(), DataProvider.class);
             dataProviderBinder.addBinding().to(AccountsProvider.class);
             dataProviderBinder.addBinding().to(MembersProvider.class);
+
+            Multibinder<XlsWritter> xlsWriterBinder = Multibinder.newSetBinder(binder(), XlsWritter.class);
+            xlsWriterBinder.addBinding().to(XlsMembersWritter.class);
         }
     }
 }

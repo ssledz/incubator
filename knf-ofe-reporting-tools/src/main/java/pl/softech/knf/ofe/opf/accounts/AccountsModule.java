@@ -17,7 +17,7 @@ package pl.softech.knf.ofe.opf.accounts;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
-import pl.softech.knf.ofe.opf.DataProvider;
+import pl.softech.knf.ofe.opf.xls.DataProvider;
 import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsDatabasePopulator;
 import pl.softech.knf.ofe.opf.accounts.jdbc.AccountsRowMapper;
 import pl.softech.knf.ofe.opf.accounts.xls.imp.AccountsProvider;

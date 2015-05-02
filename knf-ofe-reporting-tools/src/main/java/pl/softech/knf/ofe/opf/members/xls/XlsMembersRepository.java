@@ -37,7 +37,7 @@ import pl.softech.knf.ofe.opf.OpenPensionFund;
 import pl.softech.knf.ofe.opf.OpenPensionFundNameTranslator;
 import pl.softech.knf.ofe.opf.OpenPensionFundRepository;
 import pl.softech.knf.ofe.shared.xls.PoiException;
-import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersOutput;
+import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersWritter;
 import pl.softech.knf.ofe.opf.members.xls.imp.MembersParsingEventListenerAdapter;
 import pl.softech.knf.ofe.opf.members.xls.imp.XlsMembersParser;
 import pl.softech.knf.ofe.shared.jdbc.DataAccessException;
@@ -138,19 +138,8 @@ public class XlsMembersRepository implements OpenPensionFundRepository {
 
         try (FileOutputStream out = new FileOutputStream(xlsFile)) {
 
-            String sheetName = MEMBERS_SHEET_NAME;
-            Sheet sheet = wb.getSheet(sheetName);
-
-            int it = 1;
-            while (sheet != null) {
-                sheetName = String.format("%s%d", MEMBERS_SHEET_NAME, it++);
-                sheet = wb.getSheet(sheetName);
-            }
-
-            sheet = wb.createSheet(sheetName);
-
-            final XlsMembersOutput output = new XlsMembersOutput();
-            output.write(opfs, sheet);
+            final XlsMembersWritter output = new XlsMembersWritter();
+            output.write(opfs, wb);
             wb.write(out);
         } catch (final Exception e) {
             LOGGER.error("", e);

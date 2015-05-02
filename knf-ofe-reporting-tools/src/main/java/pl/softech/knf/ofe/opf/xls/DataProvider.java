@@ -1,4 +1,4 @@
-package pl.softech.knf.ofe.opf;
+package pl.softech.knf.ofe.opf.xls;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
