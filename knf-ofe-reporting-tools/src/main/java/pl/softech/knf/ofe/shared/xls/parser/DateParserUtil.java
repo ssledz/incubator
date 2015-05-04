@@ -18,6 +18,7 @@ package pl.softech.knf.ofe.shared.xls.parser;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +33,9 @@ public class DateParserUtil {
 
 	private enum Parser implements DateParser {
 
-		DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4}).*"), new SimpleDateFormat("dd.MM.yyyy")), DATE2(Pattern
-				.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd"));
+		DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4}).*"), new SimpleDateFormat("dd.MM.yyyy")),
+		DATE2(Pattern.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd")),
+		DATE3(Pattern.compile("\\s*Month:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US));
 
 		private final Pattern pattern;
 		private final DateFormat dateFormat;
@@ -71,6 +73,10 @@ public class DateParserUtil {
 		}
 
 		return null;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(DateParserUtil.parse("Month: April 2002"));
 	}
 
 }

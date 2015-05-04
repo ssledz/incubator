@@ -4,9 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 import pl.softech.knf.ofe.shared.spec.Specification;
 import pl.softech.knf.ofe.shared.xls.spec.CellIsOfFormulaType;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -50,6 +48,10 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
         return cell.getNumericCellValue();
     }
 
+    protected long getLongValue(Cell cell) {
+        return (long) getNumericValue(cell);
+    }
+
     public void addParsingEventListener(final T l) {
         listeners.add(l);
     }
@@ -90,6 +92,124 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
             }
         }
 
+    }
+
+    protected interface StateFactory {
+        State create(int startingCell);
+    }
+
+    protected class ParsingHeaderState extends AbstractState {
+
+        private final StateFactory nextStateFactory;
+        private final List<Specification<Cell>> specifications;
+
+        public ParsingHeaderState(StateContext context, List<Specification<Cell>> specifications, final StateFactory nextStateFactory) {
+            super(context);
+            this.specifications = specifications;
+            this.nextStateFactory = nextStateFactory;
+        }
+
+        @Override
+        public void parse(Row row) {
+            final Iterator<Cell> cellIt = row.iterator();
+            int cellCnt = 0;
+            while (cellIt.hasNext()) {
+                final Iterator<Specification<Cell>> specIt = specifications.iterator();
+                List<String> columns = new ArrayList<>();
+                while (specIt.hasNext()) {
+                    Specification<Cell> spec = specIt.next();
+                    final Cell cell = cellIt.next();
+                    if (spec.isSatisfiedBy(cell)) {
+                        columns.add(cell.getStringCellValue());
+                        if (!specIt.hasNext()) {
+                            fireHeader(columns.toArray(new String[columns.size()]));
+                            context.setState(nextStateFactory.create(cellCnt));
+                        }
+                    } else {
+                        break;
+                    }
+
+                    if (!specIt.hasNext() || !cellIt.hasNext()) {
+                        break;
+                    }
+                }
+
+                cellCnt++;
+            }
+        }
+
+    }
+
+    protected interface NewRecordListener {
+        void record(List<Cell> cells);
+    }
+
+    protected static class GenericParsingRecordsState extends AbstractState {
+
+        private final int startCellIndex;
+        private final StateFactory nextStateFactory;
+        private final List<Specification<Cell>> specifications;
+        private final NewRecordListener newRecordListener;
+
+        public GenericParsingRecordsState(StateContext context, final int startCellIndex, NewRecordListener newRecordListener,
+                                          List<Specification<Cell>> specifications, final StateFactory nextStateFactory) {
+            super(context);
+            this.startCellIndex = startCellIndex;
+            this.specifications = specifications;
+            this.newRecordListener = newRecordListener;
+            this.nextStateFactory = nextStateFactory;
+        }
+
+        @Override
+        public void parse(Row row) {
+
+            List<Cell> cells = new ArrayList<>();
+            int cellIdx = startCellIndex;
+            for (Specification<Cell> spec : specifications) {
+
+                Cell cell = row.getCell(cellIdx++);
+                cells.add(cell);
+                if (!spec.isSatisfiedBy(cell)) {
+                    context.setState(nextStateFactory.create(startCellIndex));
+                    context.parse(row);
+                    return;
+                }
+
+            }
+
+            newRecordListener.record(cells);
+        }
+    }
+
+    protected static class GenericParsingTotalState extends AbstractState {
+
+        private final int startCellIndex;
+        private final List<Specification<Cell>> specifications;
+        private final NewRecordListener newRecordListener;
+
+        public GenericParsingTotalState(StateContext context, final int startCellIndex, NewRecordListener newRecordListener,
+                                           List<Specification<Cell>> specifications) {
+            super(context);
+            this.startCellIndex = startCellIndex;
+            this.newRecordListener = newRecordListener;
+            this.specifications = specifications;
+        }
+
+        @Override
+        public void parse(Row row) {
+            List<Cell> cells = new ArrayList<>();
+            int cellIdx = startCellIndex;
+            for (Specification<Cell> spec : specifications) {
+                Cell cell = row.getCell(cellIdx++);
+                cells.add(cell);
+                if (!spec.isSatisfiedBy(cell)) {
+                    return;
+                }
+            }
+
+            newRecordListener.record(cells);
+            context.setState(new EndingState());
+        }
     }
 
 }
