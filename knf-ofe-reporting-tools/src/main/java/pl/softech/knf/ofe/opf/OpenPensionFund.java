@@ -47,7 +47,9 @@ public class OpenPensionFund {
 
         this.numberOfMembers = builder.numberOfMembers;
         this.numberOfAccounts = builder.numberOfAccounts;
-        this.contribution = new Contribution(builder.contribution);
+        if (builder.contribution != null) {
+            this.contribution = new Contribution(builder.contribution);
+        }
 
     }
 

@@ -39,6 +39,14 @@ public class Contribution {
     }
 
 
+    public Builder toBuilder() {
+        return new Builder()
+                .withAmount(amount)
+                .withInterests(interests)
+                .withNumber(number)
+                .withAverageBasis(averageBasis);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
