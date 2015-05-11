@@ -3,6 +3,7 @@ package pl.softech.knf.ofe.opf.contributions.xls.imp;
 import pl.softech.knf.ofe.shared.xls.parser.AbstractXlsParser;
 import pl.softech.knf.ofe.shared.xls.parser.State;
 import pl.softech.knf.ofe.shared.xls.parser.StateContext;
+import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringPatternValue;
 import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringValue;
 import pl.softech.knf.ofe.shared.xls.spec.CellIsOfNumericType;
 import pl.softech.knf.ofe.shared.xls.spec.CellIsOfStringType;
@@ -21,15 +22,11 @@ public class XlsContributionParser extends AbstractXlsParser<ContributionParsing
                 new ParsingHeaderState(context,
                         Arrays.asList(
                                 new CellHasIgnoreCaseStringValue("Open Pension Fund"),
-                                new CellHasIgnoreCaseStringValue("Amount of contribution\n(in ZL)")
-                                        .or(new CellHasIgnoreCaseStringValue("amount of contribution\n(PLN)")),
-                                new CellHasIgnoreCaseStringValue("Interests\n(in ZL)")
-                                        .or(new CellHasIgnoreCaseStringValue("interests\n(PLN)")),
+                                new CellHasIgnoreCaseStringPatternValue("Amount of contribution.*"),
+                                new CellHasIgnoreCaseStringPatternValue("Interests.*"),
                                 new CellHasIgnoreCaseStringValue("Number of contributions"),
-                                new CellHasIgnoreCaseStringValue("Average contribution\n(in ZL)")
-                                        .or(new CellHasIgnoreCaseStringValue("average contribution\n(PLN)")),
-                                new CellHasIgnoreCaseStringValue("Average basis\n(in ZL)")
-                                        .or(new CellHasIgnoreCaseStringValue("average basis\n(PLN)"))
+                                new CellHasIgnoreCaseStringPatternValue("Average contribution.*"),
+            new CellHasIgnoreCaseStringPatternValue("Average basis.*")
                         ),
                         startingCell -> new GenericParsingRecordsState(context, startingCell,
                                 cells -> fireRecord(

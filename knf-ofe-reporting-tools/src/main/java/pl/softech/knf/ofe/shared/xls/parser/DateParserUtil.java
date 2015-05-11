@@ -35,7 +35,9 @@ public class DateParserUtil {
 
 		DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4}).*"), new SimpleDateFormat("dd.MM.yyyy")),
 		DATE2(Pattern.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd")),
-		DATE3(Pattern.compile("\\s*Month:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US));
+		DATE3(Pattern.compile("\\s*Month:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US)),
+		DATE4(Pattern.compile("\\s*Month date:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US)),
+		DATE5(Pattern.compile("\\s*Monthly data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd"));
 
 		private final Pattern pattern;
 		private final DateFormat dateFormat;
@@ -77,6 +79,7 @@ public class DateParserUtil {
 
 	public static void main(String[] args) {
 		System.out.println(DateParserUtil.parse("Month: April 2002"));
+		System.out.println(DateParserUtil.parse("Month date: April 2002"));
 	}
 
 }

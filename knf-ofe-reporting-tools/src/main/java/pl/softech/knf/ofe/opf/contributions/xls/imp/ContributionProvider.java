@@ -54,10 +54,10 @@ public class ContributionProvider implements DataProvider {
                         .withDate(date)
                         .withName(nameTranslator.translate(name))
                         .withContribution(new Contribution.Builder()
-                                        .withAmount((long) (amount * 100))
-                                        .withInterests((long) (interests * 100))
+                                        .withAmount(Math.round(amount * 100))
+                                        .withInterests(Math.round(interests * 100))
                                         .withNumber(number)
-                                        .withAverageBasis((long) (averageBasis * 100))
+                                        .withAverageBasis(Math.round(averageBasis * 100))
                         )
                 ));
             }
