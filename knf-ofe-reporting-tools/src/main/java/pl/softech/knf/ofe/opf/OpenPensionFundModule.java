@@ -11,6 +11,7 @@ import com.google.inject.spi.TypeListener;
 import pl.softech.knf.ofe.Jdbc;
 import pl.softech.knf.ofe.Xls;
 import pl.softech.knf.ofe.opf.accounts.AccountsModule;
+import pl.softech.knf.ofe.opf.contributions.ContributionModule;
 import pl.softech.knf.ofe.opf.jdbc.JdbcOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.members.MembersModule;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
@@ -50,5 +51,6 @@ public class OpenPensionFundModule extends AbstractModule {
 
         install(new MembersModule());
         install(new AccountsModule());
+        install(new ContributionModule());
     }
 }
