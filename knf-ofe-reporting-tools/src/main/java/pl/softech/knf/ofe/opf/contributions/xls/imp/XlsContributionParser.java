@@ -2,6 +2,7 @@ package pl.softech.knf.ofe.opf.contributions.xls.imp;
 
 import pl.softech.knf.ofe.shared.xls.parser.AbstractXlsParser;
 import pl.softech.knf.ofe.shared.xls.parser.State;
+import pl.softech.knf.ofe.shared.xls.parser.StateBranch;
 import pl.softech.knf.ofe.shared.xls.parser.StateContext;
 import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringPatternValue;
 import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringValue;
@@ -19,52 +20,102 @@ public class XlsContributionParser extends AbstractXlsParser<ContributionParsing
     @Override
     protected State createStartingState(StateContext context) {
         return new ParsingDateState(context,
-                new ParsingHeaderState(context,
-                        Arrays.asList(
-                                new CellHasIgnoreCaseStringValue("Open Pension Fund"),
-                                new CellHasIgnoreCaseStringPatternValue("Amount of contribution.*"),
-                                new CellHasIgnoreCaseStringPatternValue("Interests.*"),
-                                new CellHasIgnoreCaseStringValue("Number of contributions"),
-                                new CellHasIgnoreCaseStringPatternValue("Average contribution.*"),
-            new CellHasIgnoreCaseStringPatternValue("Average basis.*")
+                new StateBranch(context,
+                        sixColumns(context),
+                        fourColumns(context)
+                )
+        );
+    }
+
+    private State sixColumns(StateContext context) {
+        return new ParsingHeaderState(context,
+                Arrays.asList(
+                        new CellHasIgnoreCaseStringValue("Open Pension Fund"),
+                        new CellHasIgnoreCaseStringPatternValue("Amount of contribution.*"),
+                        new CellHasIgnoreCaseStringPatternValue("Interests.*"),
+                        new CellHasIgnoreCaseStringValue("Number of contributions"),
+                        new CellHasIgnoreCaseStringPatternValue("Average contribution.*"),
+                        new CellHasIgnoreCaseStringPatternValue("Average basis.*")
+                ),
+                new GenericParsingRecordsState(context,
+                        cells -> fireRecord(
+                                cells.get(0).getStringCellValue(),
+                                getNumericValue(cells.get(1)),
+                                getNumericValue(cells.get(2)),
+                                getLongValue(cells.get(3)),
+                                getNumericValue(cells.get(5))
                         ),
-                        startingCell -> new GenericParsingRecordsState(context, startingCell,
-                                cells -> fireRecord(
-                                        cells.get(0).getStringCellValue(),
+                        Arrays.asList(
+                                new CellIsOfStringType()
+                                        .and(new CellHasIgnoreCaseStringValue("Total").not())
+                                        .and(new CellHasIgnoreCaseStringValue("Razem").not()),
+                                new CellIsOfNumericType(),
+                                new CellIsOfNumericType(),
+                                new CellIsOfNumericType(),
+                                new CellIsOfNumericType(),
+                                new CellIsOfNumericType()
+                        ),
+                        new GenericParsingTotalState(context,
+                                cells -> fireTotal(
                                         getNumericValue(cells.get(1)),
                                         getNumericValue(cells.get(2)),
                                         getLongValue(cells.get(3)),
                                         getNumericValue(cells.get(5))
                                 ),
                                 Arrays.asList(
-                                        new CellIsOfStringType()
-                                                .and(new CellHasIgnoreCaseStringValue("Total").not())
-                                                .and(new CellHasIgnoreCaseStringValue("Razem").not()),
-                                        new CellIsOfNumericType(),
-                                        new CellIsOfNumericType(),
-                                        new CellIsOfNumericType(),
-                                        new CellIsOfNumericType(),
-                                        new CellIsOfNumericType()
-                                ),
-                                startingCell2 -> new GenericParsingTotalState(context, startingCell2,
-                                        cells -> fireTotal(
-                                                getNumericValue(cells.get(1)),
-                                                getNumericValue(cells.get(2)),
-                                                getLongValue(cells.get(3)),
-                                                getNumericValue(cells.get(5))
-                                        ),
-                                        Arrays.asList(
-                                                new CellIsOfStringType(),
-                                                new CellIsOfNumericType().or(cellIsFormula),
-                                                new CellIsOfNumericType().or(cellIsFormula),
-                                                new CellIsOfNumericType().or(cellIsFormula),
-                                                new CellIsOfNumericType().or(cellIsFormula),
-                                                new CellIsOfNumericType().or(cellIsFormula)
-                                        )
+                                        new CellIsOfStringType(),
+                                        new CellIsOfNumericType().or(cellIsFormula),
+                                        new CellIsOfNumericType().or(cellIsFormula),
+                                        new CellIsOfNumericType().or(cellIsFormula),
+                                        new CellIsOfNumericType().or(cellIsFormula),
+                                        new CellIsOfNumericType().or(cellIsFormula)
                                 )
                         )
-
                 )
+
+        );
+    }
+
+    private State fourColumns(StateContext context) {
+        return new ParsingHeaderState(context,
+                Arrays.asList(
+                        new CellHasIgnoreCaseStringValue("Open Pension Fund"),
+                        new CellHasIgnoreCaseStringPatternValue("Amount of contribution.*"),
+                        new CellHasIgnoreCaseStringPatternValue("Interests.*"),
+                        new CellHasIgnoreCaseStringValue("Number of contributions")
+                ),
+                new GenericParsingRecordsState(context,
+                        cells -> fireRecord(
+                                cells.get(0).getStringCellValue(),
+                                getNumericValue(cells.get(1)),
+                                getNumericValue(cells.get(2)),
+                                getLongValue(cells.get(3)),
+                                0
+                        ),
+                        Arrays.asList(
+                                new CellIsOfStringType()
+                                        .and(new CellHasIgnoreCaseStringValue("Total").not())
+                                        .and(new CellHasIgnoreCaseStringValue("Razem").not()),
+                                new CellIsOfNumericType(),
+                                new CellIsOfNumericType(),
+                                new CellIsOfNumericType()
+                        ),
+                        new GenericParsingTotalState(context,
+                                cells -> fireTotal(
+                                        getNumericValue(cells.get(1)),
+                                        getNumericValue(cells.get(2)),
+                                        getLongValue(cells.get(3)),
+                                        0
+                                ),
+                                Arrays.asList(
+                                        new CellIsOfStringType(),
+                                        new CellIsOfNumericType().or(cellIsFormula),
+                                        new CellIsOfNumericType().or(cellIsFormula),
+                                        new CellIsOfNumericType().or(cellIsFormula)
+                                )
+                        )
+                )
+
         );
     }
 

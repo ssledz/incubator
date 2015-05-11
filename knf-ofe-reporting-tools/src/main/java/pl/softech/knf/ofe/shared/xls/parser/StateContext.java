@@ -10,6 +10,26 @@ public class StateContext implements State {
 
     private State state;
 
+    private boolean parsingFailed;
+
+    private int startCellIndex;
+
+    public int getStartCellIndex() {
+        return startCellIndex;
+    }
+
+    public void setStartCellIndex(int startCellIndex) {
+        this.startCellIndex = startCellIndex;
+    }
+
+    public void setParsingFailed(boolean parsingFailed) {
+        this.parsingFailed = parsingFailed;
+    }
+
+    public boolean isParsingFailed() {
+        return parsingFailed;
+    }
+
     @Override
     public void parse(final Row row) {
         state.parse(row);

@@ -62,7 +62,10 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
         requireNonNull(sheet, "Sheet can't be null");
         final StateContext context = new StateContext();
         context.setState(createStartingState(context));
-        sheet.forEach(row -> context.parse(row));
+        sheet.forEach(row -> {
+            context.setParsingFailed(false);
+            context.parse(row);
+        });
     }
 
     protected class ParsingDateState extends AbstractState {
@@ -94,19 +97,15 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
 
     }
 
-    protected interface StateFactory {
-        State create(int startingCell);
-    }
-
     protected class ParsingHeaderState extends AbstractState {
 
-        private final StateFactory nextStateFactory;
+        private final State nextState;
         private final List<Specification<Cell>> specifications;
 
-        public ParsingHeaderState(StateContext context, List<Specification<Cell>> specifications, final StateFactory nextStateFactory) {
+        public ParsingHeaderState(StateContext context, List<Specification<Cell>> specifications, final State nextState) {
             super(context);
             this.specifications = specifications;
-            this.nextStateFactory = nextStateFactory;
+            this.nextState = nextState;
         }
 
         @Override
@@ -123,10 +122,22 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
                         columns.add(cell.getStringCellValue());
                         if (!specIt.hasNext()) {
                             fireHeader(columns.toArray(new String[columns.size()]));
-                            context.setState(nextStateFactory.create(cellCnt));
+                            context.setStartCellIndex(cellCnt);
+                            context.setState(nextState);
                         }
                     } else {
+
+                        if(!columns.isEmpty()) {
+                            context.setParsingFailed(true);
+                            return;
+                        }
+
                         break;
+                    }
+
+                    if(specIt.hasNext() && !cellIt.hasNext()) {
+                        context.setParsingFailed(true);
+                        return;
                     }
 
                     if (!specIt.hasNext() || !cellIt.hasNext()) {
@@ -146,31 +157,29 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
 
     protected static class GenericParsingRecordsState extends AbstractState {
 
-        private final int startCellIndex;
-        private final StateFactory nextStateFactory;
+        private final State nextState;
         private final List<Specification<Cell>> specifications;
         private final NewRecordListener newRecordListener;
 
-        public GenericParsingRecordsState(StateContext context, final int startCellIndex, NewRecordListener newRecordListener,
-                                          List<Specification<Cell>> specifications, final StateFactory nextStateFactory) {
+        public GenericParsingRecordsState(StateContext context, NewRecordListener newRecordListener,
+                                          List<Specification<Cell>> specifications, final State nextState) {
             super(context);
-            this.startCellIndex = startCellIndex;
             this.specifications = specifications;
             this.newRecordListener = newRecordListener;
-            this.nextStateFactory = nextStateFactory;
+            this.nextState = nextState;
         }
 
         @Override
         public void parse(Row row) {
 
             List<Cell> cells = new ArrayList<>();
-            int cellIdx = startCellIndex;
+            int cellIdx = context.getStartCellIndex();
             for (Specification<Cell> spec : specifications) {
 
                 Cell cell = row.getCell(cellIdx++);
                 cells.add(cell);
                 if (!spec.isSatisfiedBy(cell)) {
-                    context.setState(nextStateFactory.create(startCellIndex));
+                    context.setState(nextState);
                     context.parse(row);
                     return;
                 }
@@ -183,14 +192,12 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
 
     protected static class GenericParsingTotalState extends AbstractState {
 
-        private final int startCellIndex;
         private final List<Specification<Cell>> specifications;
         private final NewRecordListener newRecordListener;
 
-        public GenericParsingTotalState(StateContext context, final int startCellIndex, NewRecordListener newRecordListener,
-                                           List<Specification<Cell>> specifications) {
+        public GenericParsingTotalState(StateContext context, NewRecordListener newRecordListener,
+                                        List<Specification<Cell>> specifications) {
             super(context);
-            this.startCellIndex = startCellIndex;
             this.newRecordListener = newRecordListener;
             this.specifications = specifications;
         }
@@ -198,7 +205,7 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
         @Override
         public void parse(Row row) {
             List<Cell> cells = new ArrayList<>();
-            int cellIdx = startCellIndex;
+            int cellIdx = context.getStartCellIndex();
             for (Specification<Cell> spec : specifications) {
                 Cell cell = row.getCell(cellIdx++);
                 cells.add(cell);
