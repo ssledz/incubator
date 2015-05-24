@@ -13,3 +13,22 @@ CREATE TABLE open_pension_fund (
   UNIQUE KEY opf_uk (opf_name,opf_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE instrument (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  inst_identifier varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  inst_name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  inst_description varchar(4096) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY goi_uk (inst_identifier)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE investment (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  inv_opf_id bigint(20) NOT NULL,
+  inv_instrument_id bigint(20) NOT NULL,
+  inv_value  bigint NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY inv_uk (inv_opf_id, inv_instrument_id),
+  CONSTRAINT inv_opf_fk FOREIGN KEY (inv_opf_id) REFERENCES open_pension_fund (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT inv_instrument_fk FOREIGN KEY (inv_instrument_id) REFERENCES instrument (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

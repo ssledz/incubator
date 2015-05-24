@@ -37,7 +37,8 @@ public class DateParserUtil {
         DATE2(Pattern.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd")),
         DATE3(Pattern.compile("\\s*Month:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US)),
         DATE4(Pattern.compile("\\s*Month date:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US)),
-        DATE5(Pattern.compile("\\s*Monthly data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd"));
+        DATE5(Pattern.compile("\\s*Monthly data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd")),
+        DATE6(Pattern.compile("\\s*Stan na dzień:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd"));
 
         private final Pattern pattern;
         private final DateFormat dateFormat;
