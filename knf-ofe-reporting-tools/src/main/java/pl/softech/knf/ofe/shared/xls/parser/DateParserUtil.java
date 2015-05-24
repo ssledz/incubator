@@ -33,12 +33,21 @@ public class DateParserUtil {
 
     private enum Parser implements DateParser {
 
-        DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4}).*"), new SimpleDateFormat("dd.MM.yyyy")),
-        DATE2(Pattern.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd")),
-        DATE3(Pattern.compile("\\s*Month:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US)),
-        DATE4(Pattern.compile("\\s*Month date:\\s+(\\w+\\s\\d{4})"), new SimpleDateFormat("MMMMM yyyy", Locale.US)),
-        DATE5(Pattern.compile("\\s*Monthly data as of:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd")),
-        DATE6(Pattern.compile("\\s*Stan na dzień:\\s+(\\d{4}-\\d{2}-\\d{2})"), new SimpleDateFormat("yyyy-MM-dd"));
+        DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4}).*", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("dd.MM.yyyy")),
+        DATE2(Pattern.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("yyyy-MM-dd")),
+        DATE3(Pattern.compile("\\s*Month:\\s+(\\w+\\s\\d{4})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("MMMMM yyyy", Locale.US)),
+        DATE4(Pattern.compile("\\s*Month date:\\s+(\\w+\\s\\d{4})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("MMMMM yyyy", Locale.US)),
+        DATE5(Pattern.compile("\\s*Monthly data as of:\\s+(\\d{4}-\\d{2}-\\d{2})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("yyyy-MM-dd")),
+        DATE6(Pattern.compile("\\s*Stan na dzień:?\\s+(\\d{4}-\\d{2}-\\d{2})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("yyyy-MM-dd")),
+        DATE7(Pattern.compile("\\s*Stan na dzień:?\\s+(\\d{2}.\\d{2}.\\d{4})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("dd.MM.yyyy"));
+
 
         private final Pattern pattern;
         private final DateFormat dateFormat;

@@ -15,10 +15,15 @@ public class Instrument {
     private final String name;
     private final String description;
 
+    /**
+     * @param identifier must not be null
+     * @param name must not be null
+     * @param description can be null
+     */
     public Instrument(String identifier, String name, String description) {
         this.identifier = requireNonNull(identifier);
         this.name = requireNonNull(name);
-        this.description = requireNonNull(description);
+        this.description = description;
     }
 
     public String getIdentifier() {
