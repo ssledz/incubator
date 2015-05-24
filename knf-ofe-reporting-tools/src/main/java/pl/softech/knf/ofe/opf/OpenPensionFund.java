@@ -20,8 +20,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
 import pl.softech.knf.ofe.opf.contributions.Contribution;
+import pl.softech.knf.ofe.opf.investments.Investment;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,6 +45,8 @@ public class OpenPensionFund {
 
     private Contribution contribution;
 
+    private Collection<Investment> investmens;
+
     public OpenPensionFund(Builder builder) {
 
         this.key = new Key(builder.name, builder.date);
@@ -51,6 +57,12 @@ public class OpenPensionFund {
             this.contribution = new Contribution(builder.contribution);
         }
 
+        this.investmens = builder.investmens;
+
+    }
+
+    public Collection<Investment> getInvestmens() {
+        return Collections.unmodifiableCollection(investmens);
     }
 
     public Key getKey() {
@@ -131,6 +143,18 @@ public class OpenPensionFund {
 
         private NumberOfAccounts numberOfAccounts;
         private Contribution.Builder contribution;
+
+        private Collection<Investment> investmens = new HashSet<>();
+
+        public Builder addInvestment(Investment investment) {
+            investmens.add(investment);
+            return this;
+        }
+
+        public Builder addInvestments(Collection<Investment> investments) {
+            investmens.addAll(investments);
+            return this;
+        }
 
         public Builder withContribution(Contribution.Builder contribution) {
             this.contribution = contribution;

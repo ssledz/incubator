@@ -12,6 +12,6 @@ public class SimpleInstrumentFactory implements InstrumentFactory {
     }
 
     private String createIdentifier(String name) {
-        return name;
+        return name.trim().replaceAll("\\s+","_").replaceAll("\\W+", "x").toLowerCase();
     }
 }

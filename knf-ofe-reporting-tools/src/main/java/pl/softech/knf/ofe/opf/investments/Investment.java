@@ -1,6 +1,8 @@
 package pl.softech.knf.ofe.opf.investments;
 
-import pl.softech.knf.ofe.opf.OpenPensionFund;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -8,18 +10,12 @@ import pl.softech.knf.ofe.opf.OpenPensionFund;
  */
 public class Investment {
 
-    private final OpenPensionFund openPensionFund;
     private final Instrument instrument;
     private final long value;
 
-    public Investment(OpenPensionFund openPensionFund, Instrument instrument, long value) {
-        this.openPensionFund = openPensionFund;
+    public Investment(Instrument instrument, long value) {
         this.instrument = instrument;
         this.value = value;
-    }
-
-    public OpenPensionFund getOpenPensionFund() {
-        return openPensionFund;
     }
 
     public Instrument getInstrument() {
@@ -28,5 +24,35 @@ public class Investment {
 
     public long getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("instrument", instrument)
+                .append("value", value)
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof Investment)) {
+            return false;
+        }
+
+        Investment that = (Investment) o;
+
+        return new EqualsBuilder()
+                .append(instrument, that.instrument)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(instrument)
+                .toHashCode();
     }
 }
