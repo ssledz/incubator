@@ -48,7 +48,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
         private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringValue("Kategoria lokat");
         private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("Opis kategorii lokat");
-        private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:");
+        private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
+                .or(new CellHasIgnoreCaseStringValue("Portfel razem"));
 
         private final Specification<Cell> opfColumnSpecification = new CellIsOfStringType().and(lastColumnSpecification.not());
 
