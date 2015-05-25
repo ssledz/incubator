@@ -1,9 +1,7 @@
 package pl.softech.knf.ofe.opf.investments;
 
 import pl.softech.knf.ofe.opf.OpenPensionFundAbstractModule;
-import pl.softech.knf.ofe.opf.investments.jdbc.InstrumentRepository;
-import pl.softech.knf.ofe.opf.investments.jdbc.InvestmentsDatabasePopulator;
-import pl.softech.knf.ofe.opf.investments.jdbc.InvestmentsRowMapper;
+import pl.softech.knf.ofe.opf.investments.jdbc.*;
 import pl.softech.knf.ofe.opf.investments.xls.export.XlsInvestmentsWritter;
 import pl.softech.knf.ofe.opf.investments.xls.imp.InvestmentsProvider;
 
@@ -17,7 +15,8 @@ public class InvestmentsModule extends OpenPensionFundAbstractModule {
     protected void configure() {
 
         bind(InstrumentFactory.class).to(SimpleInstrumentFactory.class);
-        bind(InstrumentRepository.class);
+        bind(InstrumentRepository.class).to(SimpleInstrumentRepository.class);
+        bind(InvestmentRepository.class);
 
         bindDataProviders(InvestmentsProvider.class);
         bindDatabasePopulators(InvestmentsDatabasePopulator.class);
