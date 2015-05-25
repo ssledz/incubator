@@ -39,7 +39,7 @@ public class InvestmentsDatabasePopulator implements DatabasePopulator {
     }
 
     private Long queryForFundId(OpenPensionFund fund) {
-        return jdbcTemplate.query("SELECT id from open_pension_fund WHERE opf_name = ? AND opf_date = ?",
+        return jdbcTemplate.query("SELECT id FROM open_pension_fund WHERE opf_name = ? AND opf_date = ?",
                 new Object[]{fund.getName(), fund.getDate()},
                 new LongResultSetExtractor());
     }

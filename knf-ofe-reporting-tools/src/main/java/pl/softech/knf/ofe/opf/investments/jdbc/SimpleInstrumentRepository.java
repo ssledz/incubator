@@ -29,7 +29,8 @@ public class SimpleInstrumentRepository implements InstrumentRepository {
         return Iterables.getOnlyElement(
                 jdbcTemplate.query("SELECT * from instrument WHERE inst_identifier = ?",
                         new Object[]{identifier},
-                        new MyRowMapper())
+                        new MyRowMapper()),
+                null
         );
     }
 
@@ -38,7 +39,8 @@ public class SimpleInstrumentRepository implements InstrumentRepository {
         return Iterables.getOnlyElement(
                 jdbcTemplate.query("SELECT * from instrument WHERE id = ?",
                         new Object[]{id},
-                        new MyRowMapper())
+                        new MyRowMapper()),
+                null
         );
     }
 
@@ -62,7 +64,7 @@ public class SimpleInstrumentRepository implements InstrumentRepository {
         }
 
         int updated = jdbcTemplate.update("UPDATE instrument set inst_name = ?, inst_description = ? WHERE inst_identifier = ?",
-                instrument.getIdentifier(), instrument.getName(), instrument.getDescription(), instrument.getId());
+                instrument.getName(), instrument.getDescription(), instrument.getIdentifier());
 
         if (updated == 0) {
             jdbcTemplate.update("INSERT INTO instrument (inst_identifier, inst_name, inst_description) VALUES (?,?,?)",

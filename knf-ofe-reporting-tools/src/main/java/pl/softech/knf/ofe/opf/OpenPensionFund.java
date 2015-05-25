@@ -97,6 +97,7 @@ public class OpenPensionFund {
                 .append("numberOfMembers", numberOfMembers)
                 .append(numberOfAccounts)
                 .append(contribution)
+                .append(investmens)
                 .toString();
     }
 

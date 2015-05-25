@@ -9,6 +9,7 @@ import pl.softech.knf.ofe.opf.investments.jdbc.InstrumentRepository;
 import pl.softech.knf.ofe.opf.xls.AbstractXlsWritter;
 import pl.softech.knf.ofe.opf.xls.XlsWritter;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class XlsInvestmentsWritter implements XlsWritter {
 
     private final InstrumentRepository instrumentRepository;
 
+    @Inject
     public XlsInvestmentsWritter(InstrumentRepository instrumentRepository) {
         this.instrumentRepository = instrumentRepository;
     }
