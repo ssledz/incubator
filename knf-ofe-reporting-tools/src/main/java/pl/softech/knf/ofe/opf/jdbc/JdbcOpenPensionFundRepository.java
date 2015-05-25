@@ -7,6 +7,8 @@ import pl.softech.knf.ofe.opf.event.DatabasePopulatorErrorEvent;
 import pl.softech.knf.ofe.shared.jdbc.JdbcTemplate;
 import pl.softech.knf.ofe.shared.jdbc.RowMapper;
 
+import static pl.softech.knf.ofe.opf.jdbc.OpenPensionFundRowMapper.*;
+
 import javax.inject.Inject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,6 +62,9 @@ public class JdbcOpenPensionFundRepository implements OpenPensionFundRepository 
         public OpenPensionFund mapRow(ResultSet rs) throws SQLException {
 
             OpenPensionFund.Builder builder = new OpenPensionFund.Builder();
+
+            builder.withName(rs.getString(OPF_NAME_COLUMN_NAME))
+                    .withDate(rs.getDate(OPF_DATE_COLUMN_NAME));
 
             for (OpenPensionFundRowMapper mapper : rowMappers) {
                 mapper.mapRow(rs, builder);

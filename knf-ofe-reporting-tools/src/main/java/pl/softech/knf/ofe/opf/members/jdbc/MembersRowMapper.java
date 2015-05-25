@@ -33,8 +33,8 @@ public class MembersRowMapper implements OpenPensionFundRowMapper {
 
     @Override
     public void mapRow(ResultSet rs, OpenPensionFund.Builder builder) throws SQLException {
-        builder.withName(rs.getString(OPF_NAME_COLUMN_NAME))
-                .withDate(rs.getDate(OPF_DATE_COLUMN_NAME))
-                .withNumberOfMembers(requireNonNull(rs.getLong(OPF_NUMBER_OF_MEMBERS_COLUMN_NAME)));
+        builder.withNumberOfMembers(
+                requireNonNull(rs.getLong(OPF_NUMBER_OF_MEMBERS_COLUMN_NAME))
+        );
     }
 }

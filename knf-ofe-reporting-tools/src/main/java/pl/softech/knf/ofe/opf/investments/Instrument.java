@@ -12,19 +12,29 @@ import static java.util.Objects.requireNonNull;
  */
 public class Instrument {
 
+    private Long id;
     private final String identifier;
     private final String name;
     private final String description;
 
+    public Instrument(Long id, String identifier, String name, String description) {
+        this(identifier, name, description);
+        this.id = id;
+    }
+
     /**
-     * @param identifier must not be null
-     * @param name must not be null
+     * @param identifier  must not be null
+     * @param name        must not be null
      * @param description can be null
      */
     public Instrument(String identifier, String name, String description) {
         this.identifier = requireNonNull(identifier);
         this.name = requireNonNull(name);
         this.description = description;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getIdentifier() {

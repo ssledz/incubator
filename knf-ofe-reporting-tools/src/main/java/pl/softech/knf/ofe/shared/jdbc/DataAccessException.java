@@ -21,16 +21,19 @@ package pl.softech.knf.ofe.shared.jdbc;
  */
 public class DataAccessException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public DataAccessException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    public DataAccessException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public DataAccessException(final Throwable cause) {
-		super(cause);
-	}
+    public DataAccessException(String message) {
+        super(message);
+    }
 
-	
-	
+    public DataAccessException(final Throwable cause) {
+        super(cause);
+    }
+
+
 }

@@ -21,13 +21,11 @@ public class ContributionRowMapper implements OpenPensionFundRowMapper {
 
     @Override
     public void mapRow(ResultSet rs, OpenPensionFund.Builder builder) throws SQLException {
-        builder.withName(rs.getString(OPF_NAME_COLUMN_NAME))
-                .withDate(rs.getDate(OPF_DATE_COLUMN_NAME))
-                .withContribution(new Contribution.Builder()
-                                .withAmount(rs.getLong(OPF_CONTR_AMOUNT_COLUMN_NAME))
-                                .withInterests(rs.getLong(OPF_CONTR_INTEREST_COLUMN_NAME))
-                                .withNumber(rs.getLong(OPF_CONTR_NUMBER_COLUMN_NAME))
-                                .withAverageBasis(rs.getLong(OPF_CONTR_AVERAGE_BASIS_COLUMN_NAME))
-                );
+        builder.withContribution(new Contribution.Builder()
+                        .withAmount(rs.getLong(OPF_CONTR_AMOUNT_COLUMN_NAME))
+                        .withInterests(rs.getLong(OPF_CONTR_INTEREST_COLUMN_NAME))
+                        .withNumber(rs.getLong(OPF_CONTR_NUMBER_COLUMN_NAME))
+                        .withAverageBasis(rs.getLong(OPF_CONTR_AVERAGE_BASIS_COLUMN_NAME))
+        );
     }
 }

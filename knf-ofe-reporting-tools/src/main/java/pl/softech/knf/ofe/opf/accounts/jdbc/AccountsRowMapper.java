@@ -19,9 +19,9 @@ public class AccountsRowMapper implements OpenPensionFundRowMapper {
 
     @Override
     public void mapRow(ResultSet rs, OpenPensionFund.Builder builder) throws SQLException {
-        builder.withName(rs.getString(OPF_NAME_COLUMN_NAME))
-                .withDate(rs.getDate(OPF_DATE_COLUMN_NAME))
-                .withNumberOfAccount(requireNonNull(rs.getLong(OPF_NUMBER_OF_TOTAL_ACCOUNTS_COLUMN_NAME)),
-                        requireNonNull(rs.getLong(OPF_NUMBER_OF_INACTIVE_ACCOUNTS_COLUMN_NAME)));
+        builder.withNumberOfAccount(
+                requireNonNull(rs.getLong(OPF_NUMBER_OF_TOTAL_ACCOUNTS_COLUMN_NAME)),
+                requireNonNull(rs.getLong(OPF_NUMBER_OF_INACTIVE_ACCOUNTS_COLUMN_NAME))
+        );
     }
 }
