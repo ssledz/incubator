@@ -70,8 +70,13 @@ public class InvestmentsDatabasePopulator implements DatabasePopulator {
 
             requireNonNull(instrId);
 
-            jdbcTemplate.update("INSERT INTO investment (inv_opf_id, inv_instrument_id, inv_value) values (?,?,?)",
-                    fundId[0], instrId, investment.getValue());
+            int updated = jdbcTemplate.update("UPDATE investment SET inv_value = ? WHERE inv_opf_id = ? AND inv_instrument_id = ?",
+                    investment.getValue(), fundId[0], instrId);
+
+            if (updated == 0) {
+                jdbcTemplate.update("INSERT INTO investment (inv_opf_id, inv_instrument_id, inv_value) values (?,?,?)",
+                        fundId[0], instrId, investment.getValue());
+            }
 
         });
 
