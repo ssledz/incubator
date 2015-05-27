@@ -171,12 +171,7 @@ public class InvestmentsPortfolioParserTest {
                         "Kwity depozytowe",
                         "Inne lokaty",
                         "Portfel razem"
-                },
-                {
-                        "",
-                        "(w zł)"
                 }
-
         };
 
         InstrumentFactory instrumentFactory = (name, description) -> new Instrument(name.trim(), name, description);
@@ -218,7 +213,7 @@ public class InvestmentsPortfolioParserTest {
 
         String[][] header = {
                 {
-                        "Otwarty fundusz emerytalny",
+                        "Otwarty Fundusz Emerytalny",
                         "Akcje NFI",
                         "Akcje spółek notowanych na regulowanym rynku giełdowym",
                         "Bony skarbowe",
@@ -227,10 +222,6 @@ public class InvestmentsPortfolioParserTest {
                         "Inwestycje za granicą",
                         "Inne lokaty",
                         "Razem"
-                },
-                {
-                        "",
-                        "(w zł)"
                 }
 
         };
@@ -245,7 +236,7 @@ public class InvestmentsPortfolioParserTest {
                 .put(instr1,
                         new ImmutableMap.Builder<String, Double>()
                                 .put("AIG OFE", 0.0)
-                                .put("OFE Allianz Polska", 795_187_978.20)
+                                .put("OFE Allianz Polska", 0.0)
                                 .build())
                 .put(instr2,
                         new ImmutableMap.Builder<String, Double>()
@@ -290,14 +281,7 @@ public class InvestmentsPortfolioParserTest {
                         "Inne dłużne p.w. spółek publicznych",
                         "Inne dłużne p.w. dopuszczone do publicznego obrotu",
                         "Inne lokaty",
-                        "Portfel razem",
-                        "Aktywa",
-                        "Udział portfela w aktywach OFE"
-                },
-                {
-                        "",
-                        "(w zł)",
-                        "(w %)"
+                        "Portfel razem"
                 }
 
         };

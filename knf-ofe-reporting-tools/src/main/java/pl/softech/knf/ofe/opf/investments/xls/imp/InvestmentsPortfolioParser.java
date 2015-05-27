@@ -41,12 +41,46 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
     @Override
     protected State createStartingState(StateContext context) {
-        return new ParsingDateState(context, new ParsingRowOfHeaderState(context));
+        return new ParsingDateState(context, new ChooseParsingSchemeState(context));
     }
 
-    private class ParsingRowOfHeaderState extends AbstractState {
+    private class ChooseParsingSchemeState extends AbstractState {
 
-        private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringValue("Kategoria lokat");
+        private final Specification<Cell> fundsInColumnsFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Kategoria lokat");
+        private final Specification<Cell> fundsInRowsFirstColumnSpecification =
+                new CellHasIgnoreCaseStringValue("Otwarty fundusz emerytalny").or(new CellHasIgnoreCaseStringValue("OFE"));
+
+        protected ChooseParsingSchemeState(StateContext context) {
+            super(context);
+        }
+
+        @Override
+        public void parse(Row row) {
+
+            final Iterator<Cell> it = row.iterator();
+            while (it.hasNext()) {
+                final Cell cell = it.next();
+
+                if (fundsInColumnsFirstColumnSpecification.isSatisfiedBy(cell)) {
+                    context.setState(new ParsingRowOfHeaderWithFundInColumnState(context, fundsInColumnsFirstColumnSpecification));
+                    context.parse(row);
+                    return;
+                }
+
+                if (fundsInRowsFirstColumnSpecification.isSatisfiedBy(cell)) {
+                    context.setState(new ParsingRowOfHeadeWithFundInRowState(context, fundsInRowsFirstColumnSpecification));
+                    context.parse(row);
+                    return;
+                }
+
+            }
+
+        }
+    }
+
+    private class ParsingRowOfHeaderWithFundInColumnState extends AbstractState {
+
+        private final Specification<Cell> firstColumnSpecification;
         private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("Opis kategorii lokat");
         private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
                 .or(new CellHasIgnoreCaseStringValue("Portfel razem"));
@@ -59,8 +93,9 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
         private List<String> opfNames;
         private int cellCnt;
 
-        protected ParsingRowOfHeaderState(StateContext context) {
+        protected ParsingRowOfHeaderWithFundInColumnState(StateContext context, Specification<Cell> firstColumnSpecification) {
             super(context);
+            this.firstColumnSpecification = firstColumnSpecification;
         }
 
         private boolean processNextCell(Cell cell) {
@@ -280,5 +315,156 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
         }
     }
+
+
+    private class ParsingRowOfHeadeWithFundInRowState extends AbstractState {
+
+        private final Specification<Cell> firstColumnSpecification;
+        private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
+                .or(new CellHasIgnoreCaseStringValue("Portfel razem"))
+                .or(new CellHasIgnoreCaseStringValue("Razem"));
+        private final Specification<Cell> instrumentColumnSpecification = new CellIsOfStringType().and(lastColumnSpecification.not());
+
+
+        private List<String> allColumns;
+        private List<String> instruments;
+        private int cellCnt;
+
+        public ParsingRowOfHeadeWithFundInRowState(StateContext context, Specification<Cell> firstColumnSpecification) {
+            super(context);
+            this.firstColumnSpecification = firstColumnSpecification;
+        }
+
+        @Override
+        public void parse(Row row) {
+
+            allColumns = new LinkedList<>();
+            instruments = new LinkedList<>();
+            cellCnt = 0;
+
+            final Iterator<Cell> it = row.iterator();
+            while (it.hasNext()) {
+                final Cell firstCell = it.next();
+                if (firstColumnSpecification.isSatisfiedBy(firstCell) && it.hasNext()) {
+                    allColumns.add(firstCell.getStringCellValue());
+
+                    while (it.hasNext()) {
+                        final Cell cell = it.next();
+                        allColumns.add(cell.getStringCellValue());
+
+                        if (instrumentColumnSpecification.isSatisfiedBy(cell)) {
+                            instruments.add(cell.getStringCellValue());
+                        } else if (lastColumnSpecification.isSatisfiedBy(cell)) {
+                            String[] header = allColumns.toArray(new String[allColumns.size()]);
+                            fireHeader(header);
+                            State state = new ParsingRowOfRecordWithFundInRowState(context, cellCnt, instruments);
+                            context.setState(new EatEmptyRowsState(context, cellCnt, state));
+                            return;
+                        } else {
+                            context.setParsingFailed(true);
+                            return;
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    private class ParsingRowOfRecordWithFundInRowState extends AbstractState {
+
+        private final Specification<Cell> totalFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
+                .or(new CellHasIgnoreCaseStringValue("Razem"));
+
+        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
+                .and(totalFirstColumnSpecification.not());
+
+        private final Specification<Cell> remainingColumnsSpecification = new CellIsOfNumericType();
+
+
+        private final int startCellIndex;
+        private final String[] instruments;
+
+        public ParsingRowOfRecordWithFundInRowState(StateContext context, int startCellIndex, List<String> instruments) {
+            super(context);
+            this.startCellIndex = startCellIndex;
+            this.instruments = instruments.toArray(new String[instruments.size()]);
+        }
+
+        @Override
+        public void parse(Row row) {
+
+            int cellIt = startCellIndex;
+            final Cell opfName = row.getCell(cellIt++);
+
+            if (firstColumnSpecification.isSatisfiedBy(opfName)) {
+
+                for (int i = 0; i < instruments.length; i++, cellIt++) {
+                    Cell cell = row.getCell(cellIt);
+                    Instrument instrument = instrumentFactory.create(instruments[i], null);
+                    if (remainingColumnsSpecification.isSatisfiedBy(cell)) {
+                        fireRecord(instrument, opfName.getStringCellValue(), cell.getNumericCellValue());
+                    }
+                }
+
+                Cell cell = row.getCell(cellIt);
+                if (remainingColumnsSpecification.isSatisfiedBy(cell)) {
+                    fireTotal(opfName.getStringCellValue(), cell.getNumericCellValue());
+                }
+
+
+            } else {
+                context.setState(new ParsingTotalWithFundsInRowState(context, startCellIndex, instruments,
+                        totalFirstColumnSpecification));
+                context.parse(row);
+            }
+
+        }
+    }
+
+    private class ParsingTotalWithFundsInRowState extends AbstractState {
+
+        private final Specification<Cell> remainingColumnsSpecification = new CellIsOfNumericType();
+
+        private final Specification<Cell> firstColumnSpecification;
+        private final int startCellIndex;
+        private final String[] instruments;
+
+        public ParsingTotalWithFundsInRowState(StateContext context, int startCellIndex,
+                                               String[] instruments, Specification<Cell> firstColumnSpecification) {
+            super(context);
+            this.firstColumnSpecification = firstColumnSpecification;
+            this.startCellIndex = startCellIndex;
+            this.instruments = instruments;
+        }
+
+        @Override
+        public void parse(Row row) {
+            int cellIt = startCellIndex;
+
+            final Cell total = row.getCell(cellIt++);
+
+            if (firstColumnSpecification.isSatisfiedBy(total)) {
+
+                for (int i = 0; i < instruments.length; i++, cellIt++) {
+                    Cell cell = row.getCell(cellIt);
+                    if (remainingColumnsSpecification.isSatisfiedBy(cell)) {
+                        Instrument instrument = instrumentFactory.create(instruments[i], null);
+                        fireTotal(instrument, cell.getNumericCellValue());
+                    } else {
+                        context.setParsingFailed(true);
+                        return;
+                    }
+                }
+
+                context.setState(new EndingState());
+
+            }
+
+        }
+    }
+
 
 }
