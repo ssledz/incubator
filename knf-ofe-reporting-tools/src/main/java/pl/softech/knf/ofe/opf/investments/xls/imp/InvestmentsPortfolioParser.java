@@ -53,39 +53,74 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
         private final Specification<Cell> opfColumnSpecification = new CellIsOfStringType().and(lastColumnSpecification.not());
 
+        private boolean instrumentDescriptionAvailable;
+
+        private List<String> allColumns;
+        private List<String> opfNames;
+        private int cellCnt;
+
         protected ParsingRowOfHeaderState(StateContext context) {
             super(context);
+        }
+
+        private boolean processNextCell(Cell cell) {
+
+            allColumns.add(cell.getStringCellValue());
+
+            if (opfColumnSpecification.isSatisfiedBy(cell)) {
+
+                opfNames.add(cell.getStringCellValue());
+                return true;
+
+            } else if (lastColumnSpecification.isSatisfiedBy(cell)) {
+
+                String[] header = allColumns.toArray(new String[allColumns.size()]);
+                fireHeader(header);
+                State state = new ParsingRowOfRecordState(context, cellCnt, opfNames, instrumentDescriptionAvailable);
+                context.setState(new EatEmptyRowsState(context, cellCnt, state));
+                return false;
+
+            }
+
+            context.setParsingFailed(true);
+            return false;
         }
 
         @Override
         public void parse(Row row) {
 
-            List<String> allColumns = new LinkedList<>();
-            List<String> opfNames = new LinkedList<>();
+            allColumns = new LinkedList<>();
+            opfNames = new LinkedList<>();
+            cellCnt = 0;
+            instrumentDescriptionAvailable = false;
 
             final Iterator<Cell> it = row.iterator();
-            int cellCnt = 0;
             while (it.hasNext()) {
                 final Cell firstCell = it.next();
                 if (firstColumnSpecification.isSatisfiedBy(firstCell) && it.hasNext()) {
-                    final Cell secondCell = it.next();
                     allColumns.add(firstCell.getStringCellValue());
-                    if (secondColumnSpecification.isSatisfiedBy(secondCell) && it.hasNext()) {
+
+                    final Cell secondCell = it.next();
+
+                    if (secondColumnSpecification.isSatisfiedBy(secondCell)) {
+
+                        instrumentDescriptionAvailable = true;
                         allColumns.add(secondCell.getStringCellValue());
+
+                    } else {
+
+                        if (!processNextCell(secondCell)) {
+                            return;
+                        }
+
+                    }
+
+                    if (it.hasNext()) {
                         while (it.hasNext()) {
                             final Cell cell = it.next();
-                            allColumns.add(cell.getStringCellValue());
-                            if (opfColumnSpecification.isSatisfiedBy(cell)) {
-                                opfNames.add(cell.getStringCellValue());
-                            } else if (lastColumnSpecification.isSatisfiedBy(cell)) {
-                                String[] header = allColumns.toArray(new String[allColumns.size()]);
-                                fireHeader(header);
-                                context.setState(new ParsingRowOfRecordState(context, cellCnt, opfNames));
-                            } else {
-                                context.setParsingFailed(true);
+                            if (!processNextCell(cell)) {
                                 return;
                             }
-
                         }
 
                     } else {
@@ -99,21 +134,16 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
         }
     }
 
-    private class ParsingRowOfRecordState extends AbstractState {
-
-        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
-                .and(new CellHasIgnoreCaseStringValue("Razem:").not());
-        private final Specification<Cell> secondColumnSpecification = new CellIsOfStringType();
-
-        private final Specification<Cell> remainingColumnsSpecification = new CellIsOfNumericType();
+    private class EatEmptyRowsState extends AbstractState {
 
         private final int startCellIndex;
-        private final String[] openPensionFundNames;
 
-        protected ParsingRowOfRecordState(StateContext context, int startCellIndex, List<String> openPensionFundNames) {
+        private final State nextState;
+
+        public EatEmptyRowsState(StateContext context, int startCellIndex, State nextState) {
             super(context);
             this.startCellIndex = startCellIndex;
-            this.openPensionFundNames = openPensionFundNames.toArray(new String[openPensionFundNames.size()]);
+            this.nextState = nextState;
         }
 
         @Override
@@ -121,12 +151,63 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
             int cellIt = startCellIndex;
 
+            Cell cell = row.getCell(cellIt);
+            CellIsEmpty spec = new CellIsEmpty();
+
+            if (!spec.isSatisfiedBy(cell)) {
+                context.setState(nextState);
+                context.parse(row);
+            }
+
+        }
+    }
+
+    private class ParsingRowOfRecordState extends AbstractState {
+
+        private final Specification<Cell> totalFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
+                .or(new CellHasIgnoreCaseStringValue("Portfel razem"));
+
+        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
+                .and(totalFirstColumnSpecification.not());
+
+        private final Specification<Cell> secondColumnSpecification = new CellIsOfStringType();
+
+        private final Specification<Cell> remainingColumnsSpecification = new CellIsOfNumericType();
+
+        private final int startCellIndex;
+        private final String[] openPensionFundNames;
+        private final boolean instrumentDescriptionAvailable;
+
+        protected ParsingRowOfRecordState(StateContext context, int startCellIndex, List<String> openPensionFundNames, boolean
+                instrumentDescriptionAvailable) {
+            super(context);
+            this.startCellIndex = startCellIndex;
+            this.openPensionFundNames = openPensionFundNames.toArray(new String[openPensionFundNames.size()]);
+            this.instrumentDescriptionAvailable = instrumentDescriptionAvailable;
+        }
+
+        @Override
+        public void parse(Row row) {
+
+            int cellIt = startCellIndex;
+            String instrumentDescription = null;
+
             final Cell instrName = row.getCell(cellIt++);
-            final Cell instrDesc = row.getCell(cellIt++);
 
-            if (firstColumnSpecification.isSatisfiedBy(instrName) && secondColumnSpecification.isSatisfiedBy(instrDesc)) {
+            if (firstColumnSpecification.isSatisfiedBy(instrName)) {
 
-                Instrument instrument = instrumentFactory.create(instrName.getStringCellValue(), instrDesc.getStringCellValue());
+                if (instrumentDescriptionAvailable) {
+                    final Cell instrDesc = row.getCell(cellIt++);
+
+                    if (secondColumnSpecification.isSatisfiedBy(instrDesc)) {
+                        instrumentDescription = instrDesc.getStringCellValue();
+                    } else {
+                        return;
+                    }
+
+                }
+
+                Instrument instrument = instrumentFactory.create(instrName.getStringCellValue(), instrumentDescription);
 
                 for (int i = 0; i < openPensionFundNames.length; i++, cellIt++) {
                     Cell cell = row.getCell(cellIt);
@@ -142,7 +223,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
             } else {
 
-                context.setState(new ParsingTotalState(context, startCellIndex, openPensionFundNames));
+                context.setState(new ParsingTotalState(context, startCellIndex, openPensionFundNames, instrumentDescriptionAvailable,
+                        totalFirstColumnSpecification));
                 context.parse(row);
 
             }
@@ -152,17 +234,21 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
     private class ParsingTotalState extends AbstractState {
 
-        private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:");
+        private final Specification<Cell> firstColumnSpecification;
         private final Specification<Cell> secondColumnSpecification = new CellIsEmpty();
         private final Specification<Cell> remainingColumnsSpecification = new CellIsOfNumericType();
 
         private final int startCellIndex;
         private final String[] openPensionFundNames;
+        private final boolean instrumentDescriptionAvailable;
 
-        public ParsingTotalState(StateContext context, int startCellIndex, String[] openPensionFundNames) {
+        public ParsingTotalState(StateContext context, int startCellIndex, String[] openPensionFundNames, boolean
+                instrumentDescriptionAvailable, Specification<Cell> firstColumnSpecification) {
             super(context);
             this.startCellIndex = startCellIndex;
             this.openPensionFundNames = openPensionFundNames;
+            this.instrumentDescriptionAvailable = instrumentDescriptionAvailable;
+            this.firstColumnSpecification = firstColumnSpecification;
         }
 
         @Override
@@ -171,9 +257,15 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
             int cellIt = startCellIndex;
 
             final Cell total = row.getCell(cellIt++);
-            final Cell empty = row.getCell(cellIt++);
 
-            if (firstColumnSpecification.isSatisfiedBy(total) && secondColumnSpecification.isSatisfiedBy(empty)) {
+            if (firstColumnSpecification.isSatisfiedBy(total)) {
+
+                if (instrumentDescriptionAvailable) {
+                    final Cell empty = row.getCell(cellIt++);
+                    if (!secondColumnSpecification.isSatisfiedBy(empty)) {
+                        return;
+                    }
+                }
 
                 for (int i = 0; i < openPensionFundNames.length; i++, cellIt++) {
                     Cell cell = row.getCell(cellIt);

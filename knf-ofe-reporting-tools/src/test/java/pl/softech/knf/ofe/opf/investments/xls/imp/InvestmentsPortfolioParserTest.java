@@ -83,7 +83,6 @@ public class InvestmentsPortfolioParserTest {
     }
 
     @Test
-    @Ignore
     public void testParseSheet2() {
 
         Sheet sheet = loadSheet("Portfel inwestycyjny OFE", "dane1207_tcm75-6283.xls");
@@ -107,10 +106,6 @@ public class InvestmentsPortfolioParserTest {
                         "OFE  PZU „Złota Jesień”",
                         "OFE Skarbiec-Emerytura",
                         "Portfel razem"
-                },
-                {
-                        "",
-                        "(w zł)"
                 }
 
         };
@@ -149,7 +144,6 @@ public class InvestmentsPortfolioParserTest {
 
 
     @Test
-    @Ignore
     public void testParseSheet3() {
 
         Sheet sheet = loadSheet(" Portfel inwestycyjny OFE", "dane0104_tcm75-4000.xls");
@@ -218,7 +212,6 @@ public class InvestmentsPortfolioParserTest {
     }
 
     @Test
-    @Ignore
     public void testParseSheet4() {
 
         Sheet sheet = loadSheet("Porfel inwestycyjny", "dane0402_tcm75-4044.xls");
@@ -275,7 +268,6 @@ public class InvestmentsPortfolioParserTest {
     }
 
     @Test
-    @Ignore
     public void testParseSheet5() {
 
         Sheet sheet = loadSheet("V  Portfel inwestycyjny OFE", "dane0403_tcm75-4025.xls");
