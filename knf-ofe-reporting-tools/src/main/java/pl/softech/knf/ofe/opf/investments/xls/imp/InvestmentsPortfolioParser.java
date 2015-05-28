@@ -7,10 +7,7 @@ import pl.softech.knf.ofe.opf.investments.Instrument;
 import pl.softech.knf.ofe.opf.investments.InstrumentFactory;
 import pl.softech.knf.ofe.shared.spec.Specification;
 import pl.softech.knf.ofe.shared.xls.parser.*;
-import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringValue;
-import pl.softech.knf.ofe.shared.xls.spec.CellIsEmpty;
-import pl.softech.knf.ofe.shared.xls.spec.CellIsOfNumericType;
-import pl.softech.knf.ofe.shared.xls.spec.CellIsOfStringType;
+import pl.softech.knf.ofe.shared.xls.spec.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -203,6 +200,7 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
     private class ParsingRowOfRecordState extends AbstractState {
 
         private final Specification<Cell> totalFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
+                .or(new CellHasIgnoreCaseStringPatternValue("Razem:?"))
                 .or(new CellHasIgnoreCaseStringValue("Portfel razem"));
 
         private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
