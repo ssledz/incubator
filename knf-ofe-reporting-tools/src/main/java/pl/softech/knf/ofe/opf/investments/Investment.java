@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Objects;
+
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
@@ -14,7 +16,7 @@ public class Investment {
     private final long value;
 
     public Investment(Instrument instrument, long value) {
-        this.instrument = instrument;
+        this.instrument = Objects.requireNonNull(instrument);
         this.value = value;
     }
 

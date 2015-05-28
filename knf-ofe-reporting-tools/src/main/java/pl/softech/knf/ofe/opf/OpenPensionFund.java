@@ -22,10 +22,7 @@ import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
 import pl.softech.knf.ofe.opf.contributions.Contribution;
 import pl.softech.knf.ofe.opf.investments.Investment;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -145,7 +142,7 @@ public class OpenPensionFund {
         private NumberOfAccounts numberOfAccounts;
         private Contribution.Builder contribution;
 
-        private Collection<Investment> investmens = new HashSet<>();
+        private Collection<Investment> investmens = new LinkedList<>();
 
         public Builder addInvestment(Investment investment) {
             investmens.add(investment);

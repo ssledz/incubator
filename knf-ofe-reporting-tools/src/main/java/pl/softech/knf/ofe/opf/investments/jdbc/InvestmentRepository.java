@@ -26,7 +26,7 @@ public class InvestmentRepository {
     @Inject
     public InvestmentRepository(JdbcTemplate jdbcTemplate, InstrumentRepository instrumentRepository) {
         this.jdbcTemplate = jdbcTemplate;
-        this.instrumentRepository = new CacheableInstrumentRepository(instrumentRepository);
+        this.instrumentRepository = instrumentRepository;//new CacheableInstrumentRepository(instrumentRepository);
     }
 
     public List<Investment> findByOpenPensionFundId(Long openPensionFundId) {

@@ -214,7 +214,8 @@ public class XlsInvestmentsWritter implements XlsWritter {
                                 "1994 r. o autostradach płatnych oraz o Krajowym Funduszu Drogowym"
                 ),
                 to("0490d298ae16a291f84b5d79f7f5e253", "Obligacje autostradowe"),
-                to("ad635bd671957c9775e50f645759d461", "33. Obligacje emitowane przez BGK na zasadach określonych w ustawie o autostradach płatnych oraz o Krajowym Funduszu Drogowym"),
+                to("ad635bd671957c9775e50f645759d461", "33. Obligacje emitowane przez BGK na zasadach określonych w ustawie o " +
+                        "autostradach płatnych oraz o Krajowym Funduszu Drogowym"),
                 to("33e2e8ef6c3665a1be8537dd4dbb25dc", "Obligacje BGK autostrady KFD")
         );
 
@@ -272,10 +273,10 @@ public class XlsInvestmentsWritter implements XlsWritter {
     }
 
     private static void map(Instrument instrument, Instrument... to) {
-        for (Instrument t : to) {
-            instrument2instrument.put(t, instrument);
-            instrument2Set.put(t, new HashSet<>(Arrays.asList(to)));
-        }
+//        for (Instrument t : to) {
+//            instrument2instrument.put(t, instrument);
+//            instrument2Set.put(t, new HashSet<>(Arrays.asList(to)));
+//        }
     }
 
     private static class InvestmentByInstrument extends AbstractXlsWritter {
@@ -297,6 +298,11 @@ public class XlsInvestmentsWritter implements XlsWritter {
         protected void writeCell(Cell cell, OpenPensionFund fund) {
 
             Optional<Long> value;
+
+            long sum = fund.getInvestmens()
+                    .stream()
+                    .mapToLong(inv -> inv.getValue())
+                    .sum();
 
             if (!instrument2instrument.containsValue(instrument)) {
 
@@ -321,7 +327,8 @@ public class XlsInvestmentsWritter implements XlsWritter {
 
 
             if (value.isPresent()) {
-                cell.setCellValue((float) value.get() / 100.0);
+//                cell.setCellValue((float) value.get() / 100.0);
+                cell.setCellValue((float) value.get() / (float) sum * 100.0);
             } else {
                 cell.setCellValue(0);
             }
