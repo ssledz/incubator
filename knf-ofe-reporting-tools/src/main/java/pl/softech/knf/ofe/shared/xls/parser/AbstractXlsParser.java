@@ -74,6 +74,10 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
             context.setParsingFailed(false);
             context.parse(row);
         });
+
+        if (!(context.getState() instanceof EndingState)) {
+            eventBus.post(new ParserNotInEndingStateAfterFinish(getClass()));
+        }
     }
 
     protected class ParsingDateState extends AbstractState {
@@ -100,10 +104,6 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
 
                 }
 
-            }
-
-            if (!(context.getState() instanceof EndingState)) {
-                eventBus.post(new ParserNotInEndingStateAfterFinish(getClass()));
             }
 
         }
