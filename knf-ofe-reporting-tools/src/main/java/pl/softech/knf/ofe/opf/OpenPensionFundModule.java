@@ -50,9 +50,9 @@ public class OpenPensionFundModule extends AbstractModule {
         bind(OpenPensionFundDbImportTask.class);
         bind(OpenPensionFundDbExportTask.class);
 
-        install(new MembersModule());
-        install(new AccountsModule());
-        install(new ContributionModule());
+//        install(new MembersModule());
+//        install(new AccountsModule());
+//        install(new ContributionModule());
         install(new InvestmentsModule());
     }
 }
