@@ -33,7 +33,7 @@ public class DateParserUtil {
 
     private enum Parser implements DateParser {
 
-        DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}.\\d{2}.\\d{4}).*", Pattern.CASE_INSENSITIVE),
+        DATE1(Pattern.compile("\\s*Data as of:\\s+(\\d{2}\\.\\d{2}\\.\\d{4}).*", Pattern.CASE_INSENSITIVE),
                 new SimpleDateFormat("dd.MM.yyyy")),
         DATE2(Pattern.compile("\\s*Data as of:\\s+(\\d{4}-\\d{2}-\\d{2})", Pattern.CASE_INSENSITIVE),
                 new SimpleDateFormat("yyyy-MM-dd")),
@@ -45,8 +45,12 @@ public class DateParserUtil {
                 new SimpleDateFormat("yyyy-MM-dd")),
         DATE6(Pattern.compile("\\s*Stan na dzień:?\\s+(\\d{4}-\\d{2}-\\d{2})", Pattern.CASE_INSENSITIVE),
                 new SimpleDateFormat("yyyy-MM-dd")),
-        DATE7(Pattern.compile("\\s*Stan na dzień:?\\s+(\\d{2}.\\d{2}.\\d{4})", Pattern.CASE_INSENSITIVE),
-                new SimpleDateFormat("dd.MM.yyyy"));
+        DATE7(Pattern.compile("\\s*Stan na dzień:?\\s+(\\d{4}\\.\\d{2}\\.\\d{2})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("yyyy.MM.dd")),
+        DATE8(Pattern.compile("\\s*Stan na dzień:?\\s+(\\d{2}\\.\\d{2}\\.\\d{4})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("dd.MM.yyyy")),
+        DATE9(Pattern.compile("\\s*Stan na dzień:?\\s+(\\d{2}-\\d{2}-\\d{4})", Pattern.CASE_INSENSITIVE),
+                new SimpleDateFormat("dd-MM-yyyy"));
 
 
         private final Pattern pattern;
