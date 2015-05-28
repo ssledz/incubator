@@ -29,7 +29,7 @@ public class AccountsDatabasePopulator implements DatabasePopulator {
     public void populate(OpenPensionFund fund) {
 
         if(fund.getNumberOfAccounts() == null) {
-            eventBus.post(new LackOfDataEvent("There is no numberOfAccounts in {0}", fund));
+            eventBus.post(new LackOfDataEvent("There is no numberOfAccounts in {0}", fund.getName()));
             return;
         }
 

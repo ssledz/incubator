@@ -29,7 +29,7 @@ public class ContributionDatabasePopulator implements DatabasePopulator {
     public void populate(OpenPensionFund fund) {
 
         if (fund.getContribution() == null) {
-            eventBus.post(new LackOfDataEvent("There is no contribution in {0}", fund));
+            eventBus.post(new LackOfDataEvent("There is no contribution in {0}", fund.getName()));
             return;
         }
 

@@ -212,6 +212,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
         private final Specification<Cell> remainingColumnsSpecification = new CellIsOfNumericType();
 
+        private final Specification<Cell> emptyCell = new CellIsEmpty();
+
         private final int startCellIndex;
         private final String[] openPensionFundNames;
         private final boolean instrumentDescriptionAvailable;
@@ -251,6 +253,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
                     Cell cell = row.getCell(cellIt);
                     if (remainingColumnsSpecification.isSatisfiedBy(cell)) {
                         fireRecord(instrument, openPensionFundNames[i], cell.getNumericCellValue());
+                    } else if (emptyCell.isSatisfiedBy(cell)) {
+                        fireRecord(instrument, openPensionFundNames[i], 0);
                     }
                 }
 
@@ -386,6 +390,7 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
         private final Specification<Cell> remainingColumnsSpecification = new CellIsOfNumericType();
 
+        private final Specification<Cell> emptyCell = new CellIsEmpty();
 
         private final int startCellIndex;
         private final String[] instruments;
@@ -409,6 +414,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
                     Instrument instrument = instrumentFactory.create(instruments[i], null);
                     if (remainingColumnsSpecification.isSatisfiedBy(cell)) {
                         fireRecord(instrument, opfName.getStringCellValue(), cell.getNumericCellValue());
+                    } else if (emptyCell.isSatisfiedBy(cell)) {
+                        fireRecord(instrument, opfName.getStringCellValue(), 0);
                     }
                 }
 

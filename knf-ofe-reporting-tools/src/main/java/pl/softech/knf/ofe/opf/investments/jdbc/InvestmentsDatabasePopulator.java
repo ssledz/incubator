@@ -48,7 +48,7 @@ public class InvestmentsDatabasePopulator implements DatabasePopulator {
     public void populate(OpenPensionFund fund) {
 
         if (fund.getInvestmens().isEmpty()) {
-            eventBus.post(new LackOfDataEvent("There is no contribution in {0}", fund));
+            eventBus.post(new LackOfDataEvent("There is no investments in {0}", fund.getName()));
         }
 
         final Long fundId[] = new Long[1];
