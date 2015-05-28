@@ -273,10 +273,10 @@ public class XlsInvestmentsWritter implements XlsWritter {
     }
 
     private static void map(Instrument instrument, Instrument... to) {
-//        for (Instrument t : to) {
-//            instrument2instrument.put(t, instrument);
-//            instrument2Set.put(t, new HashSet<>(Arrays.asList(to)));
-//        }
+        for (Instrument t : to) {
+            instrument2instrument.put(t, instrument);
+            instrument2Set.put(t, new HashSet<>(Arrays.asList(to)));
+        }
     }
 
     private static class InvestmentByInstrument extends AbstractXlsWritter {
@@ -318,7 +318,7 @@ public class XlsInvestmentsWritter implements XlsWritter {
                 value = Optional.of(
                         fund.getInvestmens()
                                 .stream()
-                                .filter(inv -> synonyms.contains(inv))
+                                .filter(inv -> synonyms.contains(inv.getInstrument()))
                                 .mapToLong(inv -> inv.getValue())
                                 .sum()
                 );
