@@ -1,5 +1,6 @@
 package pl.softech.knf.ofe.opf.investments.xls.imp;
 
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import pl.softech.knf.ofe.opf.investments.Instrument;
@@ -23,7 +24,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
     private final InstrumentFactory instrumentFactory;
 
-    public InvestmentsPortfolioParser(InstrumentFactory instrumentFactory) {
+    public InvestmentsPortfolioParser(EventBus eventBus, InstrumentFactory instrumentFactory) {
+        super(eventBus);
         this.instrumentFactory = instrumentFactory;
     }
 

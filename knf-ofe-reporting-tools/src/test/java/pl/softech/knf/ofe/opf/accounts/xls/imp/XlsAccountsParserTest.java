@@ -1,6 +1,7 @@
 package pl.softech.knf.ofe.opf.accounts.xls.imp;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Test;
 import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
@@ -25,7 +26,7 @@ public class XlsAccountsParserTest {
 
         Sheet sheet = loadSheet("II Accounts", "dane0402_tcm75-4044.xls");
 
-        XlsAccountsParser parser = new XlsAccountsParser();
+        XlsAccountsParser parser = new XlsAccountsParser(new EventBus());
 
         String[][] header = {
                 {"Open Pension Fund", "Number of accounts"},

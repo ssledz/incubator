@@ -1,6 +1,8 @@
 package pl.softech.knf.ofe.shared.xls.parser;
 
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.*;
+import pl.softech.knf.ofe.opf.event.ParserNotInEndingStateAfterFinish;
 import pl.softech.knf.ofe.shared.spec.Specification;
 import pl.softech.knf.ofe.shared.xls.spec.CellIsOfFormulaType;
 
@@ -17,6 +19,12 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
     protected final Specification<Cell> cellIsFormula = new CellIsOfFormulaType();
 
     protected final List<T> listeners = new LinkedList<>();
+
+    private final EventBus eventBus;
+
+    public AbstractXlsParser(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     protected void fireDate(final Date date) {
         listeners.forEach(l -> l.date(date));
@@ -93,6 +101,11 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
                 }
 
             }
+
+            if (!(context.getState() instanceof EndingState)) {
+                eventBus.post(new ParserNotInEndingStateAfterFinish(getClass()));
+            }
+
         }
 
     }
@@ -127,7 +140,7 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
                         }
                     } else {
 
-                        if(!columns.isEmpty()) {
+                        if (!columns.isEmpty()) {
                             context.setParsingFailed(true);
                             return;
                         }
@@ -135,7 +148,7 @@ public abstract class AbstractXlsParser<T extends ParsingEventListener> {
                         break;
                     }
 
-                    if(specIt.hasNext() && !cellIt.hasNext()) {
+                    if (specIt.hasNext() && !cellIt.hasNext()) {
                         context.setParsingFailed(true);
                         return;
                     }

@@ -1,5 +1,6 @@
 package pl.softech.knf.ofe.opf.contributions.xls.imp;
 
+import com.google.common.eventbus.EventBus;
 import pl.softech.knf.ofe.shared.xls.parser.AbstractXlsParser;
 import pl.softech.knf.ofe.shared.xls.parser.State;
 import pl.softech.knf.ofe.shared.xls.parser.StateBranch;
@@ -17,7 +18,11 @@ import java.util.Arrays;
  */
 public class XlsContributionParser extends AbstractXlsParser<ContributionParsingEventListener> {
 
-    @Override
+        public XlsContributionParser(EventBus eventBus) {
+                super(eventBus);
+        }
+
+        @Override
     protected State createStartingState(StateContext context) {
         return new ParsingDateState(context,
                 new StateBranch(context,

@@ -14,6 +14,10 @@ public class StateContext implements State {
 
     private int startCellIndex;
 
+    public State getState() {
+        return state;
+    }
+
     public int getStartCellIndex() {
         return startCellIndex;
     }

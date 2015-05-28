@@ -1,6 +1,7 @@
 package pl.softech.knf.ofe.opf.contributions.xls.imp;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Test;
 import pl.softech.knf.ofe.opf.contributions.Contribution;
@@ -59,7 +60,7 @@ public class XlsContributionParserTest {
         final boolean[] parsedTotal = new boolean[1];
         final boolean[] parsedHeader = new boolean[1];
 
-        XlsContributionParser parser = new XlsContributionParser();
+        XlsContributionParser parser = new XlsContributionParser(new EventBus());
 
         parser.addParsingEventListener(new ContributionParsingEventListener() {
             @Override

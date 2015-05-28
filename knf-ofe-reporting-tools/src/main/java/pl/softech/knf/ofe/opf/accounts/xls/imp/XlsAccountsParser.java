@@ -1,5 +1,6 @@
 package pl.softech.knf.ofe.opf.accounts.xls.imp;
 
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import pl.softech.knf.ofe.shared.spec.Specification;
@@ -16,6 +17,10 @@ import java.util.Iterator;
  * @since 1.0
  */
 class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> {
+
+    public XlsAccountsParser(EventBus eventBus) {
+        super(eventBus);
+    }
 
     @Override
     protected State createStartingState(final StateContext context) {

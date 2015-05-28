@@ -21,6 +21,7 @@ import pl.softech.knf.ofe.InjectLogger;
 import pl.softech.knf.ofe.Jdbc;
 import pl.softech.knf.ofe.opf.event.DatabasePopulatorErrorEvent;
 import pl.softech.knf.ofe.opf.event.LackOfDataEvent;
+import pl.softech.knf.ofe.opf.event.ParserNotInEndingStateAfterFinish;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
 import pl.softech.knf.ofe.shared.task.Task;
@@ -60,6 +61,11 @@ public class OpenPensionFundDbImportTask implements Task {
 
     @Subscribe
     public void listen(LackOfDataEvent event) {
+        event.log(logger, currentPayload);
+    }
+
+    @Subscribe
+    public void listen(ParserNotInEndingStateAfterFinish event) {
         event.log(logger, currentPayload);
     }
 

@@ -1,5 +1,6 @@
 package pl.softech.knf.ofe.opf.accounts.xls.imp;
 
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import pl.softech.knf.ofe.opf.*;
@@ -23,17 +24,19 @@ public class AccountsProvider implements DataProvider {
 
     private final OpenPensionFundNameTranslator nameTranslator;
     private final OpenPensionFundDateAdjuster dateAdjuster;
+    private final EventBus eventBus;
 
     @Inject
-    public AccountsProvider(OpenPensionFundNameTranslator nameTranslator, OpenPensionFundDateAdjuster dateAdjuster) {
+    public AccountsProvider(OpenPensionFundNameTranslator nameTranslator, OpenPensionFundDateAdjuster dateAdjuster, EventBus eventBus) {
         this.nameTranslator = nameTranslator;
         this.dateAdjuster = dateAdjuster;
+        this.eventBus = eventBus;
     }
 
     @Override
     public Iterator<? extends DataPopulator> iterator(Workbook wb) {
 
-        XlsAccountsParser parser = new XlsAccountsParser();
+        XlsAccountsParser parser = new XlsAccountsParser(eventBus);
 
         List<OpenPensionFund> funds = new LinkedList<>();
 

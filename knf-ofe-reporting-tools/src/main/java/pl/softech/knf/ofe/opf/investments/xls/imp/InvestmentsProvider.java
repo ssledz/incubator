@@ -1,5 +1,6 @@
 package pl.softech.knf.ofe.opf.investments.xls.imp;
 
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import pl.softech.knf.ofe.opf.OpenPensionFund;
@@ -32,19 +33,21 @@ public class InvestmentsProvider implements DataProvider {
     private final OpenPensionFundNameTranslator nameTranslator;
     private final OpenPensionFundDateAdjuster dateAdjuster;
     private final InstrumentFactory instrumentFactory;
+    private final EventBus eventBus;
 
     @Inject
     public InvestmentsProvider(OpenPensionFundNameTranslator nameTranslator, OpenPensionFundDateAdjuster dateAdjuster, InstrumentFactory
-            instrumentFactory) {
+            instrumentFactory, EventBus eventBus) {
         this.nameTranslator = nameTranslator;
         this.dateAdjuster = dateAdjuster;
         this.instrumentFactory = instrumentFactory;
+        this.eventBus = eventBus;
     }
 
     @Override
     public Iterator<? extends DataPopulator> iterator(Workbook wb) {
 
-        InvestmentsPortfolioParser parser = new InvestmentsPortfolioParser(instrumentFactory);
+        InvestmentsPortfolioParser parser = new InvestmentsPortfolioParser(eventBus, instrumentFactory);
 
         final Map<String, OpenPensionFund.Builder> name2fundBuilder = new HashMap<>();
 

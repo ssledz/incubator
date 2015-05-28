@@ -1,6 +1,7 @@
 package pl.softech.knf.ofe.opf.investments.xls.imp;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.eventbus.EventBus;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -341,7 +342,7 @@ public class InvestmentsPortfolioParserTest {
 
         parsedTotalOpf.addAll(totalOpf2value.keySet());
 
-        InvestmentsPortfolioParser parser = new InvestmentsPortfolioParser(instrumentFactory);
+        InvestmentsPortfolioParser parser = new InvestmentsPortfolioParser(new EventBus(), instrumentFactory);
 
         parser.addParsingEventListener(new InvestmentsParsingEventListener() {
             @Override
