@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -58,6 +59,17 @@ public class XlsUtils {
         font.setFontName(fontName);
         font.setBold(true);
         return font;
+    }
+
+    public static Sheet getSheetByPattern(final Workbook wb, Pattern pattern) {
+        for(int i = 0; i < wb.getNumberOfSheets(); i++) {
+            Sheet sheet = wb.getSheetAt(i);
+            String sheetName = sheet.getSheetName();
+            if(pattern.matcher(sheetName).matches()) {
+                return sheet;
+            }
+        }
+        return null;
     }
 
 }

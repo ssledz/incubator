@@ -319,6 +319,65 @@ public class InvestmentsPortfolioParserTest {
         testTestParseSheet(instrumentFactory, sheet, "2003-04-30", header, inst2inv, totalInstr2value, totalOpf2value);
     }
 
+    @Test
+    public void testParseSheet6() {
+
+        Sheet sheet = loadSheet("Portfel inwestycyjny OFE", "2014_06_tcm75-38540.xls");
+
+        String[][] header = {
+                {
+                        "Opis kategorii lokat",
+                        "AEGON OFE",
+                        "Allianz Polska OFE",
+                        "Amplico OFE",
+                        "Aviva OFE Aviva BZ WBK",
+                        "AXA OFE",
+                        "Generali OFE",
+                        "ING OFE",
+                        "Nordea OFE",
+                        "Pekao OFE",
+                        "PKO BP Bankowy OFE",
+                        "OFE Pocztylion",
+                        "OFE PZU \"Złota Jesień\"",
+                        "OFE WARTA",
+                        "Razem:"
+
+                }
+
+        };
+
+        InstrumentFactory instrumentFactory = (name, description) -> new Instrument(name.trim(), name, description);
+
+        Instrument instr1 = instrumentFactory.create("5. Depozyty bankowe w walucie polskiej", null);
+
+        Instrument instr2 = instrumentFactory.create("19. Krajowe obligacje przychodowe", null);
+
+        Map<Instrument, Map<String, Double>> inst2inv = new ImmutableMap.Builder<Instrument, Map<String, Double>>()
+                .put(instr1,
+                        new ImmutableMap.Builder<String, Double>()
+                                .put("AEGON OFE", 293_882_557.25)
+                                .put("Allianz Polska OFE", 198_353_165.67)
+                                .build())
+                .put(instr2,
+                        new ImmutableMap.Builder<String, Double>()
+                                .put("AEGON OFE", 25_582_732.14)
+                                .put("Allianz Polska OFE", 0.0)
+                                .build())
+                .build();
+
+        Map<Instrument, Double> totalInstr2value = new ImmutableMap.Builder<Instrument, Double>()
+                .put(instr1, 8_692_619_580.32)
+                .put(instr2, 146_675_696.61)
+                .build();
+
+        Map<String, Double> totalOpf2value = new ImmutableMap.Builder<String, Double>()
+                .put("AEGON OFE", 6_412_629_675.87)
+                .put("Allianz Polska OFE", 4_651_594_527.72)
+                .build();
+
+        testTestParseSheet(instrumentFactory, sheet, "2014-06-30", header, inst2inv, totalInstr2value, totalOpf2value);
+    }
+
     private void testTestParseSheet(InstrumentFactory instrumentFactory, Sheet sheet, String sheetDate, String[][] header, Map<Instrument,
             Map<String, Double>> inst2inv,
                                     Map<Instrument, Double> totalInstr2value, Map<String, Double> totalOpf2value) {

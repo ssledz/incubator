@@ -13,7 +13,10 @@ import pl.softech.knf.ofe.opf.xls.DataProvider;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static pl.softech.knf.ofe.shared.xls.XlsUtils.getSheetByPattern;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -21,8 +24,7 @@ import java.util.stream.Collectors;
  */
 public class ContributionProvider implements DataProvider {
 
-    private static final String CONTRIBUTION_SHEET_NAME = "Contributions";
-    private static final String CONTRIBUTION_SHEET_NAME2 = "III Contributions";
+    private static final Pattern SHEET_NAME_PATTERN = Pattern.compile(".*\\s?Contributions\\s?.*", Pattern.CASE_INSENSITIVE);
 
     private final OpenPensionFundNameTranslator nameTranslator;
     private final OpenPensionFundDateAdjuster dateAdjuster;
@@ -67,11 +69,7 @@ public class ContributionProvider implements DataProvider {
 
         });
 
-        Sheet sheet = wb.getSheet(CONTRIBUTION_SHEET_NAME);
-
-        if (sheet == null) {
-            sheet = wb.getSheet(CONTRIBUTION_SHEET_NAME2);
-        }
+        Sheet sheet = getSheetByPattern(wb, SHEET_NAME_PATTERN);
 
         if (sheet == null) {
             return new ArrayList<DataPopulator>().iterator();

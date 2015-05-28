@@ -348,6 +348,25 @@ public class XlsOpenPensionFundRepositoryTest {
 
     }
 
+    @Test
+    public void testFindAllForFile8() throws Exception {
+
+        List<OpenPensionFund> funds = findAll("2014_06_tcm75-38540.xls");
+
+        OpenPensionFund fund = fund(funds, "AEGON OFE");
+        assertThat(fund.getNumberOfMembers(), is(937_534L));
+        assertThat(fund.getNumberOfAccounts().getTotal(), is(945_483L));
+        assertThat(fund.getNumberOfAccounts().getInactive(), is(18_770L));
+        assertThat(fund.getContribution().getAmount(), is(37_766_608_23L));
+        assertThat(fund.getContribution().getInterests(), is(213_479_79L));
+        assertThat(fund.getContribution().getNumber(), is(769_962L));
+        assertThat(fund.getContribution().getAverageBasis(), is(0L));
+        assertThat(fund.getInvestmens().size(), is(21));
+        assertThat(investment(fund, "5. Depozyty bankowe w walucie polskiej"), is(Optional.of(293_882_557_25L)));
+        assertThat(investment(fund, "19. Krajowe obligacje przychodowe"), is(Optional.of(25_582_732_14L)));
+
+    }
+
     private static class TestModule extends OpenPensionFundAbstractModule {
 
         @Override

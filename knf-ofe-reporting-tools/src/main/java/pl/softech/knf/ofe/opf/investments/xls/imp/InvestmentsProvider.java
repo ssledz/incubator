@@ -15,7 +15,10 @@ import pl.softech.knf.ofe.opf.xls.DataProvider;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static pl.softech.knf.ofe.shared.xls.XlsUtils.getSheetByPattern;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -23,12 +26,7 @@ import java.util.stream.Collectors;
  */
 public class InvestmentsProvider implements DataProvider {
 
-    private static final String[] SHEET_NAMES = {
-            "Portfel inwestycyjny OFE",
-            " Portfel inwestycyjny OFE",
-            "Porfel inwestycyjny",
-            "V  Portfel inwestycyjny OFE"
-    };
+    private static final Pattern SHEET_NAME_PATTERN = Pattern.compile(".*\\s?Por[t]?fel inwestycyjny\\s?.*", Pattern.CASE_INSENSITIVE);
 
     private final OpenPensionFundNameTranslator nameTranslator;
     private final OpenPensionFundDateAdjuster dateAdjuster;
@@ -79,14 +77,7 @@ public class InvestmentsProvider implements DataProvider {
             }
         });
 
-        Sheet sheet = null;
-
-        for (String sheetName : SHEET_NAMES) {
-            sheet = wb.getSheet(sheetName);
-            if (sheet != null) {
-                break;
-            }
-        }
+        Sheet sheet = getSheetByPattern(wb, SHEET_NAME_PATTERN);
 
         if (sheet == null) {
             return new ArrayList<DataPopulator>().iterator();

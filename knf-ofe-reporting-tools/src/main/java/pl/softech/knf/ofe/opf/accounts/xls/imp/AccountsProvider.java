@@ -11,7 +11,10 @@ import pl.softech.knf.ofe.opf.xls.DataProvider;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static pl.softech.knf.ofe.shared.xls.XlsUtils.getSheetByPattern;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -19,8 +22,7 @@ import java.util.stream.Collectors;
  */
 public class AccountsProvider implements DataProvider {
 
-    private static final String ACCOUNTS_SHEET_NAME = "Accounts";
-    private static final String ACCOUNTS_SHEET_NAME2 = "II Accounts";
+    private static final Pattern SHEET_NAME_PATTERN = Pattern.compile(".*\\s?Accounts\\s?.*", Pattern.CASE_INSENSITIVE);
 
     private final OpenPensionFundNameTranslator nameTranslator;
     private final OpenPensionFundDateAdjuster dateAdjuster;
@@ -60,11 +62,7 @@ public class AccountsProvider implements DataProvider {
 
         });
 
-        Sheet sheet = wb.getSheet(ACCOUNTS_SHEET_NAME);
-
-        if (sheet == null) {
-            sheet = wb.getSheet(ACCOUNTS_SHEET_NAME2);
-        }
+        Sheet sheet = getSheetByPattern(wb, SHEET_NAME_PATTERN);
 
         if (sheet == null) {
             return new ArrayList<DataPopulator>().iterator();

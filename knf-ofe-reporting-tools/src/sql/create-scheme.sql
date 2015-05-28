@@ -16,8 +16,8 @@ CREATE TABLE open_pension_fund (
 CREATE TABLE instrument (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   inst_identifier varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  inst_name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  inst_description varchar(4096) COLLATE utf8_unicode_ci NOT NULL,
+  inst_name varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  inst_description varchar(4096) COLLATE utf8_unicode_ci,
   PRIMARY KEY (id),
   UNIQUE KEY goi_uk (inst_identifier)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

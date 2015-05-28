@@ -48,7 +48,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
     private class ChooseParsingSchemeState extends AbstractState {
 
-        private final Specification<Cell> fundsInColumnsFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Kategoria lokat");
+        private final Specification<Cell> fundsInColumnsFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Kategoria lokat")
+                .or(new CellHasIgnoreCaseStringValue("Opis kategorii lokat"));
         private final Specification<Cell> fundsInRowsFirstColumnSpecification =
                 new CellHasIgnoreCaseStringValue("Otwarty fundusz emerytalny").or(new CellHasIgnoreCaseStringValue("OFE"));
 
