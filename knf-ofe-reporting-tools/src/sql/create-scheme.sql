@@ -32,3 +32,7 @@ CREATE TABLE investment (
   CONSTRAINT inv_opf_fk FOREIGN KEY (inv_opf_id) REFERENCES open_pension_fund (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT inv_instrument_fk FOREIGN KEY (inv_instrument_id) REFERENCES instrument (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+drop table investment;
+drop table instrument;
+drop table open_pension_fund;
