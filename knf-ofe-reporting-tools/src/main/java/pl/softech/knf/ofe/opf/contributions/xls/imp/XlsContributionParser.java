@@ -18,11 +18,11 @@ import java.util.Arrays;
  */
 public class XlsContributionParser extends AbstractXlsParser<ContributionParsingEventListener> {
 
-        public XlsContributionParser(EventBus eventBus) {
-                super(eventBus);
-        }
+    public XlsContributionParser(EventBus eventBus) {
+        super(eventBus);
+    }
 
-        @Override
+    @Override
     protected State createStartingState(StateContext context) {
         return new ParsingDateState(context,
                 new StateBranch(context,

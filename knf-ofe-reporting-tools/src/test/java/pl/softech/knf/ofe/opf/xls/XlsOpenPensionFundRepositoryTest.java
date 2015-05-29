@@ -17,6 +17,8 @@ import pl.softech.knf.ofe.opf.investments.SimpleInstrumentFactory;
 import pl.softech.knf.ofe.opf.investments.xls.imp.InvestmentsProvider;
 import pl.softech.knf.ofe.opf.members.xls.export.XlsMembersWritter;
 import pl.softech.knf.ofe.opf.members.xls.imp.MembersProvider;
+import pl.softech.knf.ofe.opf.netassets.xls.export.XlsNetAssetsWritter;
+import pl.softech.knf.ofe.opf.netassets.xls.imp.NetAssetsProvider;
 
 import java.io.File;
 import java.util.List;
@@ -65,6 +67,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AIG OFE");
         assertThat(fund.getNumberOfMembers(), is(840_573L));
+        assertThat(fund.getNetAssets(), is(2_040_035_253_04L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(863_581L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(116_742L));
         assertThat(fund.getContribution().getAmount(), is(51_206_226_08L));
@@ -77,6 +80,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "OFE Allianz Polska");
         assertThat(fund.getNumberOfMembers(), is(221_643L));
+        assertThat(fund.getNetAssets(), is(597_753_606_45L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(232_685L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(37_952L));
         assertThat(fund.getContribution().getAmount(), is(15_410_327_58L));
@@ -89,6 +93,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Bankowy OFE");
         assertThat(fund.getNumberOfMembers(), is(389_963L));
+        assertThat(fund.getNetAssets(), is(752_803_410_06L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(412_034L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(100_144L));
         assertThat(fund.getContribution().getAmount(), is(16_414_335_72L));
@@ -108,6 +113,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AIG OFE");
         assertThat(fund.getNumberOfMembers(), is(957_605L));
+        assertThat(fund.getNetAssets(), is(4_009_524_601_77L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(1_004_096L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(156_391L));
         assertThat(fund.getContribution().getAmount(), is(71_916_685_21L));
@@ -121,6 +127,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "OFE Allianz Polska");
         assertThat(fund.getNumberOfMembers(), is(250_614L));
+        assertThat(fund.getNetAssets(), is(1_265_517_251_63L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(257_837L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(28_278L));
         assertThat(fund.getContribution().getAmount(), is(21_241_560_78L));
@@ -133,6 +140,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Bankowy OFE");
         assertThat(fund.getNumberOfMembers(), is(400_643L));
+        assertThat(fund.getNetAssets(), is(1_438_222_748_28L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(422_436L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(84_854L));
         assertThat(fund.getContribution().getAmount(), is(26_431_187_55L));
@@ -152,6 +160,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AIG OFE");
         assertThat(fund.getNumberOfMembers(), is(967_298L));
+        assertThat(fund.getNetAssets(), is(4_128_658_203_52L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(1_010_385L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(148_021L));
         assertThat(fund.getContribution().getAmount(), is(52_213_815_86L));
@@ -164,6 +173,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "OFE Allianz Polska");
         assertThat(fund.getNumberOfMembers(), is(250_550L));
+        assertThat(fund.getNetAssets(), is(1_302_504_414_66L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(260_707L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(26_544L));
         assertThat(fund.getContribution().getAmount(), is(15_601_012_87L));
@@ -176,6 +186,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Bankowy OFE");
         assertThat(fund.getNumberOfMembers(), is(401_378L));
+        assertThat(fund.getNetAssets(), is(1_492_324_439_66L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(424_671L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(83_041L));
         assertThat(fund.getContribution().getAmount(), is(17_063_266_79L));
@@ -201,6 +212,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AEGON OFE");
         assertThat(fund.getNumberOfMembers(), is(777_818L));
+        assertThat(fund.getNetAssets(), is(7_385_713_494_61L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(803_757L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(70_205L));
         assertThat(fund.getContribution().getAmount(), is(67_476_829_23L));
@@ -214,6 +226,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Allianz Polska OFE");
         assertThat(fund.getNumberOfMembers(), is(411_307L));
+        assertThat(fund.getNetAssets(), is(5_129_831_314_75L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(427_191L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(32_020L));
         assertThat(fund.getContribution().getAmount(), is(47_201_793_65L));
@@ -227,6 +240,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Amplico OFE");
         assertThat(fund.getNumberOfMembers(), is(1_115_294L));
+        assertThat(fund.getNetAssets(), is(13_929_425_570_17L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(1_140_253L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(40_158L));
         assertThat(fund.getContribution().getAmount(), is(128_792_997_83L));
@@ -247,6 +261,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AEGON OFE");
         assertThat(fund.getNumberOfMembers(), is(946_965L));
+        assertThat(fund.getNetAssets(), is(11_519_034_182_00L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(959_172L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(22_776L));
         assertThat(fund.getContribution().getAmount(), is(31_471_150_66L));
@@ -260,6 +275,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Allianz Polska OFE");
         assertThat(fund.getNumberOfMembers(), is(555_274L));
+        assertThat(fund.getNetAssets(), is(8_178_030_856_81L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(578_748L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(5_668L));
         assertThat(fund.getContribution().getAmount(), is(23_129_590_28L));
@@ -273,6 +289,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Amplico OFE");
         assertThat(fund.getNumberOfMembers(), is(1_275_028L));
+        assertThat(fund.getNetAssets(), is(21_336_613_212_33L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(1_309_734L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(13_421L));
         assertThat(fund.getContribution().getAmount(), is(55_642_539_61L));
@@ -293,6 +310,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AIG OFE");
         assertThat(fund.getNumberOfMembers(), is(881_819L));
+        assertThat(fund.getNetAssets(), is(2_990_443_123_63L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(925_812L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(135_116L));
         assertThat(fund.getContribution().getAmount(), is(115_821_751_45L));
@@ -305,6 +323,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "OFE Allianz Polska");
         assertThat(fund.getNumberOfMembers(), is(239_588L));
+        assertThat(fund.getNetAssets(), is(943_649_473_09L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(249_067L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(28_633L));
         assertThat(fund.getContribution().getAmount(), is(39_361_005_45L));
@@ -317,6 +336,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         fund = fund(funds, "Bankowy OFE");
         assertThat(fund.getNumberOfMembers(), is(389_589L));
+        assertThat(fund.getNetAssets(), is(1_069_821_597_20L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(414_928L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(89_902L));
         assertThat(fund.getContribution().getAmount(), is(38_588_587_16L));
@@ -336,6 +356,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AEGON OFE");
         assertThat(fund.getNumberOfMembers(), is(351_050L));
+        assertThat(fund.getNetAssets(), is(2_945_276_572_07L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(363_224L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(27_469L));
         assertThat(fund.getContribution().getAmount(), is(19_728_377_85L));
@@ -355,6 +376,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AEGON OFE");
         assertThat(fund.getNumberOfMembers(), is(937_534L));
+        assertThat(fund.getNetAssets(), is(6_469_701_190_39L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(945_483L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(18_770L));
         assertThat(fund.getContribution().getAmount(), is(37_766_608_23L));
@@ -374,6 +396,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AIG OFE");
         assertThat(fund.getNumberOfMembers(), is(868_815L));
+        assertThat(fund.getNetAssets(), is(2_731_317_351_29L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(896_162L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(123_426L));
         assertThat(fund.getContribution().getAmount(), is(66_570_085_11L));
@@ -393,6 +416,7 @@ public class XlsOpenPensionFundRepositoryTest {
 
         OpenPensionFund fund = fund(funds, "AEGON OFE");
         assertThat(fund.getNumberOfMembers(), is(929_601L));
+        assertThat(fund.getNetAssets(), is(6_490_295_030_67L));
         assertThat(fund.getNumberOfAccounts().getTotal(), is(938_460L));
         assertThat(fund.getNumberOfAccounts().getInactive(), is(16_611L));
         assertThat(fund.getContribution().getAmount(), is(6_587_898_47L));
@@ -422,8 +446,9 @@ public class XlsOpenPensionFundRepositoryTest {
                             .build(XlsOpenPensionFundRepositoryFactory.class)
             );
 
-            bindDataProviders(MembersProvider.class, AccountsProvider.class, ContributionProvider.class, InvestmentsProvider.class);
-            bindXlsWritters(XlsMembersWritter.class, XlsAccountsWritter.class, XlsContributionWritter.class);
+            bindDataProviders(MembersProvider.class, AccountsProvider.class, ContributionProvider.class, InvestmentsProvider.class,
+                    NetAssetsProvider.class);
+            bindXlsWritters(XlsMembersWritter.class, XlsAccountsWritter.class, XlsContributionWritter.class, XlsNetAssetsWritter.class);
         }
     }
 }

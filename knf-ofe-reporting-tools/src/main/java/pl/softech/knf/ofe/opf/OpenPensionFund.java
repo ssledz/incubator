@@ -22,7 +22,10 @@ import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
 import pl.softech.knf.ofe.opf.contributions.Contribution;
 import pl.softech.knf.ofe.opf.investments.Investment;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,6 +40,8 @@ public class OpenPensionFund {
     private Key key;
 
     private long numberOfMembers;
+
+    private long netAssets;
 
     private NumberOfAccounts numberOfAccounts;
 
@@ -55,6 +60,7 @@ public class OpenPensionFund {
         }
 
         this.investmens = builder.investmens;
+        this.netAssets = builder.netAssets;
 
     }
 
@@ -72,6 +78,10 @@ public class OpenPensionFund {
 
     public long getNumberOfMembers() {
         return numberOfMembers;
+    }
+
+    public long getNetAssets() {
+        return netAssets;
     }
 
     public Date getDate() {
@@ -92,6 +102,7 @@ public class OpenPensionFund {
                 .append("name", key.name)
                 .append("date", key.date)
                 .append("numberOfMembers", numberOfMembers)
+                .append("netAssets", netAssets)
                 .append(numberOfAccounts)
                 .append(contribution)
                 .append(investmens)
@@ -137,6 +148,7 @@ public class OpenPensionFund {
 
         private String name;
         private long numberOfMembers;
+        private long netAssets;
         private Date date;
 
         private NumberOfAccounts numberOfAccounts;
@@ -151,6 +163,11 @@ public class OpenPensionFund {
 
         public Builder addInvestments(Collection<Investment> investments) {
             investmens.addAll(investments);
+            return this;
+        }
+
+        public Builder withNetAssets(long netAssets) {
+            this.netAssets = netAssets;
             return this;
         }
 

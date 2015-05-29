@@ -3,6 +3,7 @@ CREATE TABLE open_pension_fund (
   opf_name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   opf_date date NOT NULL,
   opf_number_of_members bigint,
+  opf_net_assets bigint,
   opf_total_number_of_accounts bigint,
   opf_inactive_number_of_accounts bigint,
   opf_contr_amount bigint,

@@ -15,6 +15,7 @@ import pl.softech.knf.ofe.opf.contributions.ContributionModule;
 import pl.softech.knf.ofe.opf.investments.InvestmentsModule;
 import pl.softech.knf.ofe.opf.jdbc.JdbcOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.members.MembersModule;
+import pl.softech.knf.ofe.opf.netassets.NetAssetsModule;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepository;
 import pl.softech.knf.ofe.opf.xls.XlsOpenPensionFundRepositoryFactory;
 
@@ -50,9 +51,10 @@ public class OpenPensionFundModule extends AbstractModule {
         bind(OpenPensionFundDbImportTask.class);
         bind(OpenPensionFundDbExportTask.class);
 
-//        install(new MembersModule());
-//        install(new AccountsModule());
-//        install(new ContributionModule());
+        install(new MembersModule());
+        install(new AccountsModule());
+        install(new ContributionModule());
         install(new InvestmentsModule());
+        install(new NetAssetsModule());
     }
 }
