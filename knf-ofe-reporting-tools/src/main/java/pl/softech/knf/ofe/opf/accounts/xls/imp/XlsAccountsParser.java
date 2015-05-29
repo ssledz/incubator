@@ -5,10 +5,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import pl.softech.knf.ofe.shared.spec.Specification;
 import pl.softech.knf.ofe.shared.xls.parser.*;
-import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringValue;
-import pl.softech.knf.ofe.shared.xls.spec.CellIsEmpty;
-import pl.softech.knf.ofe.shared.xls.spec.CellIsOfNumericType;
-import pl.softech.knf.ofe.shared.xls.spec.CellIsOfStringType;
+import pl.softech.knf.ofe.shared.xls.spec.*;
 
 import java.util.Iterator;
 
@@ -37,8 +34,8 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
 
     private class ParsingFirstRowOfHeaderState extends AbstractState {
 
-        private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringValue("Open Pension Fund");
-        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("Number of accounts");
+        private final Specification<Cell> firstColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*Open.* Pension.* Fund.*");
+        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*Number.* of.* accounts.*");
 
         protected ParsingFirstRowOfHeaderState(StateContext context) {
             super(context);
@@ -66,8 +63,9 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
     private class ParsingSecondRowOfHeaderState extends AbstractState {
 
         private final Specification<Cell> firstColumnSpecification = new CellIsEmpty();
-        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("total");
-        private final Specification<Cell> thirdColumnSpecification = new CellHasIgnoreCaseStringValue("including \"inactive accounts\"");
+        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*total.*");
+        private final Specification<Cell> thirdColumnSpecification =
+                new CellHasIgnoreCaseStringPatternValue(".*including .*inactive.* accounts.*");
 
         private final int startCellIndex;
 
@@ -88,7 +86,7 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
                 context.setState(new ParsingThirdRowOfHeaderState(context, startCellIndex));
             } else {
                 //Maybe another format of data try header with members account
-                context.setState(new ParsingSecondRowOfHeaderWithMemberAccountsState(context,startCellIndex));
+                context.setState(new ParsingSecondRowOfHeaderWithMemberAccountsState(context, startCellIndex));
                 context.parse(row);
             }
 
@@ -99,8 +97,8 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
 
         private final Specification<Cell> firstColumnSpecification = new CellIsEmpty();
         private final Specification<Cell> secondColumnSpecification = new CellIsEmpty();
-        private final Specification<Cell> thirdColumnSpecification = new CellHasIgnoreCaseStringValue("total");
-        private final Specification<Cell> fourthColumnSpecification = new CellHasIgnoreCaseStringValue("%");
+        private final Specification<Cell> thirdColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*total.*");
+        private final Specification<Cell> fourthColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*%.*");
 
         private final int startCellIndex;
 
@@ -130,8 +128,9 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
 
     private class ParsingRecordsState extends AbstractState {
 
-        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType().and(
-                new CellHasIgnoreCaseStringValue("Total").not()).and(new CellHasIgnoreCaseStringValue("Razem").not());
+        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
+                .and(new CellHasIgnoreCaseStringPatternValue(".*Total.*").not())
+                .and(new CellHasIgnoreCaseStringPatternValue(".*Razem.*").not());
         private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
         private final Specification<Cell> thirdColumnSpecification = new CellIsOfNumericType();
         private final Specification<Cell> fourthColumnSpecification = new CellIsOfNumericType();
@@ -211,11 +210,12 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
     private class ParsingSecondRowOfHeaderWithMemberAccountsState extends AbstractState {
 
         private final Specification<Cell> firstColumnSpecification = new CellIsEmpty();
-        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("total");
-        private final Specification<Cell> thirdColumnSpecification = new CellHasIgnoreCaseStringValue("Member accounts");
-        private final Specification<Cell> fourthColumnSpecification = new CellHasIgnoreCaseStringValue("including \"inactive accounts\"");
-        private final Specification<Cell> fifthColumnSpecification = new CellHasIgnoreCaseStringValue("The share of inactive accounts in " +
-                "the total number of member accounts (in %)");
+        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*total.*");
+        private final Specification<Cell> thirdColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*Member.* accounts.*");
+        private final Specification<Cell> fourthColumnSpecification =
+                new CellHasIgnoreCaseStringPatternValue(".*including .*inactive accounts.*");
+        private final Specification<Cell> fifthColumnSpecification =
+                new CellHasIgnoreCaseStringPatternValue("The share of inactive accounts in.*");
 
         private final int startCellIndex;
 
@@ -245,8 +245,9 @@ class XlsAccountsParser extends AbstractXlsParser<AccountsParsingEventListener> 
 
     private class ParsingRecordsWithMemberAccountsState extends AbstractState {
 
-        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType().and(
-                new CellHasIgnoreCaseStringValue("Total").not()).and(new CellHasIgnoreCaseStringValue("Razem").not());
+        private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
+                .and(new CellHasIgnoreCaseStringPatternValue(".*Total.*").not())
+                .and(new CellHasIgnoreCaseStringPatternValue(".*Razem.*").not());
         private final Specification<Cell> secondColumnSpecification = new CellIsOfNumericType();
         private final Specification<Cell> thirdColumnSpecification = new CellIsOfNumericType();
         private final Specification<Cell> fourthColumnSpecification = new CellIsOfNumericType();

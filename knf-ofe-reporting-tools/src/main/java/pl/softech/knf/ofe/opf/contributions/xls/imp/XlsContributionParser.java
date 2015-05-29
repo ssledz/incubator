@@ -35,12 +35,12 @@ public class XlsContributionParser extends AbstractXlsParser<ContributionParsing
     private State sixColumns(StateContext context) {
         return new ParsingHeaderState(context,
                 Arrays.asList(
-                        new CellHasIgnoreCaseStringValue("Open Pension Fund"),
-                        new CellHasIgnoreCaseStringPatternValue("Amount of contribution.*"),
-                        new CellHasIgnoreCaseStringPatternValue("Interests.*"),
-                        new CellHasIgnoreCaseStringValue("Number of contributions"),
-                        new CellHasIgnoreCaseStringPatternValue("Average contribution.*"),
-                        new CellHasIgnoreCaseStringPatternValue("Average basis.*")
+                        new CellHasIgnoreCaseStringPatternValue(".*Open.* .*Pension.* .*Fund.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Amount.* .*of.* .*contribution.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Interests.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Number.* .*of.* .*contributions.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Average.* .*contribution.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Average.* .*basis.*")
                 ),
                 new GenericParsingRecordsState(context,
                         cells -> fireRecord(
@@ -52,8 +52,8 @@ public class XlsContributionParser extends AbstractXlsParser<ContributionParsing
                         ),
                         Arrays.asList(
                                 new CellIsOfStringType()
-                                        .and(new CellHasIgnoreCaseStringValue("Total").not())
-                                        .and(new CellHasIgnoreCaseStringValue("Razem").not()),
+                                        .and(new CellHasIgnoreCaseStringPatternValue(".*Total.*").not())
+                                        .and(new CellHasIgnoreCaseStringPatternValue(".*Razem.*").not()),
                                 new CellIsOfNumericType(),
                                 new CellIsOfNumericType(),
                                 new CellIsOfNumericType(),
@@ -84,10 +84,10 @@ public class XlsContributionParser extends AbstractXlsParser<ContributionParsing
     private State fourColumns(StateContext context) {
         return new ParsingHeaderState(context,
                 Arrays.asList(
-                        new CellHasIgnoreCaseStringValue("Open Pension Fund"),
-                        new CellHasIgnoreCaseStringPatternValue("Amount of contribution.*"),
-                        new CellHasIgnoreCaseStringPatternValue("Interests.*"),
-                        new CellHasIgnoreCaseStringValue("Number of contributions")
+                        new CellHasIgnoreCaseStringPatternValue(".*Open.* .*Pension.* .*Fund.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Amount.* .*of.* .*contribution.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Interests.*"),
+                        new CellHasIgnoreCaseStringPatternValue(".*Number.* .*of.* .*contributions.*")
                 ),
                 new GenericParsingRecordsState(context,
                         cells -> fireRecord(
@@ -99,8 +99,8 @@ public class XlsContributionParser extends AbstractXlsParser<ContributionParsing
                         ),
                         Arrays.asList(
                                 new CellIsOfStringType()
-                                        .and(new CellHasIgnoreCaseStringValue("Total").not())
-                                        .and(new CellHasIgnoreCaseStringValue("Razem").not()),
+                                        .and(new CellHasIgnoreCaseStringPatternValue(".*Total.*").not())
+                                        .and(new CellHasIgnoreCaseStringPatternValue(".*Razem.*").not()),
                                 new CellIsOfNumericType(),
                                 new CellIsOfNumericType(),
                                 new CellIsOfNumericType()

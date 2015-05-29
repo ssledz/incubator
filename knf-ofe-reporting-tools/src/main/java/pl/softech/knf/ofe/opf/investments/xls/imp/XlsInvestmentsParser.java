@@ -7,7 +7,10 @@ import pl.softech.knf.ofe.opf.investments.Instrument;
 import pl.softech.knf.ofe.opf.investments.InstrumentFactory;
 import pl.softech.knf.ofe.shared.spec.Specification;
 import pl.softech.knf.ofe.shared.xls.parser.*;
-import pl.softech.knf.ofe.shared.xls.spec.*;
+import pl.softech.knf.ofe.shared.xls.spec.CellHasIgnoreCaseStringPatternValue;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsEmpty;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsOfNumericType;
+import pl.softech.knf.ofe.shared.xls.spec.CellIsOfStringType;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,11 +20,11 @@ import java.util.List;
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
  */
-public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsParsingEventListener> {
+public class XlsInvestmentsParser extends AbstractXlsParser<InvestmentsParsingEventListener> {
 
     private final InstrumentFactory instrumentFactory;
 
-    public InvestmentsPortfolioParser(EventBus eventBus, InstrumentFactory instrumentFactory) {
+    public XlsInvestmentsParser(EventBus eventBus, InstrumentFactory instrumentFactory) {
         super(eventBus);
         this.instrumentFactory = instrumentFactory;
     }
@@ -45,10 +48,12 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
     private class ChooseParsingSchemeState extends AbstractState {
 
-        private final Specification<Cell> fundsInColumnsFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Kategoria lokat")
-                .or(new CellHasIgnoreCaseStringValue("Opis kategorii lokat"));
+        private final Specification<Cell> fundsInColumnsFirstColumnSpecification =
+                new CellHasIgnoreCaseStringPatternValue(".*Kategoria.* .*lokat.*")
+                        .or(new CellHasIgnoreCaseStringPatternValue(".*Opis.* .*kategorii.* .*lokat.*"));
         private final Specification<Cell> fundsInRowsFirstColumnSpecification =
-                new CellHasIgnoreCaseStringValue("Otwarty fundusz emerytalny").or(new CellHasIgnoreCaseStringValue("OFE"));
+                new CellHasIgnoreCaseStringPatternValue(".*Otwarty.* .*fundusz.* .*emerytalny.*")
+                        .or(new CellHasIgnoreCaseStringPatternValue(".*OFE.*"));
 
         protected ChooseParsingSchemeState(StateContext context) {
             super(context);
@@ -81,9 +86,10 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
     private class ParsingRowOfHeaderWithFundInColumnState extends AbstractState {
 
         private final Specification<Cell> firstColumnSpecification;
-        private final Specification<Cell> secondColumnSpecification = new CellHasIgnoreCaseStringValue("Opis kategorii lokat");
-        private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
-                .or(new CellHasIgnoreCaseStringValue("Portfel razem"));
+        private final Specification<Cell> secondColumnSpecification =
+                new CellHasIgnoreCaseStringPatternValue(".*Opis.* .*kategorii.* .*lokat.*");
+        private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*Razem.*")
+                .or(new CellHasIgnoreCaseStringPatternValue(".*Portfel.* .*razem.*"));
 
         private final Specification<Cell> opfColumnSpecification = new CellIsOfStringType().and(lastColumnSpecification.not());
 
@@ -199,9 +205,8 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
     private class ParsingRowOfRecordState extends AbstractState {
 
-        private final Specification<Cell> totalFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
-                .or(new CellHasIgnoreCaseStringPatternValue("Razem:?"))
-                .or(new CellHasIgnoreCaseStringValue("Portfel razem"));
+        private final Specification<Cell> totalFirstColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*Razem.*")
+                .or(new CellHasIgnoreCaseStringPatternValue(".*Portfel.* .*razem.*"));
 
         private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
                 .and(totalFirstColumnSpecification.not());
@@ -325,9 +330,9 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
     private class ParsingRowOfHeadeWithFundInRowState extends AbstractState {
 
         private final Specification<Cell> firstColumnSpecification;
-        private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
-                .or(new CellHasIgnoreCaseStringValue("Portfel razem"))
-                .or(new CellHasIgnoreCaseStringValue("Razem"));
+        private final Specification<Cell> lastColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*Razem.*")
+                .or(new CellHasIgnoreCaseStringPatternValue(".*Portfel.* .*razem.*"));
+
         private final Specification<Cell> instrumentColumnSpecification = new CellIsOfStringType().and(lastColumnSpecification.not());
 
 
@@ -380,8 +385,7 @@ public class InvestmentsPortfolioParser extends AbstractXlsParser<InvestmentsPar
 
     private class ParsingRowOfRecordWithFundInRowState extends AbstractState {
 
-        private final Specification<Cell> totalFirstColumnSpecification = new CellHasIgnoreCaseStringValue("Razem:")
-                .or(new CellHasIgnoreCaseStringValue("Razem"));
+        private final Specification<Cell> totalFirstColumnSpecification = new CellHasIgnoreCaseStringPatternValue(".*Razem.*");
 
         private final Specification<Cell> firstColumnSpecification = new CellIsOfStringType()
                 .and(totalFirstColumnSpecification.not());

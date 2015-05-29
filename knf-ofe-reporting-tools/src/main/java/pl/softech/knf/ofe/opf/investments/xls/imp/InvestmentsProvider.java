@@ -45,7 +45,7 @@ public class InvestmentsProvider implements DataProvider {
     @Override
     public Iterator<? extends DataPopulator> iterator(Workbook wb) {
 
-        InvestmentsPortfolioParser parser = new InvestmentsPortfolioParser(eventBus, instrumentFactory);
+        XlsInvestmentsParser parser = new XlsInvestmentsParser(eventBus, instrumentFactory);
 
         final Map<String, OpenPensionFund.Builder> name2fundBuilder = new HashMap<>();
 
