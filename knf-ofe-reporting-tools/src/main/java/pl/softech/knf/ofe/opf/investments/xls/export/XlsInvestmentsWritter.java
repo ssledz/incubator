@@ -10,6 +10,7 @@ import pl.softech.knf.ofe.opf.xls.XlsWritter;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -241,26 +242,18 @@ public class XlsInvestmentsWritter implements XlsWritter {
     @Override
     public void write(List<OpenPensionFund> funds, Workbook wb) {
 
-        Set<Instrument> used = new HashSet<>();
         instrumentRepository.findAll()
                 .stream()
-                .filter(instrument -> {
-                    if (!instrument2instrument.containsKey(instrument)) {
-                        return true;
+                .map(instrument -> {
+                    if (instrument2instrument.containsKey(instrument)) {
+                        Instrument tmp = instrument2instrument.get(instrument);
+                        return new Instrument(instrument.getId(), tmp.getIdentifier(), tmp.getName(), null);
                     }
-
-                    Instrument target = instrument2instrument.get(instrument);
-                    if (used.contains(target)) {
-                        return false;
-                    }
-
-                    used.add(target);
-
-                    return true;
-
+                    return instrument;
                 })
+                .collect(Collectors.toSet())
+                .stream()
                 .forEach(instrument -> new InvestmentByInstrument(instrument).write(funds, wb));
-
 
     }
 
@@ -273,9 +266,9 @@ public class XlsInvestmentsWritter implements XlsWritter {
     }
 
     private static void map(Instrument instrument, Instrument... to) {
+        instrument2Set.put(instrument, new HashSet<>(Arrays.asList(to)));
         for (Instrument t : to) {
             instrument2instrument.put(t, instrument);
-            instrument2Set.put(t, new HashSet<>(Arrays.asList(to)));
         }
     }
 
@@ -286,11 +279,6 @@ public class XlsInvestmentsWritter implements XlsWritter {
         public InvestmentByInstrument(Instrument instrument) {
             this.instrument = instrument;
             this.secondColumnName = instrument.getName();
-
-            if (instrument2instrument.containsKey(instrument)) {
-                this.secondColumnName = instrument2instrument.get(instrument).getName();
-            }
-
             this.sheetName = "Investment By instrument " + instrument.getId();
         }
 
@@ -304,7 +292,7 @@ public class XlsInvestmentsWritter implements XlsWritter {
                     .mapToLong(inv -> inv.getValue())
                     .sum();
 
-            if (!instrument2instrument.containsValue(instrument)) {
+            if (!instrument2Set.containsKey(instrument)) {
 
                 value = fund.getInvestmens()
                         .stream()
@@ -328,7 +316,11 @@ public class XlsInvestmentsWritter implements XlsWritter {
 
             if (value.isPresent()) {
 //                cell.setCellValue((float) value.get() / 100.0);
-                cell.setCellValue((float) value.get() / (float) sum * 100.0);
+                if (sum > 0) {
+                    cell.setCellValue((float) value.get() / (float) sum * 100.0);
+                } else {
+                    cell.setCellValue(0);
+                }
             } else {
                 cell.setCellValue(0);
             }
