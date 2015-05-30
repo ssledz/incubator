@@ -32,9 +32,9 @@ public class App {
         final TaskExecutor executor = new TaskExecutor();
 
         final Option help = new Option("help", "print this message");
-        final Option importOpfMembers = new Option("importOpfMembers", "import open pension fund members to db");
+        final Option importOpfMembers = new Option("import", "import open pension fund data to db");
         final Option exportOpfMembers = OptionBuilder.withArgName("fileName").hasArg()
-                .withDescription("exports open pension fund members from db to xls file").create("exportOpfMembers");
+                .withDescription("exports open pension fund data from db to xls file").create("export");
 
         final Options options = new Options();
         options.addOption(help);
@@ -54,12 +54,12 @@ public class App {
                 return;
             }
 
-            if (line.hasOption("importOpfMembers")) {
+            if (line.hasOption("import")) {
                 importOpfMembersPayload = executor.addTask(newDbImportTask());
             }
 
-            if (line.hasOption("exportOpfMembers")) {
-                final String fileName = line.getOptionValue("exportOpfMembers");
+            if (line.hasOption("export")) {
+                final String fileName = line.getOptionValue("export");
                 if (fileName == null) {
                     System.out.println("No fileName argument");
                     return;
