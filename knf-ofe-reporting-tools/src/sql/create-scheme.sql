@@ -42,4 +42,4 @@ drop table open_pension_fund;
 select id,inst_name,inst_description
 from instrument
 INTO OUTFILE '/tmp/instruments.csv'
-FIELDS TERMINATED BY '#' ENCLOSED BY '"' LINES TERMINATED BY '\n';
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n';
