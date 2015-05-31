@@ -17,6 +17,6 @@ public class XlsNetAssetsWritter extends AbstractXlsWritter {
 
     @Override
     protected void writeCell(Cell cell, OpenPensionFund fund) {
-        cell.setCellValue((float) fund.getNetAssets() / 100.0);
+        cell.setCellValue(fund.getNetAssets().getValueAsDouble());
     }
 }

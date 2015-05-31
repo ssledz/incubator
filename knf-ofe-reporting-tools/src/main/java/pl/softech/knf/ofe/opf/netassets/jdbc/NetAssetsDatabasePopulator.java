@@ -26,12 +26,12 @@ public class NetAssetsDatabasePopulator implements DatabasePopulator {
         final int updated = jdbcTemplate.update("UPDATE open_pension_fund " +
                         "SET opf_net_assets = ? " +
                         "WHERE opf_name = ? AND opf_date = ?",
-                fund.getNetAssets(),
+                fund.getNetAssets().getValue(),
                 fund.getName(), fund.getDate());
 
         if (updated == 0) {
             jdbcTemplate.update("INSERT INTO open_pension_fund (opf_name, opf_date, opf_net_assets) VALUES (?,?,?)",
-                    fund.getName(), fund.getDate(), fund.getNetAssets());
+                    fund.getName(), fund.getDate(), fund.getNetAssets().getValue());
         }
 
     }

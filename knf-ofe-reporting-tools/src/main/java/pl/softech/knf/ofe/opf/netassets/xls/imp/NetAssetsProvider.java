@@ -56,7 +56,7 @@ public class NetAssetsProvider implements DataProvider {
                 funds.add(new OpenPensionFund(new OpenPensionFund.Builder()
                         .withDate(date)
                         .withName(nameTranslator.translate(name))
-                        .withNetAssets(Math.round(amount * 100))
+                        .withNetAssets(amount)
                 ));
             }
         });

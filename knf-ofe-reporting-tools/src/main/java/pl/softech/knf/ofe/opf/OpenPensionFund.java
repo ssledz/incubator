@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.softech.knf.ofe.opf.accounts.NumberOfAccounts;
 import pl.softech.knf.ofe.opf.contributions.Contribution;
 import pl.softech.knf.ofe.opf.investments.Investment;
+import pl.softech.knf.ofe.shared.Money;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +42,7 @@ public class OpenPensionFund {
 
     private long numberOfMembers;
 
-    private long netAssets;
+    private Money netAssets;
 
     private NumberOfAccounts numberOfAccounts;
 
@@ -80,7 +81,7 @@ public class OpenPensionFund {
         return numberOfMembers;
     }
 
-    public long getNetAssets() {
+    public Money getNetAssets() {
         return netAssets;
     }
 
@@ -148,7 +149,7 @@ public class OpenPensionFund {
 
         private String name;
         private long numberOfMembers;
-        private long netAssets;
+        private Money netAssets;
         private Date date;
 
         private NumberOfAccounts numberOfAccounts;
@@ -166,7 +167,17 @@ public class OpenPensionFund {
             return this;
         }
 
+        public Builder withNetAssets(double netAssets) {
+            this.netAssets = new Money(netAssets);
+            return this;
+        }
+
         public Builder withNetAssets(long netAssets) {
+            this.netAssets = new Money(netAssets);
+            return this;
+        }
+
+        public Builder withNetAssets(Money netAssets) {
             this.netAssets = netAssets;
             return this;
         }
