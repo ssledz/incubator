@@ -4,6 +4,7 @@ CREATE TABLE open_pension_fund (
   opf_date date NOT NULL,
   opf_number_of_members bigint,
   opf_net_assets bigint,
+  opf_acc_unit bigint,
   opf_total_number_of_accounts bigint,
   opf_inactive_number_of_accounts bigint,
   opf_contr_amount bigint,

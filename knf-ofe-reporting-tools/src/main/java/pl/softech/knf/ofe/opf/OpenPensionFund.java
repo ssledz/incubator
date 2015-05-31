@@ -44,6 +44,8 @@ public class OpenPensionFund {
 
     private Money netAssets;
 
+    private Money accountingUnitValue;
+
     private NumberOfAccounts numberOfAccounts;
 
     private Contribution contribution;
@@ -62,6 +64,7 @@ public class OpenPensionFund {
 
         this.investmens = builder.investmens;
         this.netAssets = builder.netAssets;
+        this.accountingUnitValue = builder.accountingUnitValue;
 
     }
 
@@ -97,6 +100,10 @@ public class OpenPensionFund {
         return contribution;
     }
 
+    public Money getAccountingUnitValue() {
+        return accountingUnitValue;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -104,6 +111,7 @@ public class OpenPensionFund {
                 .append("date", key.date)
                 .append("numberOfMembers", numberOfMembers)
                 .append("netAssets", netAssets)
+                .append("accountingUnitValue", accountingUnitValue)
                 .append(numberOfAccounts)
                 .append(contribution)
                 .append(investmens)
@@ -149,6 +157,7 @@ public class OpenPensionFund {
 
         private String name;
         private long numberOfMembers;
+        private Money accountingUnitValue;
         private Money netAssets;
         private Date date;
 
@@ -164,6 +173,21 @@ public class OpenPensionFund {
 
         public Builder addInvestments(Collection<Investment> investments) {
             investmens.addAll(investments);
+            return this;
+        }
+
+        public Builder withAccountingUnitValue(Money accountingUnitValue) {
+            this.accountingUnitValue = accountingUnitValue;
+            return this;
+        }
+
+        public Builder withAccountingUnitValue(long accountingUnitValue) {
+            this.accountingUnitValue = new Money(accountingUnitValue);
+            return this;
+        }
+
+        public Builder withAccountingUnitValue(double accountingUnitValue) {
+            this.accountingUnitValue = new Money(accountingUnitValue);
             return this;
         }
 
