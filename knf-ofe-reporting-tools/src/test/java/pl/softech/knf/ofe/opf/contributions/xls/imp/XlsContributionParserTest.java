@@ -36,22 +36,22 @@ public class XlsContributionParserTest {
 
         Map<String, Contribution> name2contr = new ImmutableMap.Builder<String, Contribution>()
                 .put("AIG OFE", new Contribution(new Contribution.Builder()
-                        .withAmount(51_206_226_08L)
-                        .withInterests(29_473_99L)
+                        .withAmount(51_206_226_0800L)
+                        .withInterests(29_473_9900L)
                         .withNumber(371_654L)
-                        .withAverageBasis(1_887_39L)
+                        .withAverageBasis(1_887_3900L)
                 ))
                 .put("OFE Allianz Polska", new Contribution(new Contribution.Builder()
-                        .withAmount(15_410_327_58L)
-                        .withInterests(10_828_91L)
+                        .withAmount(15_410_327_5800L)
+                        .withInterests(10_828_9100L)
                         .withNumber(101_344L)
-                        .withAverageBasis(2_083_01L)
+                        .withAverageBasis(2_083_0100L)
                 ))
                 .put("Bankowy OFE", new Contribution(new Contribution.Builder()
-                        .withAmount(16_414_335_72L)
-                        .withInterests(16_079_32L)
+                        .withAmount(16_414_335_7200L)
+                        .withInterests(16_079_3200L)
                         .withNumber(134_579L)
-                        .withAverageBasis(1_670_79L)
+                        .withAverageBasis(1_670_7900L)
                 ))
                 .build();
 
@@ -67,10 +67,10 @@ public class XlsContributionParserTest {
             public void record(String name, double amount, double interests, long number, double averageBasis) {
                 if (name2contr.containsKey(name)) {
                     assertEquals(name2contr.get(name), new Contribution(new Contribution.Builder()
-                            .withAmount((long) (amount * 100))
-                            .withInterests((long) (interests * 100))
+                            .withAmount(amount)
+                            .withInterests(interests)
                             .withNumber(number)
-                            .withAverageBasis((long) (averageBasis * 100))
+                            .withAverageBasis(averageBasis)
                     ));
                     names.remove(name);
                 }

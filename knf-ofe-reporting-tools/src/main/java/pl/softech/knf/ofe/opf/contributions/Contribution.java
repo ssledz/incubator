@@ -3,6 +3,7 @@ package pl.softech.knf.ofe.opf.contributions;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import pl.softech.knf.ofe.shared.Money;
 
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
@@ -10,10 +11,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class Contribution {
 
-    private final long amount;
+    private final Money amount;
     private final long number;
-    private final long interests;
-    private final long averageBasis;
+    private final Money interests;
+    private final Money averageBasis;
 
     public Contribution(Builder builder) {
         this.amount = builder.amount;
@@ -22,7 +23,7 @@ public class Contribution {
         this.averageBasis = builder.averageBasis;
     }
 
-    public long getAmount() {
+    public Money getAmount() {
         return amount;
     }
 
@@ -30,11 +31,11 @@ public class Contribution {
         return number;
     }
 
-    public long getInterests() {
+    public Money getInterests() {
         return interests;
     }
 
-    public long getAverageBasis() {
+    public Money getAverageBasis() {
         return averageBasis;
     }
 
@@ -87,13 +88,23 @@ public class Contribution {
 
     public static class Builder {
 
-        private long amount;
+        private Money amount;
         private long number;
-        private long interests;
-        private long averageBasis;
+        private Money interests;
+        private Money averageBasis;
 
         public Builder withAmount(long amount) {
+            this.amount = new Money(amount);
+            return this;
+        }
+
+        public Builder withAmount(Money amount) {
             this.amount = amount;
+            return this;
+        }
+
+        public Builder withAmount(double amount) {
+            this.amount = new Money(amount);
             return this;
         }
 
@@ -103,11 +114,31 @@ public class Contribution {
         }
 
         public Builder withInterests(long interests) {
+            this.interests = new Money(interests);
+            return this;
+        }
+
+        public Builder withInterests(double interests) {
+            this.interests = new Money(interests);
+            return this;
+        }
+
+        public Builder withInterests(Money interests) {
             this.interests = interests;
             return this;
         }
 
         public Builder withAverageBasis(long averageBasis) {
+            this.averageBasis = new Money(averageBasis);
+            return this;
+        }
+
+        public Builder withAverageBasis(double averageBasis) {
+            this.averageBasis = new Money(averageBasis);
+            return this;
+        }
+
+        public Builder withAverageBasis(Money averageBasis) {
             this.averageBasis = averageBasis;
             return this;
         }

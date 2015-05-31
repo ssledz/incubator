@@ -32,7 +32,7 @@ public class XlsContributionWritter implements XlsWritter {
 
         @Override
         protected void writeCell(Cell cell, OpenPensionFund fund) {
-            cell.setCellValue((float) fund.getContribution().getAmount() / 100.0);
+            cell.setCellValue(fund.getContribution().getAmount().getValueAsDouble());
         }
     }
 
@@ -45,7 +45,7 @@ public class XlsContributionWritter implements XlsWritter {
 
         @Override
         protected void writeCell(Cell cell, OpenPensionFund fund) {
-            cell.setCellValue((float) fund.getContribution().getInterests() / 100.0);
+            cell.setCellValue(fund.getContribution().getInterests().getValueAsDouble());
         }
     }
 
@@ -71,7 +71,7 @@ public class XlsContributionWritter implements XlsWritter {
 
         @Override
         protected void writeCell(Cell cell, OpenPensionFund fund) {
-            cell.setCellValue((float) fund.getContribution().getAverageBasis() / 100.0);
+            cell.setCellValue(fund.getContribution().getAverageBasis().getValueAsDouble());
         }
     }
 

@@ -36,17 +36,24 @@ public class ContributionDatabasePopulator implements DatabasePopulator {
         final int updated = jdbcTemplate.update("UPDATE open_pension_fund " +
                         "SET opf_contr_amount = ?, opf_contr_interests = ?, opf_contr_number = ?, opf_contr_average_basis = ? " +
                         "WHERE opf_name = ? AND opf_date = ?",
-                fund.getContribution().getAmount(),
-                fund.getContribution().getInterests(),
+                fund.getContribution().getAmount().getValue(),
+                fund.getContribution().getInterests().getValue(),
                 fund.getContribution().getNumber(),
-                fund.getContribution().getAverageBasis(),
-                fund.getName(), fund.getDate());
+                fund.getContribution().getAverageBasis().getValue(),
+                fund.getName(),
+                fund.getDate()
+        );
 
         if (updated == 0) {
             jdbcTemplate.update("INSERT INTO open_pension_fund (opf_name, opf_date, opf_contr_amount, " +
                             "opf_contr_interests, opf_contr_number, opf_contr_average_basis) VALUES (?,?,?,?,?,?)",
-                    fund.getName(), fund.getDate(), fund.getContribution().getAmount(), fund.getContribution().getInterests(),
-                    fund.getContribution().getNumber(), fund.getContribution().getAverageBasis());
+                    fund.getName(),
+                    fund.getDate(),
+                    fund.getContribution().getAmount().getValue(),
+                    fund.getContribution().getInterests().getValue(),
+                    fund.getContribution().getNumber(),
+                    fund.getContribution().getAverageBasis().getValue()
+            );
         }
 
     }

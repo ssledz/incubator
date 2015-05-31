@@ -1,5 +1,7 @@
 package pl.softech.knf.ofe.shared;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -36,6 +38,32 @@ public class Money {
 
     public int getScale() {
         return scale;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Money)) {
+            return false;
+        }
+
+        Money money = (Money) o;
+
+        return new EqualsBuilder()
+                .append(value, money.value)
+                .append(scale, money.scale)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(value)
+                .append(scale)
+                .toHashCode();
     }
 
     @Override
