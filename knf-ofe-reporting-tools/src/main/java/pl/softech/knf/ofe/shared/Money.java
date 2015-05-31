@@ -1,5 +1,7 @@
 package pl.softech.knf.ofe.shared;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * @author Sławomir Śledź <slawomir.sledz@gmail.com>
  * @since 1.0
@@ -36,4 +38,11 @@ public class Money {
         return scale;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("value", value)
+                .append("scale", scale)
+                .toString();
+    }
 }

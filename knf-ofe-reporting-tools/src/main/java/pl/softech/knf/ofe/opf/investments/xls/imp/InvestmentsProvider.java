@@ -67,7 +67,7 @@ public class InvestmentsProvider implements DataProvider {
                     name2fundBuilder.put(opfName, fundBuilder);
                 }
 
-                fundBuilder.addInvestment(new Investment(instrument, Math.round(investmentValue * 100)));
+                fundBuilder.addInvestment(new Investment(instrument, investmentValue));
 
             }
 

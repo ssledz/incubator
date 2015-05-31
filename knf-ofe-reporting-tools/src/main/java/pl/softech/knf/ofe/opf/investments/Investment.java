@@ -3,6 +3,7 @@ package pl.softech.knf.ofe.opf.investments;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import pl.softech.knf.ofe.shared.Money;
 
 import java.util.Objects;
 
@@ -13,26 +14,31 @@ import java.util.Objects;
 public class Investment {
 
     private final Instrument instrument;
-    private final long value;
+    private final Money money;
 
-    public Investment(Instrument instrument, long value) {
+    public Investment(Instrument instrument, double money) {
         this.instrument = Objects.requireNonNull(instrument);
-        this.value = value;
+        this.money = new Money(money);
+    }
+
+    public Investment(Instrument instrument, long money) {
+        this.instrument = Objects.requireNonNull(instrument);
+        this.money = new Money(money);
     }
 
     public Instrument getInstrument() {
         return instrument;
     }
 
-    public long getValue() {
-        return value;
+    public Money getMoney() {
+        return money;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("instrument", instrument)
-                .append("value", value)
+                .append("money", money)
                 .toString();
     }
 

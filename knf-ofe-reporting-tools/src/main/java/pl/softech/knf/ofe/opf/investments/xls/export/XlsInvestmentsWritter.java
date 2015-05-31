@@ -277,19 +277,19 @@ public class XlsInvestmentsWritter implements XlsWritter {
     private static class SumOfInvestments extends AbstractXlsWritter {
 
         public SumOfInvestments() {
-            this.secondColumnName = "Total sum of investments for a given open pension fund";
+            this.secondColumnName = "Total sum of investments for a given open pension fund [zl]";
             this.sheetName = "Investments - total";
         }
 
         @Override
         protected void writeCell(Cell cell, OpenPensionFund fund) {
 
-            long sum = fund.getInvestmens()
+            double sum = fund.getInvestmens()
                     .stream()
-                    .mapToLong(inv -> inv.getValue())
+                    .mapToDouble(inv -> inv.getMoney().getValueAsDouble())
                     .sum();
 
-            cell.setCellValue((float) sum / 100.0);
+            cell.setCellValue(sum);
 
         }
     }
@@ -300,18 +300,18 @@ public class XlsInvestmentsWritter implements XlsWritter {
 
         public InvestmentByInstrument(Instrument instrument) {
             this.instrument = instrument;
-            this.secondColumnName = instrument.getName();
+            this.secondColumnName = instrument.getName() + " [zl]";
             this.sheetName = "Investment By instrument " + instrument.getId();
         }
 
         @Override
         protected void writeCell(Cell cell, OpenPensionFund fund) {
 
-            Optional<Long> value;
+            Optional<Double> value;
 
 //            long sum = fund.getInvestmens()
 //                    .stream()
-//                    .mapToLong(inv -> inv.getValue())
+//                    .mapToLong(inv -> inv.getMoney())
 //                    .sum();
 
             if (!instrument2Set.containsKey(instrument)) {
@@ -319,7 +319,7 @@ public class XlsInvestmentsWritter implements XlsWritter {
                 value = fund.getInvestmens()
                         .stream()
                         .filter(inv -> inv.getInstrument().equals(instrument))
-                        .map(inv -> inv.getValue())
+                        .map(inv -> inv.getMoney().getValueAsDouble())
                         .findFirst();
             } else {
 
@@ -329,7 +329,7 @@ public class XlsInvestmentsWritter implements XlsWritter {
                         fund.getInvestmens()
                                 .stream()
                                 .filter(inv -> synonyms.contains(inv.getInstrument()))
-                                .mapToLong(inv -> inv.getValue())
+                                .mapToDouble(inv -> inv.getMoney().getValueAsDouble())
                                 .sum()
                 );
 
@@ -337,9 +337,9 @@ public class XlsInvestmentsWritter implements XlsWritter {
 
 
             if (value.isPresent()) {
-                cell.setCellValue((float) value.get() / 100.0);
+                cell.setCellValue(value.get());
 //                if (sum > 0) {
-//                    cell.setCellValue((float) value.get() / (float) sum * 100.0);
+//                    cell.setCellValue(value.get() / sum * 100.0);
 //                } else {
 //                    cell.setCellValue(0);
 //                }

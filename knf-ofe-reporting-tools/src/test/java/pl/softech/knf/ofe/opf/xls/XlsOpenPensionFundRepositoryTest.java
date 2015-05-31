@@ -76,7 +76,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getAverageBasis(), is(1_887_39L));
         assertThat(fund.getInvestmens().size(), is(7));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
-        assertThat(investment(fund, "Obligacje"), is(Optional.of(1_358_779_766_25L)));
+        assertThat(investment(fund, "Obligacje"), is(Optional.of(1_358_779_766_2500L)));
 
         fund = fund(funds, "OFE Allianz Polska");
         assertThat(fund.getNumberOfMembers(), is(221_643L));
@@ -89,7 +89,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getAverageBasis(), is(2_083_01L));
         assertThat(fund.getInvestmens().size(), is(7));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
-        assertThat(investment(fund, "Obligacje"), is(Optional.of(403_096_037_75L)));
+        assertThat(investment(fund, "Obligacje"), is(Optional.of(403_096_037_7500L)));
 
         fund = fund(funds, "Bankowy OFE");
         assertThat(fund.getNumberOfMembers(), is(389_963L));
@@ -101,8 +101,8 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(134_579L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_670_79L));
         assertThat(fund.getInvestmens().size(), is(7));
-        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(14_211_095_78L)));
-        assertThat(investment(fund, "Obligacje"), is(Optional.of(453_192_676_17L)));
+        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(14_211_095_7800L)));
+        assertThat(investment(fund, "Obligacje"), is(Optional.of(453_192_676_1700L)));
 
     }
 
@@ -121,7 +121,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(795_050L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_239_12L));
         assertThat(fund.getInvestmens().size(), is(19));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(2_153_303_974_10L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(2_153_303_974_1000L)));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
 
 
@@ -135,7 +135,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(211_288L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_377_17L));
         assertThat(fund.getInvestmens().size(), is(19));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(795_187_978_20L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(795_187_978_2000L)));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
 
         fund = fund(funds, "Bankowy OFE");
@@ -148,8 +148,8 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(296_110L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_222_76L));
         assertThat(fund.getInvestmens().size(), is(19));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(840_525_124_99L)));
-        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(7_748_509_30L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(840_525_124_9900L)));
+        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(7_748_509_3000L)));
 
     }
 
@@ -168,7 +168,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(859_200L));
         assertThat(fund.getContribution().getAverageBasis(), is(832_47L));
         assertThat(fund.getInvestmens().size(), is(19));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(2_298_907_895_00L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(2_298_907_895_0000L)));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
 
         fund = fund(funds, "OFE Allianz Polska");
@@ -181,7 +181,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(229_322L));
         assertThat(fund.getContribution().getAverageBasis(), is(931_93L));
         assertThat(fund.getInvestmens().size(), is(19));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(801_291_120_50L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(801_291_120_5000L)));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
 
         fund = fund(funds, "Bankowy OFE");
@@ -194,14 +194,14 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(305_750L));
         assertThat(fund.getContribution().getAverageBasis(), is(764_49L));
         assertThat(fund.getInvestmens().size(), is(19));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(695_420_972_11L)));
-        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(9_265_238_78L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(695_420_972_1100L)));
+        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(9_265_238_7800L)));
 
     }
 
     private Optional<Long> investment(OpenPensionFund fund, String instrumentName) {
         return fund.getInvestmens().stream().filter(inv -> inv.getInstrument().equals(instrumentFactory.create(instrumentName, null)))
-                .map(inv -> inv.getValue()).findFirst();
+                .map(inv -> inv.getMoney().getValue()).findFirst();
 
     }
 
@@ -220,9 +220,9 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(548_279L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_685_89L));
         assertThat(fund.getInvestmens().size(), is(18));
-        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(89_397_00L)));
-        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(17_403_011_60L)));
-        assertThat(investment(fund, "Dłużne skarbowe"), is(Optional.of(4_715_250_802_84L)));
+        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(89_397_0000L)));
+        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(17_403_011_6000L)));
+        assertThat(investment(fund, "Dłużne skarbowe"), is(Optional.of(4_715_250_802_8400L)));
 
         fund = fund(funds, "Allianz Polska OFE");
         assertThat(fund.getNumberOfMembers(), is(411_307L));
@@ -236,7 +236,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getInvestmens().size(), is(18));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
         assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(0L)));
-        assertThat(investment(fund, "Dłużne skarbowe"), is(Optional.of(3_180_935_048_81L)));
+        assertThat(investment(fund, "Dłużne skarbowe"), is(Optional.of(3_180_935_048_8100L)));
 
         fund = fund(funds, "Amplico OFE");
         assertThat(fund.getNumberOfMembers(), is(1_115_294L));
@@ -248,9 +248,9 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(895_031L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_971_20L));
         assertThat(fund.getInvestmens().size(), is(18));
-        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(5_650_839_75L)));
-        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(41_162_719_25L)));
-        assertThat(investment(fund, "Dłużne skarbowe"), is(Optional.of(7_491_246_327_29L)));
+        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(5_650_839_7500L)));
+        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(41_162_719_2500L)));
+        assertThat(investment(fund, "Dłużne skarbowe"), is(Optional.of(7_491_246_327_2900L)));
 
     }
 
@@ -269,9 +269,9 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(817_645L));
         assertThat(fund.getContribution().getAverageBasis(), is(0L));
         assertThat(fund.getInvestmens().size(), is(17));
-        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(28_414_996_68L)));
+        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(28_414_996_6800L)));
         assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w innych walutach"), is(Optional.of(0L)));
-        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w walucie krajowej"), is(Optional.of(519_194_697_94L)));
+        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w walucie krajowej"), is(Optional.of(519_194_697_9400L)));
 
         fund = fund(funds, "Allianz Polska OFE");
         assertThat(fund.getNumberOfMembers(), is(555_274L));
@@ -285,7 +285,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getInvestmens().size(), is(17));
         assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(0L)));
         assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w innych walutach"), is(Optional.of(0L)));
-        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w walucie krajowej"), is(Optional.of(16_508_366_16L)));
+        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w walucie krajowej"), is(Optional.of(16_508_366_1600L)));
 
         fund = fund(funds, "Amplico OFE");
         assertThat(fund.getNumberOfMembers(), is(1_275_028L));
@@ -297,9 +297,9 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(1_275_721L));
         assertThat(fund.getContribution().getAverageBasis(), is(0L));
         assertThat(fund.getInvestmens().size(), is(17));
-        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(31_544_183_32L)));
-        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w innych walutach"), is(Optional.of(5_612_661_77L)));
-        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w walucie krajowej"), is(Optional.of(725_684_301_27L)));
+        assertThat(investment(fund, "Certyfikaty inwestycyjne"), is(Optional.of(31_544_183_3200L)));
+        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w innych walutach"), is(Optional.of(5_612_661_7699L)));
+        assertThat(investment(fund, "Depozyty i bankowe papiery wartościowe w walucie krajowej"), is(Optional.of(725_684_301_2700L)));
 
     }
 
@@ -318,7 +318,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(1_141_674L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_389_71L));
         assertThat(fund.getInvestmens().size(), is(15));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(2_091_934_946_50L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(2_091_934_946_5000L)));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
 
         fund = fund(funds, "OFE Allianz Polska");
@@ -331,7 +331,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(325_350L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_657_27L));
         assertThat(fund.getInvestmens().size(), is(15));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(739_530_966_50L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(739_530_966_5000L)));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
 
         fund = fund(funds, "Bankowy OFE");
@@ -344,8 +344,8 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(439_640L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_202_37L));
         assertThat(fund.getInvestmens().size(), is(15));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(683_356_832_24L)));
-        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(10_880_885_40L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(683_356_832_2400L)));
+        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(10_880_885_4000L)));
 
     }
 
@@ -364,8 +364,8 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(237_954L));
         assertThat(fund.getContribution().getAverageBasis(), is(1_135_73L));
         assertThat(fund.getInvestmens().size(), is(14));
-        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(1_709_762_319_86L)));
-        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(4_317_600_00L)));
+        assertThat(investment(fund, "Obligacje, bony skarbowe"), is(Optional.of(1_709_762_319_8599L)));
+        assertThat(investment(fund, "Akcje NFI"), is(Optional.of(4_317_600_0000L)));
 
     }
 
@@ -384,8 +384,8 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(769_962L));
         assertThat(fund.getContribution().getAverageBasis(), is(0L));
         assertThat(fund.getInvestmens().size(), is(21));
-        assertThat(investment(fund, "5. Depozyty bankowe w walucie polskiej"), is(Optional.of(293_882_557_25L)));
-        assertThat(investment(fund, "19. Krajowe obligacje przychodowe"), is(Optional.of(25_582_732_14L)));
+        assertThat(investment(fund, "5. Depozyty bankowe w walucie polskiej"), is(Optional.of(293_882_557_2500L)));
+        assertThat(investment(fund, "19. Krajowe obligacje przychodowe"), is(Optional.of(25_582_732_1400L)));
 
     }
 
@@ -405,7 +405,7 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getAverageBasis(), is(1_253_71L));
         assertThat(fund.getInvestmens().size(), is(7));
         assertThat(investment(fund, "Akcje NFI"), is(Optional.of(0L)));
-        assertThat(investment(fund, "Obligacje"), is(Optional.of(1_867_033_150_83L)));
+        assertThat(investment(fund, "Obligacje"), is(Optional.of(1_867_033_150_8300L)));
 
     }
 
@@ -424,8 +424,8 @@ public class XlsOpenPensionFundRepositoryTest {
         assertThat(fund.getContribution().getNumber(), is(141_339L));
         assertThat(fund.getContribution().getAverageBasis(), is(0L));
         assertThat(fund.getInvestmens().size(), is(24));
-        assertThat(investment(fund, "5. Depozyty bankowe w walucie polskiej"), is(Optional.of(395_427_888_23L)));
-        assertThat(investment(fund, "19. Krajowe obligacje przychodowe"), is(Optional.of(24_190_892_51L)));
+        assertThat(investment(fund, "5. Depozyty bankowe w walucie polskiej"), is(Optional.of(395_427_888_2300L)));
+        assertThat(investment(fund, "19. Krajowe obligacje przychodowe"), is(Optional.of(24_190_892_5100L)));
 
     }
 
